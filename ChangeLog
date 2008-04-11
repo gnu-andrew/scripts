@@ -1,0 +1,10 @@
+2008-04-10  Andrew John Hughes  <gnu_andrew@member.fsf.org>
+
+	* brandweg.sh,
+	* brandweg-full.sh,
+	* cacao.sh,
+	* classpath.sh,
+	* gcj.sh,
+	* functions:
+	Initial import.
+	
