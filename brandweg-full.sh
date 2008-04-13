@@ -3,7 +3,7 @@
 # Configure to suit
 BRANDWEG_DIR=$HOME/projects/classpath/brandweg
 
-. functions
+. $HOME/projects/scripts/functions
 
 checkout_brandweg $BRANDWEG_DIR
 ./autogen.sh

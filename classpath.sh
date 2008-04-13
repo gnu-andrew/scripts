@@ -1,6 +1,6 @@
 #!/bin/bash
 
-. settings
+. $HOME/projects/scripts/functions
 
 # Configure to suit
 CLASSPATH_HOME=$HOME/projects/classpath/classpath
