@@ -1,9 +1,3 @@
-WORKING_DIR=$HOME/builder
-CLASSPATH_INSTALL=$HOME/build/classpath
-MAKE_OPTS='-j 9'
-JIKESRVM_HOME=$HOME/projects/classpath/jikesrvm
-JIKESRVM_CACHE=$JIKESRVM_HOME/cache
-
 create_working_dir()
 {
   if [ ! -e $WORKING_DIR ]; then

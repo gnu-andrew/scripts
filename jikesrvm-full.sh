@@ -1,6 +1,6 @@
 #!/bin/bash
 
-. functions
+. $HOME/projects/scripts/functions
 
 if [ -e $JIKESRVM_HOME ]; then
     cd $JIKESRVM_HOME;
@@ -12,5 +12,5 @@ else
     svn co https://jikesrvm.svn.sourceforge.net/svnroot/jikesrvm/rvmroot/trunk jikesrvm;
     cd $JIKESRVM_HOME;
 fi
-./jikesrvm.sh
+$HOME/projects/scripts/jikesrvm.sh
 

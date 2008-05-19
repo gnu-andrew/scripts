@@ -15,6 +15,6 @@ create_working_dir
 rm -rf xmms
 mkdir xmms
 cd xmms
-$XMMS_DIR/configure --prefix=$INSTALL_DIR
+$XMMS_DIR/configure --prefix=$INSTALL_DIR --disable-flac
 make all install &> $XMMS_DIR/errors && echo DONE
  
