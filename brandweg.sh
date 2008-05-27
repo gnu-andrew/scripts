@@ -2,8 +2,6 @@
 
 . functions
 
-# Configure to suit
-BRANDWEG_DIR=$HOME/projects/classpath/brandweg
 BUILD_DIR=$WORKING_DIR/brandweg
 
 checkout_brandweg $BRANDWEG_DIR

@@ -1,6 +1,5 @@
 #!/bin/sh
 
-. $HOME/projects/scripts/environment
 . $HOME/projects/scripts/functions
 
 # Configure to suit

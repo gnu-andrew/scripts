@@ -1,3 +1,24 @@
+2008-05-27  Andrew John Hughes  <gnu_andrew@member.fsf.org>
+
+	* environment: Removed.
+	* brandweg-full.sh,
+	* brandweg.sh:
+	Store variables in environment.
+	* cacao.sh,
+	* classpath.sh:
+	Let functions load environment.
+	* functions:
+	Check for environment and fail if missing.
+	* gcj.sh:
+	Store variables in environment.
+	* icedtea-full.sh,
+	* icedtea.sh,
+	* jamvm.sh,
+	* jikesrvm-test.sh:
+	Let functions load environment.	
+	* xmms.sh:
+	Store variables in environment.
+
 2008-04-10  Andrew John Hughes  <gnu_andrew@member.fsf.org>
 
 	* brandweg.sh,

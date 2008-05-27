@@ -1,6 +1,5 @@
 #!/bin/bash
 
-. $HOME/projects/scripts/environment
 . $HOME/projects/scripts/functions
 
 # Don't use Gentoo's dumb variables

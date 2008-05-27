@@ -1,6 +1,5 @@
 #!/bin/bash
 
-. $HOME/projects/scripts/environment
 . $HOME/projects/scripts/functions
 
 if [ -e $JAMVM_HOME ]; then

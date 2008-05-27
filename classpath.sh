@@ -1,6 +1,5 @@
 #!/bin/bash
 
-. $HOME/projects/scripts/environment
 . $HOME/projects/scripts/functions
 
 # Hack to get around broken parallel build

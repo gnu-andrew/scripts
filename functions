@@ -15,3 +15,10 @@ checkout_brandweg()
   fi
   cd $1
 }
+
+if [ ! -e $HOME/projects/scripts/environment ]; then
+	echo "Please install an environment";
+	exit -1;
+else
+	. $HOME/projects/scripts/environment;
+fi
