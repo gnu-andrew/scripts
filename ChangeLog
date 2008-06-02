@@ -1,3 +1,10 @@
+2008-06-02  Andrew John Hughes  <gnu_andrew@member.fsf.org>
+
+	* classpath.sh: Support release build.
+	* classpath-release.sh: Added.
+	* icedtea.sh: Fix use of parallel jobs option.
+	* icedtea-full.sh: Likewise.
+	
 2008-05-27  Andrew John Hughes  <gnu_andrew@member.fsf.org>
 
 	* .hgignore: Ignore environment.

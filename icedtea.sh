@@ -18,6 +18,6 @@ else
     cd $ICEDTEA_HOME;
 fi
 cd $WORKING_DIR/icedtea &&
-$ICEDTEA_HOME/configure --enable-parallel-jobs=9 --with-libgcj-jar=/usr/lib/jvm/gcj-jdk-4.3/jre/lib/rt.jar \
+$ICEDTEA_HOME/configure --with-parallel-jobs=9 --with-libgcj-jar=/usr/lib/jvm/gcj-jdk-4.3/jre/lib/rt.jar \
     --with-gcj-home=/usr/lib/jvm/gcj-jdk-4.3
 make &> $ICEDTEA_HOME/errors && echo DONE

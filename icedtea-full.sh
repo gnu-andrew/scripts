@@ -21,6 +21,6 @@ create_working_dir
 rm -rf icedtea &&
 mkdir icedtea &&
 cd icedtea &&
-$ICEDTEA_HOME/configure --enable-parallel-jobs=9 --with-libgcj-jar=/usr/lib/jvm/gcj-jdk-4.3/jre/lib/rt.jar \
-    --with-gcj-home=/usr/lib/jvm/gcj-jdk-4.3
+$ICEDTEA_HOME/configure --with-parallel-jobs=9 --with-libgcj-jar=/usr/lib/jvm/gcj-jdk-4.3/jre/lib/rt.jar \
+    --with-gcj-home=/usr/lib/jvm/gcj-jdk-4.3 --with-openjdk-src-zip=/home/downloads/java/openjdk-b26.zip
 make &> $ICEDTEA_HOME/errors && echo DONE
