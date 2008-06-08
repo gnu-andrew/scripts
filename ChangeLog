@@ -1,3 +1,8 @@
+2008-06-09  Andrew John Hughes  <gnu_andrew@member.fsf.org>
+
+	* icedtea.sh: Handle a makedistcheck having
+	been run previously and use OpenJDK from the ZIP.
+
 2008-06-02  Andrew John Hughes  <gnu_andrew@member.fsf.org>
 
 	* icedtea.sh: Support release build.
