@@ -1,5 +1,12 @@
 2008-06-26  Andrew John Hughes  <gnu_andrew@member.fsf.org>
 
+	* environment.in: Add ICEDTEA_HOME,BRANDWEG_HOME,
+	GCC_HOME,GCC_INSTALL,XMMS_HOME and XMMS_INSTALL.
+	Fix OPENJDK7_ZIP to be b29.
+	* icedtea.sh: Add cacao option.
+	
+2008-06-26  Andrew John Hughes  <gnu_andrew@member.fsf.org>
+
 	* classpath.sh: Turn off explicit fastjar support.
 	* icedtea.sh: Add --without-rhino.
 	* icedtea6-full.sh: Calls icedtea6 with full now.
