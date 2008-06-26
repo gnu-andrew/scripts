@@ -38,13 +38,14 @@ else
     hg clone http://icedtea.classpath.org/hg/${VERSION};
     cd $ICEDTEA_HOME;
 fi
+autoreconf
 
 if test x${OPENJDK_ZIP} != "x"; then
     ZIP_OPTION="--with-openjdk-src-zip=${OPENJDK_ZIP}";
 fi
 
 CONFIG_OPTS="--with-parallel-jobs=9 --with-libgcj-jar=/usr/lib/jvm/gcj-jdk-4.3/jre/lib/rt.jar \
-    --with-gcj-home=/usr/lib/jvm/gcj-jdk-4.3 ${ZIP_OPTION}"
+    --with-gcj-home=/usr/lib/jvm/gcj-jdk-4.3 ${ZIP_OPTION} --without-rhino"
 
 cd ${BUILD_DIR} &&
 $ICEDTEA_HOME/configure ${CONFIG_OPTS}

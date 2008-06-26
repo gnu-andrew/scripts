@@ -40,7 +40,7 @@ cd ${BUILD_DIR} &&
 JAVA=$CACAO_INSTALL/bin/cacao \
 ${CP_HOME}/configure --prefix=${INSTALL_DIR} --enable-examples --enable-qt-peer \
     --enable-Werror --disable-plugin --with-ecj-jar=${ECJ_JAR} --enable-gstreamer-peer \
-    --with-gjdoc --with-javah=javah --with-fastjar=/usr/bin/fastjar --disable-gjdoc 
+    --with-gjdoc --with-javah=javah --disable-gjdoc 
 if test x$1 != "x"; then
     make distcheck &> ${CP_HOME}/errors && echo DONE;
     #rm -rf $HOME/projects/httpdocs/classpath/doc;
