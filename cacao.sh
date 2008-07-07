@@ -18,7 +18,7 @@ create_working_dir
 rm -rf cacao
 mkdir cacao
 cd cacao
-$CACAO_HOME/configure --prefix=$CACAO_INSTALL --with-classpath-prefix=$CLASSPATH_INSTALL \
+$CACAO_HOME/configure --prefix=$CACAO_INSTALL --with-java-runtime-library-prefix=$CLASSPATH_INSTALL \
     --enable-statistics 
 make $MAKE_OPTS &> $CACAO_HOME/errors && echo COMPILED
 make install && echo DONE

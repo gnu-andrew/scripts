@@ -48,7 +48,7 @@ if test x${ICEDTEA_WITH_CACAO} = "xyes"; then
     CACAO_OPTION="--with-cacao";
 fi
 
-CONFIG_OPTS="--with-parallel-jobs=9 --with-libgcj-jar=/usr/lib/jvm/gcj-jdk-4.3/jre/lib/rt.jar \
+CONFIG_OPTS="--with-parallel-jobs=${PARALLEL_JOBS} --with-libgcj-jar=/usr/lib/jvm/gcj-jdk-4.3/jre/lib/rt.jar \
     --with-gcj-home=/usr/lib/jvm/gcj-jdk-4.3 ${ZIP_OPTION} --without-rhino ${CACAO_OPTION}"
 
 cd ${BUILD_DIR} &&
