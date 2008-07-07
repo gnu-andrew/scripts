@@ -2,7 +2,6 @@
 CLASSPATH_HOME=$HOME/projects/classpath/classpath
 CLASSPATH_RELEASE_HOME=$HOME/projects/classpath/classpath.release
 ECJ_JAR=$HOME/bin/ecj.jar
-VM=jamvm
 WORKING_DIR=$HOME/builder
 CLASSPATH_INSTALL=$HOME/build/classpath
 CLASSPATH_RELEASE_INSTALL=$HOME/build/classpath.release
@@ -23,7 +22,7 @@ XMMS_INSTALL=$HOME/build/xmms
 OPENJDK_HOME=$HOME/projects/openjdk
 OPENJDK7_ZIP=/home/downloads/java/openjdk-b29.zip
 OPENJDK6_ZIP=/home/downloads/java/openjdk-6-src-b10_30_may_2008.tar.gz
-ICEDTEA_CACAO="--with-cacao"
+ICEDTEA_WITH_CACAO="yes"
 CLASSPATH_TOOLS_HOME=$HOME/projects/classpath/cp-tools
 CLASSPATH_TOOLS_INSTALL=$HOME/build/cp-tools
 VM=${CACAO_INSTALL}/bin/cacao
