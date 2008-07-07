@@ -53,8 +53,8 @@ CONFIG_OPTS="--with-parallel-jobs=9 --with-libgcj-jar=/usr/lib/jvm/gcj-jdk-4.3/j
 
 cd ${BUILD_DIR} &&
 $ICEDTEA_HOME/configure ${CONFIG_OPTS}
-if test x$1 = "release"; then
-    DISTCHECK_CONFIGURE_FLAGS=${CONFIG_OPTS} make distcheck;
+if test "x$1" = "xrelease"; then
+    DISTCHECK_CONFIGURE_FLAGS=${CONFIG_OPTS} make distcheck &> $ICEDTEA_HOME/errors;
 else
     make &> $ICEDTEA_HOME/errors && echo DONE;
 fi
