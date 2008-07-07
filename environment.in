@@ -26,3 +26,4 @@ ICEDTEA_WITH_CACAO="yes"
 CLASSPATH_TOOLS_HOME=$HOME/projects/classpath/cp-tools
 CLASSPATH_TOOLS_INSTALL=$HOME/build/cp-tools
 VM=${CACAO_INSTALL}/bin/cacao
+MAUVE_HOME=$HOME/projects/classpath/mauve
