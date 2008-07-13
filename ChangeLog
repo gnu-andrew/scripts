@@ -1,3 +1,11 @@
+2008-07-13  Andrew John Hughes  <gnu_andrew@member.fsf.org>
+
+	* icedtea.sh:
+	Use Classpath for the rt.jar and
+	background the build process.
+	* xmms.sh: Background the build process
+	and update before a build.
+
 2008-07-07  Andrew John Hughes  <gnu_andrew@member.fsf.org>
 
 	* environment.in: Add Mauve home directory.

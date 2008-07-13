@@ -48,13 +48,16 @@ if test x${ICEDTEA_WITH_CACAO} = "xyes"; then
     CACAO_OPTION="--with-cacao";
 fi
 
-CONFIG_OPTS="--with-parallel-jobs=${PARALLEL_JOBS} --with-libgcj-jar=/usr/lib/jvm/gcj-jdk-4.3/jre/lib/rt.jar \
-    --with-gcj-home=/usr/lib/jvm/gcj-jdk-4.3 ${ZIP_OPTION} --without-rhino ${CACAO_OPTION}"
+RT_JAR=${CLASSPATH_INSTALL}/share/classpath/glibj.zip
+
+CONFIG_OPTS="--with-parallel-jobs=${PARALLEL_JOBS} --with-libgcj-jar=${RT_JAR} \
+    --with-gcj-home=/usr/lib/jvm/gcj-jdk ${ZIP_OPTION} --without-rhino ${CACAO_OPTION}"
 
 cd ${BUILD_DIR} &&
 $ICEDTEA_HOME/configure ${CONFIG_OPTS}
 if test "x$1" = "xrelease"; then
     DISTCHECK_CONFIGURE_FLAGS=${CONFIG_OPTS} make distcheck &> $ICEDTEA_HOME/errors;
 else
-    make &> $ICEDTEA_HOME/errors && echo DONE;
+    (make &> $ICEDTEA_HOME/errors && echo DONE) &
+    tail -f $ICEDTEA_HOME/errors
 fi
