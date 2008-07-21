@@ -1,3 +1,11 @@
+2008-07-22  Andrew John Hughes  <gnu_andrew@member.fsf.org>
+
+	* xmms-recompile.sh,
+	* icedtea.sh:
+	Use 2>&1 and tee to log and also output to console.
+	* .hgignore:
+	Ignore patches subdirectory symlink and tmp file.
+	
 2008-07-13  Andrew John Hughes  <gnu_andrew@member.fsf.org>
 
 	* xmms-recompile.sh: New recompilation

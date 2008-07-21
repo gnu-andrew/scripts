@@ -22,8 +22,8 @@ ICEDTEA_HOME=${OPENJDK_HOME}/${VERSION}
 
 if test x$1 != "x"; then
     if [ -e ${BUILD_DIR} ]; then
-	find ${BUILD_DIR} -type f -exec chmod 640 '{}' ';';
-	find ${BUILD_DIR} -type d -exec chmod 750 '{}' ';';
+	find ${BUILD_DIR}/${VERSION}-* -type f -exec chmod 640 '{}' ';' \
+	    -o -type d -exec chmod 750 '{}' ';';
 	rm -rf ${BUILD_DIR};
 	mkdir ${BUILD_DIR};
     fi
@@ -58,6 +58,5 @@ $ICEDTEA_HOME/configure ${CONFIG_OPTS}
 if test "x$1" = "xrelease"; then
     DISTCHECK_CONFIGURE_FLAGS=${CONFIG_OPTS} make distcheck &> $ICEDTEA_HOME/errors;
 else
-    (make &> $ICEDTEA_HOME/errors && echo DONE) &
-    tail -f $ICEDTEA_HOME/errors
+    (make && echo DONE) 2>&1 | tee $ICEDTEA_HOME/errors
 fi
