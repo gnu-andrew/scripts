@@ -29,12 +29,13 @@ ICEDTEA_HOME=${OPENJDK_HOME}/${VERSION}
 echo "Building ${VERSION} in ${BUILD_DIR}..."
 
 if test x$1 != "x"; then
+    echo "Building from scratch"
     if [ -e ${BUILD_DIR} ]; then
 	find ${BUILD_DIR}/${BUILD}-* -type f -exec chmod 640 '{}' ';' \
 	    -o -type d -exec chmod 750 '{}' ';';
 	rm -rf ${BUILD_DIR};
-	mkdir ${BUILD_DIR};
     fi
+    mkdir ${BUILD_DIR};
 fi
 
 if [ -e $ICEDTEA_HOME ]; then
