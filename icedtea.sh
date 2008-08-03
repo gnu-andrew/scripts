@@ -12,6 +12,9 @@ VERCHECK=$(echo $0|grep 'icedtea6')
 if [ $VERCHECK ]; then
     VERSION=icedtea6;
     OPENJDK_ZIP=$OPENJDK6_ZIP;
+else if [ $(echo $0|grep 'cvmi') ]; then
+    VERSION=cvmi;
+    OPENJDK_DIR=$CVMI_DIR;
 else
     VERSION=icedtea;
     OPENJDK_ZIP=$OPENJDK7_ZIP;
@@ -44,6 +47,10 @@ if test x${OPENJDK_ZIP} != "x"; then
     ZIP_OPTION="--with-openjdk-src-zip=${OPENJDK_ZIP}";
 fi
 
+if test x${OPENJDK_DIR} != "x"; then
+    DIR_OPTION="--with-openjdk-src-dir=${OPENJDK_DIR}";
+fi
+
 if test x${ICEDTEA_WITH_CACAO} = "xyes"; then
     CACAO_OPTION="--with-cacao";
 fi
@@ -51,7 +58,8 @@ fi
 RT_JAR=${CLASSPATH_INSTALL}/share/classpath/glibj.zip
 
 CONFIG_OPTS="--with-parallel-jobs=${PARALLEL_JOBS} --with-libgcj-jar=${RT_JAR} \
-    --with-gcj-home=/usr/lib/jvm/gcj-jdk ${ZIP_OPTION} --without-rhino ${CACAO_OPTION}"
+    --with-gcj-home=/usr/lib/jvm/gcj-jdk ${ZIP_OPTION} ${DIR_OPTION} --without-rhino \
+    --disable-docs ${CACAO_OPTION}"
 
 cd ${BUILD_DIR} &&
 $ICEDTEA_HOME/configure ${CONFIG_OPTS}

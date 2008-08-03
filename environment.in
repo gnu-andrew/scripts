@@ -1,4 +1,6 @@
 # Configure to suit
+ARCH=amd64
+OS=linux
 CLASSPATH_HOME=$HOME/projects/classpath/classpath
 CLASSPATH_RELEASE_HOME=$HOME/projects/classpath/classpath.release
 ECJ_JAR=$HOME/bin/ecj.jar
@@ -27,3 +29,4 @@ CLASSPATH_TOOLS_HOME=$HOME/projects/classpath/cp-tools
 CLASSPATH_TOOLS_INSTALL=$HOME/build/cp-tools
 VM=${CACAO_INSTALL}/bin/cacao
 MAUVE_HOME=$HOME/projects/classpath/mauve
+CVMI_DIR=$HOME/projects/openjdk/cvi/cvmi
