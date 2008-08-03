@@ -11,21 +11,26 @@ JDK_HOME=
 VERCHECK=$(echo $0|grep 'icedtea6')
 if [ $VERCHECK ]; then
     VERSION=icedtea6;
+    BUILD=icedtea6;
     OPENJDK_ZIP=$OPENJDK6_ZIP;
-else if [ $(echo $0|grep 'cvmi') ]; then
-    VERSION=cvmi;
+elif [ $(echo $0|grep 'cvmi') ]; then
+    VERSION=icedtea;
+    BUILD=cvmi;
     OPENJDK_DIR=$CVMI_DIR;
 else
     VERSION=icedtea;
+    BUILD=icedtea;
     OPENJDK_ZIP=$OPENJDK7_ZIP;
 fi
 
-BUILD_DIR=${WORKING_DIR}/${VERSION}
+BUILD_DIR=${WORKING_DIR}/${BUILD}
 ICEDTEA_HOME=${OPENJDK_HOME}/${VERSION}
+
+echo "Building ${VERSION} in ${BUILD_DIR}..."
 
 if test x$1 != "x"; then
     if [ -e ${BUILD_DIR} ]; then
-	find ${BUILD_DIR}/${VERSION}-* -type f -exec chmod 640 '{}' ';' \
+	find ${BUILD_DIR}/${BUILD}-* -type f -exec chmod 640 '{}' ';' \
 	    -o -type d -exec chmod 750 '{}' ';';
 	rm -rf ${BUILD_DIR};
 	mkdir ${BUILD_DIR};
