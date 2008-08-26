@@ -15,7 +15,7 @@ if [ -e $CLASSPATH_TOOLS_HOME ]; then
     cvs update -dP;
     make distclean;
 else
-    cd `dirname $CP_HOME`;
+    cd `dirname $CLASSPATH_TOOLS_HOME`;
     cvs -z3 -d:pserver:anonymous@cvs.savannah.gnu.org:/sources/classpath co cp-tools
     cd $CLASSPATH_TOOLS_HOME;
 fi
@@ -24,8 +24,8 @@ create_working_dir
 rm -rf ${BUILD_DIR} &&
 mkdir ${BUILD_DIR} &&
 cd ${BUILD_DIR} &&
-JAVA=$VM \
-${CLASSPATH_TOOLS_HOME}/configure --prefix=${CLASSPATH_TOOLS_INSTALL} --without-gnu-bytecode 
+JAVA=$VM JAVAC=ecj \
+${CLASSPATH_TOOLS_HOME}/configure --prefix=${CLASSPATH_TOOLS_INSTALL} --without-gnu-bytecode --disable-native
 make ${MAKE_OPTS} all install &> $CLASSPATH_TOOLS_HOME/errors && echo DONE;
 
 

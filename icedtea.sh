@@ -47,7 +47,7 @@ else
     hg clone http://icedtea.classpath.org/hg/${VERSION};
     cd $ICEDTEA_HOME;
 fi
-autoreconf
+./autogen.sh
 
 if test x${OPENJDK_ZIP} != "x"; then
     ZIP_OPTION="--with-openjdk-src-zip=${OPENJDK_ZIP}";
@@ -59,6 +59,10 @@ fi
 
 if test x${ICEDTEA_WITH_CACAO} = "xyes"; then
     CACAO_OPTION="--with-cacao";
+fi
+
+if test x${ICEDTEA_WITH_SHARK} = "xyes"; then
+    SHARK_OPTION="--enable-shark";
 fi
 
 RT_JAR=${CLASSPATH_INSTALL}/share/classpath/glibj.zip

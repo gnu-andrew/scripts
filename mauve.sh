@@ -10,7 +10,7 @@ if [ -e $MAUVE_HOME ]; then
     make distclean;
 else
     cd `dirname $MAUVE_HOME`;
-    cvs -z3 -d::ext:gandalf@sources.redhat.com:/cvs/mauve co mauve
+    cvs -z3 -d:pserver:anoncvs@sources.redhat.com:/cvs/mauve co mauve
     cd $MAUVE_HOME;
 fi
 autoreconf &&

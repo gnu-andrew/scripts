@@ -25,6 +25,7 @@ OPENJDK_HOME=$HOME/projects/openjdk
 OPENJDK7_ZIP=/home/downloads/java/openjdk-b29.zip
 OPENJDK6_ZIP=/home/downloads/java/openjdk-6-src-b10_30_may_2008.tar.gz
 ICEDTEA_WITH_CACAO="yes"
+ICEDTEA_WITH_SHARK="yes"
 CLASSPATH_TOOLS_HOME=$HOME/projects/classpath/cp-tools
 CLASSPATH_TOOLS_INSTALL=$HOME/build/cp-tools
 VM=${CACAO_INSTALL}/bin/cacao
