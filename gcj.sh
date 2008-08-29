@@ -16,8 +16,8 @@ create_working_dir
 rm -rf gcj
 mkdir gcj
 cd gcj
+(PATH=${CLASSPATH_INSTALL}/bin:$PATH \
 $GCC_HOME/configure --prefix=$GCC_INSTALL --disable-multilib --enable-languages=c,c++,java \
-    --enable-java-awt=gtk # --enable-java-maintainer-mode &&
-make $MAKE_OPTS &> $GCC_HOME/errors &&
-make install &&
-echo DONE
+    --enable-java-awt=gtk,xlib,qt --enable-gconf-peer --enable-gstreamer-peer \
+    --enable-java-maintainer-mode &&
+    make ${MAKE_OPTS} all install && echo DONE) 2>&1 | tee $GCC_HOME/errors

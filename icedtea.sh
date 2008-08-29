@@ -17,10 +17,12 @@ elif [ $(echo $0|grep 'cvmi') ]; then
     VERSION=icedtea;
     BUILD=cvmi;
     OPENJDK_DIR=$CVMI_DIR;
+    OPTS="--with-icedtea --enable-cvmi";
 else
     VERSION=icedtea;
     BUILD=icedtea;
     OPENJDK_ZIP=$OPENJDK7_ZIP;
+    OPTS="";
 fi
 
 BUILD_DIR=${WORKING_DIR}/${BUILD}
@@ -68,8 +70,8 @@ fi
 RT_JAR=${CLASSPATH_INSTALL}/share/classpath/glibj.zip
 
 CONFIG_OPTS="--with-parallel-jobs=${PARALLEL_JOBS} --with-libgcj-jar=${RT_JAR} \
-    --with-gcj-home=/usr/lib/jvm/gcj-jdk ${ZIP_OPTION} ${DIR_OPTION} --without-rhino \
-    --disable-docs ${CACAO_OPTION}"
+    --with-gcj-home=${GCJ_JDK_INSTALL} ${ZIP_OPTION} ${DIR_OPTION} --without-rhino \
+    --disable-docs --with-icedtea-home=${ICEDTEA_INSTALL} ${CACAO_OPTION} ${OPTS}"
 
 cd ${BUILD_DIR} &&
 $ICEDTEA_HOME/configure ${CONFIG_OPTS}

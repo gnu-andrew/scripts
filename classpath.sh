@@ -46,7 +46,7 @@ if test x$1 != "x"; then
     #rm -rf $HOME/projects/httpdocs/classpath/doc;
     #mv ${BUILD_DIR}/doc/api/html $HOME/projects/httpdocs/classpath/doc; 
 else
-    make ${MAKE_OPTS} all install &> $CLASSPATH_HOME/errors && echo DONE;
+    (make ${MAKE_OPTS} all install && echo DONE) 2>&1 | tee $CLASSPATH_HOME/errors
 fi
 
 
