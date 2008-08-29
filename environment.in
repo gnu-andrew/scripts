@@ -31,5 +31,7 @@ CLASSPATH_TOOLS_INSTALL=$HOME/build/cp-tools
 VM=${CACAO_INSTALL}/bin/cacao
 MAUVE_HOME=$HOME/projects/classpath/mauve
 CVMI_DIR=$HOME/projects/openjdk/cvi/cvmi
+LLVM_HOME=$HOME/projects/openjdk/llvm
+LLVM_INSTALL=$HOME/build/llvm
 ICEDTEA_INSTALL=/usr/lib/jvm/icedtea6
 GCJ_JDK_INSTALL=/usr/lib/jvm/gcj-jdk

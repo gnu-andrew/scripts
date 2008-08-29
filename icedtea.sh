@@ -65,13 +65,15 @@ fi
 
 if test x${ICEDTEA_WITH_SHARK} = "xyes"; then
     SHARK_OPTION="--enable-shark";
+    PATH=${LLVM_INSTALL}/bin:$PATH
 fi
 
 RT_JAR=${CLASSPATH_INSTALL}/share/classpath/glibj.zip
 
 CONFIG_OPTS="--with-parallel-jobs=${PARALLEL_JOBS} --with-libgcj-jar=${RT_JAR} \
     --with-gcj-home=${GCJ_JDK_INSTALL} ${ZIP_OPTION} ${DIR_OPTION} --without-rhino \
-    --disable-docs --with-icedtea-home=${ICEDTEA_INSTALL} ${CACAO_OPTION} ${OPTS}"
+    --disable-docs ${CACAO_OPTION} ${SHARK_OPTION} \
+    --with-icedtea-home=${ICEDTEA_INSTALL} ${OPTS}"
 
 cd ${BUILD_DIR} &&
 $ICEDTEA_HOME/configure ${CONFIG_OPTS}
