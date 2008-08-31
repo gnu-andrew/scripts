@@ -1,5 +1,13 @@
 2008-08-31  Andrew John Hughes  <gnu_andrew@member.fsf.org>
 
+	* cvmi-quick.sh,
+	* cvmi.sh: Add IcedTea equivalents
+	for CVMI.
+	* gcj-recompile.sh: Recompile existing
+	GCJ build.
+
+2008-08-31  Andrew John Hughes  <gnu_andrew@member.fsf.org>
+
 	* icedtea-full.sh,
 	* icedtea6-full.sh: Renamed...
 	* icedtea-quick.sh: to this...
