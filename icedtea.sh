@@ -17,7 +17,15 @@ elif [ $(echo $0|grep 'cvmi') ]; then
     VERSION=icedtea;
     BUILD=cvmi;
     OPENJDK_DIR=$CVMI_DIR;
-    OPTS="--with-icedtea --enable-cvmi";
+    OPTS="--with-icedtea --with-project=${BUILD}";
+elif [ $(echo $0|grep 'caciocavallo') ]; then
+    VERSION=icedtea;
+    BUILD=caciocavallo;
+    OPTS="--with-icedtea --with-project=${BUILD}";
+elif [ $(echo $0|grep 'closures') ]; then
+    VERSION=icedtea;
+    BUILD=closures;
+    OPTS="--with-icedtea --with-project=${BUILD}";
 else
     VERSION=icedtea;
     BUILD=icedtea;
@@ -30,13 +38,16 @@ ICEDTEA_HOME=${OPENJDK_HOME}/${VERSION}
 
 echo "Building ${VERSION} in ${BUILD_DIR}..."
 
-if test x$1 != "x"; then
+if test x$1 = "x"; then
     echo "Building from scratch"
     if [ -e ${BUILD_DIR} ]; then
 	find ${BUILD_DIR}/${BUILD}-* -type f -exec chmod 640 '{}' ';' \
 	    -o -type d -exec chmod 750 '{}' ';';
 	rm -rf ${BUILD_DIR};
     fi
+fi
+
+if [ ! -e ${BUILD_DIR} ]; then
     mkdir ${BUILD_DIR};
 fi
 
