@@ -40,7 +40,7 @@ cd ${BUILD_DIR} &&
 JAVA=$VM \
 ${CP_HOME}/configure --prefix=${INSTALL_DIR} --enable-examples --enable-qt-peer \
     --enable-Werror --disable-plugin --with-ecj-jar=${ECJ_JAR} --enable-gstreamer-peer \
-    --with-javah=javah --disable-gjdoc --with-fastjar=$HOME/build/classpath/bin/gjar
+    --with-javah=javah --with-fastjar=$HOME/build/classpath/bin/gjar
 if test x$1 != "x"; then
     make distcheck &> ${CP_HOME}/errors && echo DONE;
     #rm -rf $HOME/projects/httpdocs/classpath/doc;

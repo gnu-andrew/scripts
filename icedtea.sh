@@ -60,7 +60,7 @@ else
     hg clone http://icedtea.classpath.org/hg/${VERSION};
     cd $ICEDTEA_HOME;
 fi
-./autogen.sh
+PATH=/bin:/usr/bin ./autogen.sh
 
 if test x${OPENJDK_ZIP} != "x"; then
     ZIP_OPTION="--with-openjdk-src-zip=${OPENJDK_ZIP}";
