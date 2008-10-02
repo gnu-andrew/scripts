@@ -1,3 +1,12 @@
+2008-10-01  Andrew John Hughes  <gnu_andrew@member.fsf.org>
+
+	* cacao.sh,
+	* classpath.sh,
+	* gcj.sh,
+	* icedtea.sh,
+	* jamvm.sh:
+	Fix output redirection.
+	
 2008-09-24  Andrew John Hughes  <gnu_andrew@member.fsf.org>
 
 	* classpath.sh:

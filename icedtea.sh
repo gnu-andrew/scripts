@@ -86,10 +86,10 @@ CONFIG_OPTS="--with-parallel-jobs=${PARALLEL_JOBS} --with-libgcj-jar=${RT_JAR} \
     --disable-docs ${CACAO_OPTION} ${SHARK_OPTION} \
     --with-icedtea-home=${ICEDTEA_INSTALL} ${OPTS}"
 
-cd ${BUILD_DIR} &&
+(cd ${BUILD_DIR} &&
 $ICEDTEA_HOME/configure ${CONFIG_OPTS}
 if test "x$1" = "xrelease"; then
     DISTCHECK_CONFIGURE_FLAGS=${CONFIG_OPTS} make distcheck &> $ICEDTEA_HOME/errors;
 else
-    (make && echo DONE) 2>&1 | tee $ICEDTEA_HOME/errors
-fi
+    make && echo DONE
+fi) 2>&1 | tee $ICEDTEA_HOME/errors

@@ -34,20 +34,20 @@ else
 fi
 ./autogen.sh &&
 create_working_dir
-rm -rf ${BUILD_DIR} &&
+(rm -rf ${BUILD_DIR} &&
 mkdir ${BUILD_DIR} &&
 cd ${BUILD_DIR} &&
-JAVA=$VM \
+JAVA="$VM" \
 ${CP_HOME}/configure --prefix=${INSTALL_DIR} --enable-examples --enable-qt-peer \
     --enable-Werror --disable-plugin --with-ecj-jar=${ECJ_JAR} --enable-gstreamer-peer \
-    --with-javah=javah --with-fastjar=$HOME/build/classpath/bin/gjar
+    --with-javah=gjavah --with-fastjar=$HOME/build/classpath/bin/gjar &&
 if test x$1 != "x"; then
     make distcheck &> ${CP_HOME}/errors && echo DONE;
     #rm -rf $HOME/projects/httpdocs/classpath/doc;
     #mv ${BUILD_DIR}/doc/api/html $HOME/projects/httpdocs/classpath/doc; 
 else
-    (make ${MAKE_OPTS} all install && echo DONE) 2>&1 | tee $CLASSPATH_HOME/errors
-fi
+    make ${MAKE_OPTS} all install;
+fi && echo DONE) 2>&1 | tee $CLASSPATH_HOME/errors
 
 
 

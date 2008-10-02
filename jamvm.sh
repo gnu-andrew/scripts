@@ -13,9 +13,9 @@ else
 fi
 ./autogen.sh --help
 create_working_dir
-rm -rf jamvm &&
+(rm -rf jamvm &&
 mkdir jamvm &&
 cd jamvm &&
 $JAMVM_HOME/configure --with-classpath-install-dir=$CLASSPATH_INSTALL --prefix=$JAMVM_INSTALL
-make $MAKE_OPTS &> $JAMVM_HOME/errors && make install && echo DONE
+make $MAKE_OPTS && make install && echo DONE ) 2>&1 | tee $JAMVM_HOME/errors 
 
