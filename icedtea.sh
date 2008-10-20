@@ -74,6 +74,10 @@ if test x${ICEDTEA_WITH_CACAO} = "xyes"; then
     CACAO_OPTION="--enable-cacao";
 fi
 
+if test x${CACAO_ZIP} != "x"; then
+    CACAO_ZIP_OPTION="--with-cacao-src-zip=${CACAO_ZIP}";
+fi
+
 if test x${ICEDTEA_WITH_SHARK} = "xyes"; then
     SHARK_OPTION="--enable-shark";
     PATH=${LLVM_INSTALL}/bin:$PATH
@@ -92,11 +96,11 @@ fi
 
 RT_JAR=${CLASSPATH_INSTALL}/share/classpath/glibj.zip
 
-CONFIG_OPTS="--with-parallel-jobs=${PARALLEL_JOBS} --with-libgcj-jar=${RT_JAR} \
+CONFIG_OPTS="--with-parallel-jobs=${PARALLEL_JOBS} --with-libgcj-jar=${GCJ_JDK_INSTALL}/jre/lib/rt.jar \
     --with-gcj-home=${GCJ_JDK_INSTALL} ${ZIP_OPTION} ${DIR_OPTION} --without-rhino \
     --with-java=${GCJ_JDK_INSTALL}/bin/java --with-javah=${GCJ_JDK_INSTALL}/bin/javah \
-    --with-jar=${GCJ_JDK_INSTALL}/bin/jar --with-rmic=${GCJ_JDK_INSTALL}/bin/rmic \
-    --disable-docs ${CACAO_OPTION} ${SHARK_OPTION} ${VISUALVM_OPTION} ${PULSEAUDIO_OPTION} \
+    --with-jar=${GCJ_JDK_INSTALL}/bin/jar --with-rmic=${GCJ_JDK_INSTALL}/bin/rmic --disable-docs \
+    ${CACAO_OPTION} ${CACAO_ZIP_OPTION} ${SHARK_OPTION} ${VISUALVM_OPTION} ${PULSEAUDIO_OPTION} \
     --with-icedtea-home=${ICEDTEA_INSTALL} ${OPTS}"
 
 (cd ${BUILD_DIR} &&
