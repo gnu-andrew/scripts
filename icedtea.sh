@@ -71,7 +71,7 @@ if test x${OPENJDK_DIR} != "x"; then
 fi
 
 if test x${ICEDTEA_WITH_CACAO} = "xyes"; then
-    CACAO_OPTION="--with-cacao";
+    CACAO_OPTION="--enable-cacao";
 fi
 
 if test x${ICEDTEA_WITH_SHARK} = "xyes"; then
@@ -79,17 +79,30 @@ if test x${ICEDTEA_WITH_SHARK} = "xyes"; then
     PATH=${LLVM_INSTALL}/bin:$PATH
 fi
 
+if test x${ICEDTEA_WITH_PULSEAUDIO} = "xyes"; then
+    PULSEAUDIO_OPTION="--enable-pulse-java";
+fi
+
+if test x${ICEDTEA_WITH_VISUALVM} = "xyes"; then
+    VISUALVM_OPTION="--enable-visualvm \
+    --with-visualvm-src-zip=${VISUALVM_ZIP} \
+    --with-netbeans-profiler-src-zip=${NETBEANS_PROFILER_ZIP} \
+    --with-netbeans-basic-cluster-src-zip=${NETBEANS_BASIC_CLUSTER_ZIP}"
+fi
+
 RT_JAR=${CLASSPATH_INSTALL}/share/classpath/glibj.zip
 
 CONFIG_OPTS="--with-parallel-jobs=${PARALLEL_JOBS} --with-libgcj-jar=${RT_JAR} \
     --with-gcj-home=${GCJ_JDK_INSTALL} ${ZIP_OPTION} ${DIR_OPTION} --without-rhino \
-    --disable-docs ${CACAO_OPTION} ${SHARK_OPTION} \
+    --with-java=${GCJ_JDK_INSTALL}/bin/java --with-javah=${GCJ_JDK_INSTALL}/bin/javah \
+    --with-jar=${GCJ_JDK_INSTALL}/bin/jar --with-rmic=${GCJ_JDK_INSTALL}/bin/rmic \
+    --disable-docs ${CACAO_OPTION} ${SHARK_OPTION} ${VISUALVM_OPTION} ${PULSEAUDIO_OPTION} \
     --with-icedtea-home=${ICEDTEA_INSTALL} ${OPTS}"
 
 (cd ${BUILD_DIR} &&
 $ICEDTEA_HOME/configure ${CONFIG_OPTS}
 if test "x$1" = "xrelease"; then
-    DISTCHECK_CONFIGURE_FLAGS=${CONFIG_OPTS} make distcheck &> $ICEDTEA_HOME/errors;
+    DISTCHECK_CONFIGURE_FLAGS=${CONFIG_OPTS} make distcheck;
 else
     make && echo DONE
 fi) 2>&1 | tee $ICEDTEA_HOME/errors

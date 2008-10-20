@@ -20,4 +20,4 @@ cd gcj
 $GCC_HOME/configure --prefix=$GCC_INSTALL --disable-multilib --enable-languages=c,c++,java \
     --enable-java-awt=gtk,xlib,qt --enable-gconf-peer --enable-gstreamer-peer \
     --enable-java-maintainer-mode &&
-    make ${MAKE_OPTS} && make ${MAKE_OPTS} install && echo DONE) 2>&1 | tee $GCC_HOME/errors
+    make ${MAKE_OPTS} && make install && echo DONE) 2>&1 | tee $GCC_HOME/errors
