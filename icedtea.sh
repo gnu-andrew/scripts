@@ -94,14 +94,22 @@ if test x${ICEDTEA_WITH_VISUALVM} = "xyes"; then
     --with-netbeans-basic-cluster-src-zip=${NETBEANS_BASIC_CLUSTER_ZIP}"
 fi
 
+if test x${ICEDTEA_WITH_NATIVE_ECJ} = "xyes"; then
+    GCJ_OPTION="--with-gcj";
+fi
+
+if test x${ICEDTEA_WITH_RHINO} = "xno"; then
+    RHINO_OPTION="--without-rhino";
+fi
+
 RT_JAR=${CLASSPATH_INSTALL}/share/classpath/glibj.zip
 
 CONFIG_OPTS="--with-parallel-jobs=${PARALLEL_JOBS} --with-libgcj-jar=${GCJ_JDK_INSTALL}/jre/lib/rt.jar \
-    --with-gcj-home=${GCJ_JDK_INSTALL} ${ZIP_OPTION} ${DIR_OPTION} --without-rhino \
+    --with-gcj-home=${GCJ_JDK_INSTALL} ${ZIP_OPTION} ${DIR_OPTION} ${RHINO_OPTION} \
     --with-java=${GCJ_JDK_INSTALL}/bin/java --with-javah=${GCJ_JDK_INSTALL}/bin/javah \
     --with-jar=${GCJ_JDK_INSTALL}/bin/jar --with-rmic=${GCJ_JDK_INSTALL}/bin/rmic --disable-docs \
     ${CACAO_OPTION} ${CACAO_ZIP_OPTION} ${SHARK_OPTION} ${VISUALVM_OPTION} ${PULSEAUDIO_OPTION} \
-    --with-icedtea-home=${ICEDTEA_INSTALL} ${OPTS}"
+    --with-icedtea-home=${ICEDTEA_INSTALL} ${GCJ_OPTION} ${OPTS}"
 
 (cd ${BUILD_DIR} &&
 $ICEDTEA_HOME/configure ${CONFIG_OPTS}
