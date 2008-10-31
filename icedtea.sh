@@ -31,6 +31,11 @@ elif [ $(echo $0|grep 'zero') ]; then
     BUILD=zero;
     OPENJDK_ZIP=$OPENJDK7_ZIP;
     OPTS="--enable-zero";
+elif [ $(echo $0|grep 'zero6') ]; then
+    VERSION=icedtea6;
+    BUILD=zero;
+    OPENJDK_ZIP=$OPENJDK6_ZIP;
+    OPTS="--enable-zero";
 else
     VERSION=icedtea;
     BUILD=icedtea;
