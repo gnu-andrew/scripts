@@ -26,6 +26,11 @@ elif [ $(echo $0|grep 'closures') ]; then
     VERSION=icedtea;
     BUILD=closures;
     OPTS="--with-icedtea --with-project=${BUILD}";
+elif [ $(echo $0|grep 'zero') ]; then
+    VERSION=icedtea;
+    BUILD=zero;
+    OPENJDK_ZIP=$OPENJDK7_ZIP;
+    OPTS="--enable-zero";
 else
     VERSION=icedtea;
     BUILD=icedtea;
@@ -115,6 +120,8 @@ CONFIG_OPTS="--with-parallel-jobs=${PARALLEL_JOBS} --with-libgcj-jar=${GCJ_JDK_I
 $ICEDTEA_HOME/configure ${CONFIG_OPTS}
 if test "x$1" = "xrelease"; then
     DISTCHECK_CONFIGURE_FLAGS=${CONFIG_OPTS} make distcheck;
+elif test "$BUILD" = "zero"; then
+    make icedtea-ecj && echo DONE
 else
     make && echo DONE
 fi) 2>&1 | tee $ICEDTEA_HOME/errors
