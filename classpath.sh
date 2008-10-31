@@ -29,7 +29,10 @@ if [ -e $CP_HOME ]; then
     make distclean;
 else
     cd `dirname $CP_HOME`;
-    cvs -z3 -d:pserver:anonymous@cvs.savannah.gnu.org:/sources/classpath co -r${CP_REV} classpath
+    if test x${CP_REV} != x ; then 
+      revision="-r${CP_REV}";
+    fi
+    cvs -z3 -d:pserver:anonymous@cvs.savannah.gnu.org:/sources/classpath co ${revision} classpath;
     cd $CP_HOME;
 fi
 ./autogen.sh &&
