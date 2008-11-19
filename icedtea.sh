@@ -26,6 +26,10 @@ elif [ $(echo $0|grep 'closures') ]; then
     VERSION=icedtea;
     BUILD=closures;
     OPTS="--with-icedtea --with-project=${BUILD}";
+elif [ $(echo $0|grep 'nio2') ]; then
+    VERSION=icedtea;
+    BUILD=nio2;
+    OPTS="--with-icedtea --with-project=${BUILD}";
 elif [ $(echo $0|grep 'zero') ]; then
     VERSION=icedtea;
     BUILD=zero;
