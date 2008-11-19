@@ -1,3 +1,14 @@
+2008-11-19  Andrew John Hughes  <gnu_andrew@member.fsf.org>
+
+	* gcj.sh:
+	Use the new JDK directory support.
+	* icedtea.sh:
+	Move autogen.sh to logged part of build
+	and ensure build only proceeds if this is
+	successful.
+	* xmms.sh:
+	Log errors.
+
 2008-10-31  Andrew John Hughes  <gnu_andrew@member.fsf.org>
 
 	* icedtea.sh:

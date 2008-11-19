@@ -14,9 +14,8 @@ fi
 create_working_dir
 rm -rf xmms
 mkdir xmms
-cd xmms
-$XMMS_HOME/configure --prefix=$XMMS_INSTALL
-(make all install &> $XMMS_HOME/errors && echo DONE) &
-tail -f $XMMS_HOME/errors
+(cd xmms &&
+$XMMS_HOME/configure --prefix=$XMMS_INSTALL &&
+make all install && echo DONE) 2>&1 | tee $XMMS_HOME/errors
 
  

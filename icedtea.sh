@@ -70,7 +70,6 @@ else
     hg clone http://icedtea.classpath.org/hg/${VERSION};
     cd $ICEDTEA_HOME;
 fi
-PATH=/bin:/usr/bin ./autogen.sh
 
 if test x${OPENJDK_ZIP} != "x"; then
     ZIP_OPTION="--with-openjdk-src-zip=${OPENJDK_ZIP}";
@@ -121,7 +120,8 @@ CONFIG_OPTS="--with-parallel-jobs=${PARALLEL_JOBS} --with-libgcj-jar=${GCJ_JDK_I
     ${CACAO_OPTION} ${CACAO_ZIP_OPTION} ${SHARK_OPTION} ${VISUALVM_OPTION} ${PULSEAUDIO_OPTION} \
     --with-icedtea-home=${ICEDTEA_INSTALL} ${GCJ_OPTION} ${OPTS}"
 
-(cd ${BUILD_DIR} &&
+(PATH=/bin:/usr/bin ./autogen.sh &&
+cd ${BUILD_DIR} &&
 $ICEDTEA_HOME/configure ${CONFIG_OPTS}
 if test "x$1" = "xrelease"; then
     DISTCHECK_CONFIGURE_FLAGS=${CONFIG_OPTS} make distcheck;
