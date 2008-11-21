@@ -132,5 +132,8 @@ if test "x$1" = "xrelease"; then
 elif test "$BUILD" = "zero"; then
     make icedtea-ecj && echo DONE
 else
-    make && echo DONE
+    make && 
+    rm -rf ${INSTALL_DIR}/${BUILD} &&
+    mv ${BUILD_DIR}/openjdk/build/*/j2sdk-image ${INSTALL_DIR}/${BUILD} &&
+    echo DONE
 fi) 2>&1 | tee $ICEDTEA_HOME/errors
