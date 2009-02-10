@@ -18,7 +18,7 @@ mkdir gcj
 cd gcj
 (PATH=${CLASSPATH_INSTALL}/bin:$PATH \
 $GCC_HOME/configure --prefix=$GCC_INSTALL --disable-multilib --enable-languages=c,c++,java \
-    --enable-java-awt=gtk,xlib,qt --enable-gconf-peer --enable-gstreamer-peer \
+    --enable-java-awt=gtk,xlib,qt --enable-gconf-peer --enable-gstreamer-peer --enable-gjdoc \
     --enable-java-maintainer-mode --with-java-home=$GCC_INSTALL --enable-java-home \
     --with-jvm-root-dir=$GCC_INSTALL/jdk --with-jvm-jar-dir=$GCC_INSTALL/jvm-exports &&
     make ${MAKE_OPTS} && make install && echo DONE) 2>&1 | tee $GCC_HOME/errors

@@ -42,11 +42,11 @@ mkdir ${BUILD_DIR} &&
 cd ${BUILD_DIR} &&
 JAVA="$VM" \
 ${CP_HOME}/configure --prefix=${INSTALL_DIR} --enable-examples --enable-qt-peer \
-    --enable-Werror --disable-plugin --with-ecj-jar=${ECJ_JAR} --enable-gstreamer-peer \
+    --enable-Werror --with-ecj-jar=${ECJ_JAR} --enable-gstreamer-peer \
     --with-javah=gjavah --with-fastjar=$HOME/build/classpath/bin/gjar \
-    --enable-tool-wrappers &&
+    --enable-tool-wrappers --with-gjdoc &&
 if test x$1 != "x"; then
-    make distcheck &> ${CP_HOME}/errors && echo DONE;
+    make distcheck && echo DONE;
     #rm -rf $HOME/projects/httpdocs/classpath/doc;
     #mv ${BUILD_DIR}/doc/api/html $HOME/projects/httpdocs/classpath/doc; 
 else

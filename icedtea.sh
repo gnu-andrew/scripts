@@ -30,21 +30,25 @@ elif [ $(echo $0|grep 'nio2') ]; then
     VERSION=icedtea;
     BUILD=nio2;
     OPTS="--with-icedtea --with-project=${BUILD}";
-elif [ $(echo $0|grep 'zero') ]; then
-    VERSION=icedtea;
-    BUILD=zero;
-    OPENJDK_ZIP=$OPENJDK7_ZIP;
-    OPTS="--enable-zero";
 elif [ $(echo $0|grep 'zero6') ]; then
     VERSION=icedtea6;
     BUILD=zero;
     OPENJDK_ZIP=$OPENJDK6_ZIP;
+    OPTS="--enable-zero";
+elif [ $(echo $0|grep 'zero') ]; then
+    VERSION=icedtea;
+    BUILD=zero;
+    OPENJDK_ZIP=$OPENJDK7_ZIP;
     OPTS="--enable-zero";
 else
     VERSION=icedtea;
     BUILD=icedtea;
     OPENJDK_ZIP=$OPENJDK7_ZIP;
     OPTS="";
+fi
+
+if test x${VERSION} = "xicedtea6"; then
+    DIR="/control";
 fi
 
 BUILD_DIR=${WORKING_DIR}/${BUILD}
@@ -91,6 +95,10 @@ if test x${CACAO_ZIP} != "x"; then
     CACAO_ZIP_OPTION="--with-cacao-src-zip=${CACAO_ZIP}";
 fi
 
+if test x${HOTSPOT_ZIP} != "x"; then
+    HOTSPOT_ZIP_OPTION="--with-hotspot-src-zip=${HOTSPOT_ZIP}";
+fi
+
 if test x${ICEDTEA_WITH_SHARK} = "xyes"; then
     SHARK_OPTION="--enable-shark";
     PATH=${LLVM_INSTALL}/bin:$PATH
@@ -115,14 +123,18 @@ if test x${ICEDTEA_WITH_RHINO} = "xno"; then
     RHINO_OPTION="--without-rhino";
 fi
 
+if test x${ICEDTEA_WITH_DOCS} = "xno"; then
+    DOCS_OPTION="--disable-docs";
+fi
+
 RT_JAR=${CLASSPATH_INSTALL}/share/classpath/glibj.zip
 
-CONFIG_OPTS="--with-parallel-jobs=${PARALLEL_JOBS} --with-libgcj-jar=${GCJ_JDK_INSTALL}/jre/lib/rt.jar \
+CONFIG_OPTS="--with-parallel-jobs=${PARALLEL_JOBS} \
     --with-gcj-home=${GCJ_JDK_INSTALL} ${ZIP_OPTION} ${DIR_OPTION} ${RHINO_OPTION} \
     --with-java=${GCJ_JDK_INSTALL}/bin/java --with-javah=${GCJ_JDK_INSTALL}/bin/javah \
-    --with-jar=${GCJ_JDK_INSTALL}/bin/jar --with-rmic=${GCJ_JDK_INSTALL}/bin/rmic --disable-docs \
+    --with-jar=${GCJ_JDK_INSTALL}/bin/jar --with-rmic=${GCJ_JDK_INSTALL}/bin/rmic ${DOCS_OPTION} \
     ${CACAO_OPTION} ${CACAO_ZIP_OPTION} ${SHARK_OPTION} ${VISUALVM_OPTION} ${PULSEAUDIO_OPTION} \
-    --with-icedtea-home=${ICEDTEA_INSTALL} ${GCJ_OPTION} ${OPTS}"
+    --with-icedtea-home=${ICEDTEA_INSTALL} ${GCJ_OPTION} ${HOTSPOT_ZIP_OPTION} ${OPTS}"
 
 (PATH=/bin:/usr/bin ./autogen.sh &&
 cd ${BUILD_DIR} &&
@@ -134,6 +146,6 @@ elif test "$BUILD" = "zero"; then
 else
     make && 
     rm -rf ${INSTALL_DIR}/${BUILD} &&
-    mv ${BUILD_DIR}/openjdk/build/*/j2sdk-image ${INSTALL_DIR}/${BUILD} &&
+    mv ${BUILD_DIR}/openjdk${DIR}/build/${OS}-${ARCH}/j2sdk-image ${INSTALL_DIR}/${BUILD} &&
     echo DONE
 fi) 2>&1 | tee $ICEDTEA_HOME/errors

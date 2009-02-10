@@ -1,3 +1,17 @@
+2009-02-10  Andrew John Hughes  <gnu_andrew@member.fsf.org>
+
+	* classpath.sh: Don't disable
+	the plugin, don't capture to a separate
+	file for distcheck builds.
+	* gcj.sh: Enable gjdoc.
+	* icedtea.sh: Check 'zero6' before 'zero',
+	install after build, support documentation and
+	HotSpot options.
+	* japi.sh: Exclude non-specification packages
+	from OpenJDK JAPI output (list from jdk/make/docs/CORE_PKGS.gmk)
+	* jikesrvm.sh:
+	Add CVS option.
+
 2008-11-21  Andrew John Hughes  <gnu_andrew@member.fsf.org>
 
 	* environment.in,
