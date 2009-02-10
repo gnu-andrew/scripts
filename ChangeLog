@@ -1,5 +1,9 @@
 2009-02-10  Andrew John Hughes  <gnu_andrew@member.fsf.org>
 
+	* environment.in: Updated.
+	
+2009-02-10  Andrew John Hughes  <gnu_andrew@member.fsf.org>
+
 	* classpath.sh: Don't disable
 	the plugin, don't capture to a separate
 	file for distcheck builds.
