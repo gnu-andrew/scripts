@@ -13,6 +13,11 @@ if [ $VERCHECK ]; then
     VERSION=icedtea6;
     BUILD=icedtea6;
     OPENJDK_ZIP=$OPENJDK6_ZIP;
+elif [ $(echo $0|grep 'zero6') ]; then
+    VERSION=icedtea6;
+    BUILD=zero;
+    OPENJDK_ZIP=$OPENJDK6_ZIP;
+    OPTS="--enable-zero";
 elif [ $(echo $0|grep 'cvmi') ]; then
     VERSION=icedtea;
     BUILD=cvmi;
@@ -40,6 +45,26 @@ elif [ $(echo $0|grep 'zero') ]; then
     BUILD=zero;
     OPENJDK_ZIP=$OPENJDK7_ZIP;
     OPTS="--enable-zero";
+elif [ $(echo $0|grep 'shark6') ]; then
+    VERSION=icedtea6;
+    BUILD=shark6;
+    OPENJDK_ZIP=$OPENJDK6_ZIP;
+    OPTS="--enable-shark";
+elif [ $(echo $0|grep 'shark') ]; then
+    VERSION=icedtea;
+    BUILD=shark;
+    OPENJDK_ZIP=$OPENJDK7_ZIP;
+    OPTS="--enable-shark";
+elif [ $(echo $0|grep 'cacao6') ]; then
+    VERSION=icedtea6;
+    BUILD=cacao-icedtea6;
+    OPENJDK_ZIP=$OPENJDK6_ZIP;
+    OPTS="--enable-cacao";
+elif [ $(echo $0|grep 'cacao') ]; then
+    VERSION=icedtea;
+    BUILD=cacao-icedtea;
+    OPENJDK_ZIP=$OPENJDK7_ZIP;
+    OPTS="--enable-cacao";
 elif [ $(echo $0|grep 'no-bootstrap') ]; then
     VERSION=icedtea;
     BUILD=icedtea-no-bootstrap;
@@ -157,6 +182,8 @@ $ICEDTEA_HOME/configure ${CONFIG_OPTS}
 if test "x$1" = "xrelease"; then
     DISTCHECK_CONFIGURE_FLAGS=${CONFIG_OPTS} make distcheck;
 elif test "$BUILD" = "zero"; then
+    make icedtea-ecj && echo DONE
+elif test "$BUILD" = "shark"; then
     make icedtea-ecj && echo DONE
 else
     make && 
