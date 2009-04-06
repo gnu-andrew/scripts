@@ -43,15 +43,17 @@ cd ${BUILD_DIR} &&
 JAVA="$VM" \
 ${CP_HOME}/configure --prefix=${INSTALL_DIR} --enable-examples --enable-qt-peer \
     --enable-Werror --with-ecj-jar=${ECJ_JAR} --enable-gstreamer-peer \
-    --with-javah=gjavah --with-fastjar=$HOME/build/classpath/bin/gjar \
-    --enable-tool-wrappers --with-gjdoc &&
+    --with-javah=$HOME/build/classpath/bin/gjavah \
+    --with-fastjar=$HOME/build/classpath/bin/gjar \
+    --with-gjdoc --disable-plugin &&
 if test x$1 != "x"; then
     make distcheck && echo DONE;
     #rm -rf $HOME/projects/httpdocs/classpath/doc;
     #mv ${BUILD_DIR}/doc/api/html $HOME/projects/httpdocs/classpath/doc; 
 else
     make ${MAKE_OPTS} all install;
-fi && echo DONE) 2>&1 | tee $CLASSPATH_HOME/errors
+fi && echo DONE &&
+ln -sf ${CACAO_INSTALL}/lib/libjvm.so ${INSTALL_DIR}/lib) 2>&1 | tee $CLASSPATH_HOME/errors
 
 
 

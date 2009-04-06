@@ -1,7 +1,16 @@
+2009-04-06  Andrew John Hughes  <gnu_andrew@member.fsf.org>
+
+	* classpath.sh:
+	Use GCJ_JDK locations for javah and jar.
+	* gcj-recompile.sh:
+	Ensure both all and install are run.
+	* icedtea.sh:
+	Support no-bootstrap and icedtea-1.9 options.
+
 2009-02-10  Andrew John Hughes  <gnu_andrew@member.fsf.org>
 
 	* environment.in: Updated.
-	
+
 2009-02-10  Andrew John Hughes  <gnu_andrew@member.fsf.org>
 
 	* classpath.sh: Don't disable

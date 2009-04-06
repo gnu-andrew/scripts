@@ -40,6 +40,15 @@ elif [ $(echo $0|grep 'zero') ]; then
     BUILD=zero;
     OPENJDK_ZIP=$OPENJDK7_ZIP;
     OPTS="--enable-zero";
+elif [ $(echo $0|grep 'no-bootstrap') ]; then
+    VERSION=icedtea;
+    BUILD=icedtea-no-bootstrap;
+    OPENJDK_ZIP=$OPENJDK7_ZIP;
+    OPTS="--with-icedtea";
+elif [ $(echo $0|grep 'icedtea-1.9') ]; then
+    VERSION=icedtea;
+    BUILD=icedtea-1.7;
+    OPENJDK_ZIP=$OPENJDK7_ZIP;
 else
     VERSION=icedtea;
     BUILD=icedtea;
@@ -127,11 +136,17 @@ if test x${ICEDTEA_WITH_DOCS} = "xno"; then
     DOCS_OPTION="--disable-docs";
 fi
 
+if test x${ICEDTEA_JAVAH} = "x"; then
+    JAVAH_OPTION="--with-javah=${GCJ_JDK_INSTALL}/bin/javah";
+else
+    JAVAH_OPTION="--with-javah=${ICEDTEA_JAVAH}";
+fi
+
 RT_JAR=${CLASSPATH_INSTALL}/share/classpath/glibj.zip
 
 CONFIG_OPTS="--with-parallel-jobs=${PARALLEL_JOBS} \
     --with-gcj-home=${GCJ_JDK_INSTALL} ${ZIP_OPTION} ${DIR_OPTION} ${RHINO_OPTION} \
-    --with-java=${GCJ_JDK_INSTALL}/bin/java --with-javah=${GCJ_JDK_INSTALL}/bin/javah \
+    --with-java=${GCJ_JDK_INSTALL}/bin/java ${JAVAH_OPTION} \
     --with-jar=${GCJ_JDK_INSTALL}/bin/jar --with-rmic=${GCJ_JDK_INSTALL}/bin/rmic ${DOCS_OPTION} \
     ${CACAO_OPTION} ${CACAO_ZIP_OPTION} ${SHARK_OPTION} ${VISUALVM_OPTION} ${PULSEAUDIO_OPTION} \
     --with-icedtea-home=${ICEDTEA_INSTALL} ${GCJ_OPTION} ${HOTSPOT_ZIP_OPTION} ${OPTS}"
