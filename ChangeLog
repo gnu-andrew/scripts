@@ -1,6 +1,15 @@
 2009-05-20  Andrew John Hughes  <gnu_andrew@member.fsf.org>
 
 	* environment.in:
+	Support Systemtap.
+	* icedtea-release.sh: Shortcut for starting
+	a build of 1.9.
+	* icedtea.sh: Support building 1.9 release branch
+	and with Systemtap.
+
+2009-05-20  Andrew John Hughes  <gnu_andrew@member.fsf.org>
+
+	* environment.in:
 	Updated with new variables.
 	* icedtea.sh:
 	Add support for disabling Nimbus.

@@ -82,15 +82,32 @@ elif [ $(echo $0|grep 'no-bootstrap') ]; then
     OPTS="--with-icedtea";
 elif [ $(echo $0|grep 'icedtea-1.9') ]; then
     VERSION=icedtea;
-    BUILD=icedtea-1.7;
+    BUILD=icedtea-1.9;
     OPENJDK_ZIP=$OPENJDK7_ZIP;
     OPENJDK_DIR=$OPENJDK7_DIR;
+    RELEASE="1.9"
 else
     VERSION=icedtea;
     BUILD=icedtea;
     OPENJDK_ZIP=$OPENJDK7_ZIP;
     OPENJDK_DIR=$OPENJDK7_DIR;
     OPTS="";
+fi
+
+BUILD_DIR=${WORKING_DIR}/${BUILD}
+ICEDTEA_ROOT="http://icedtea.classpath.org/hg"
+
+# Dead with b16
+#if test x${VERSION} = "xicedtea6"; then
+#    DIR="/control";
+#fi
+
+if test "x${RELEASE}" = "x"; then
+    ICEDTEA_URL=${ICEDTEA_ROOT}/${VERSION};
+    ICEDTEA_HOME=${OPENJDK_HOME}/${VERSION};
+else
+    ICEDTEA_URL=${ICEDTEA_ROOT}/release/${VERSION}-${RELEASE}
+    ICEDTEA_HOME=${OPENJDK_HOME}/${VERSION}-${RELEASE}
 fi
 
 if test x${VERSION} = "xicedtea6"; then
@@ -118,10 +135,7 @@ else
     fi
 fi
 
-BUILD_DIR=${WORKING_DIR}/${BUILD}
-ICEDTEA_HOME=${OPENJDK_HOME}/${VERSION}
-
-echo "Building ${VERSION} in ${BUILD_DIR}..."
+echo "Building ${ICEDTEA_HOME} in ${BUILD_DIR}..."
 
 if test x$1 = "x"; then
     echo "Building from scratch"
@@ -142,7 +156,7 @@ if [ -e $ICEDTEA_HOME ]; then
     make distclean;
 else
     cd `dirname $ICEDTEA_HOME`;
-    hg clone http://icedtea.classpath.org/hg/${VERSION};
+    hg clone ${ICEDTEA_URL};
     cd $ICEDTEA_HOME;
 fi
 
@@ -194,6 +208,10 @@ if test x${ICEDTEA_WITH_NIMBUS} = "xno"; then
     NIMBUS_OPTION="--disable-nimbus";
 fi
 
+if test x${ICEDTEA_WITH_SYSTEMTAP} = "xyes"; then
+    SYSTEMTAP_OPTION="--enable-systemtap";
+fi
+
 if test x${ICEDTEA_JAVAH} = "x"; then
     JAVAH_OPTION="--with-javah=${GCJ_JDK_INSTALL}/bin/javah";
 else
@@ -209,7 +227,7 @@ CONFIG_OPTS="--with-parallel-jobs=${PARALLEL_JOBS} \
     ${CACAO_OPTION} ${CACAO_ZIP_OPTION} ${SHARK_OPTION} ${VISUALVM_OPTION} ${PULSEAUDIO_OPTION} \
     --with-icedtea-home=${ICEDTEA_INSTALL} ${GCJ_OPTION} ${HOTSPOT_ZIP_OPTION} ${CORBA_ZIP_OPTION} \
     ${JAXP_ZIP_OPTION} ${JAXWS_ZIP_OPTION} ${JDK_ZIP_OPTION} ${LANGTOOLS_ZIP_OPTION} ${NIMBUS_OPTION} \
-    ${OPTS}"
+    ${SYSTEMTAP_OPTION} --with-abs-install-dir=${INSTALL_DIR} ${OPTS}"
 
 (PATH=/bin:/usr/bin ./autogen.sh &&
 cd ${BUILD_DIR} &&
