@@ -13,6 +13,7 @@ if [ $VERCHECK ]; then
     VERSION=icedtea6;
     BUILD=icedtea6;
     OPENJDK_ZIP=$OPENJDK6_ZIP;
+    OPENJDK_DIR=$OPENJDK6_DIR;
 elif [ $(echo $0|grep 'cvmi') ]; then
     VERSION=icedtea;
     BUILD=cvmi;
@@ -34,30 +35,56 @@ elif [ $(echo $0|grep 'zero6') ]; then
     VERSION=icedtea6;
     BUILD=zero;
     OPENJDK_ZIP=$OPENJDK6_ZIP;
+    OPENJDK_DIR=$OPENJDK6_DIR;
     OPTS="--enable-zero";
 elif [ $(echo $0|grep 'zero') ]; then
     VERSION=icedtea;
     BUILD=zero;
     OPENJDK_ZIP=$OPENJDK7_ZIP;
+    OPENJDK_DIR=$OPENJDK7_DIR;
     OPTS="--enable-zero";
 elif [ $(echo $0|grep 'no-bootstrap') ]; then
     VERSION=icedtea;
     BUILD=icedtea-no-bootstrap;
     OPENJDK_ZIP=$OPENJDK7_ZIP;
+    OPENJDK_DIR=$OPENJDK7_DIR;
     OPTS="--with-icedtea";
 elif [ $(echo $0|grep 'icedtea-1.9') ]; then
     VERSION=icedtea;
     BUILD=icedtea-1.7;
     OPENJDK_ZIP=$OPENJDK7_ZIP;
+    OPENJDK_DIR=$OPENJDK7_DIR;
 else
     VERSION=icedtea;
     BUILD=icedtea;
     OPENJDK_ZIP=$OPENJDK7_ZIP;
+    OPENJDK_DIR=$OPENJDK7_DIR;
     OPTS="";
 fi
 
 if test x${VERSION} = "xicedtea6"; then
-    DIR="/control";
+    if test x${HOTSPOT6_ZIP} != "x"; then
+	HOTSPOT_ZIP_OPTION="--with-hotspot-src-zip=${HOTSPOT6_ZIP}";
+    fi
+else
+    if test x${CORBA_ZIP} != "x"; then
+	CORBA_ZIP_OPTION="--with-corba-src-zip=${CORBA_ZIP}";
+    fi
+    if test x${JAXP_ZIP} != "x"; then
+	JAXP_ZIP_OPTION="--with-jaxp-src-zip=${JAXP_ZIP}";
+    fi
+    if test x${JAXWS_ZIP} != "x"; then
+	JAXWS_ZIP_OPTION="--with-jaxws-src-zip=${JAXWS_ZIP}";
+    fi
+    if test x${JDK_ZIP} != "x"; then
+	JDK_ZIP_OPTION="--with-jdk-src-zip=${JDK_ZIP}";
+    fi
+    if test x${LANGTOOLS_ZIP} != "x"; then
+	LANGTOOLS_ZIP_OPTION="--with-langtools-src-zip=${LANGTOOLS_ZIP}";
+    fi
+    if test x${HOTSPOT_ZIP} != "x"; then
+	HOTSPOT_ZIP_OPTION="--with-hotspot-src-zip=${HOTSPOT_ZIP}";
+    fi
 fi
 
 BUILD_DIR=${WORKING_DIR}/${BUILD}
@@ -104,10 +131,6 @@ if test x${CACAO_ZIP} != "x"; then
     CACAO_ZIP_OPTION="--with-cacao-src-zip=${CACAO_ZIP}";
 fi
 
-if test x${HOTSPOT_ZIP} != "x"; then
-    HOTSPOT_ZIP_OPTION="--with-hotspot-src-zip=${HOTSPOT_ZIP}";
-fi
-
 if test x${ICEDTEA_WITH_SHARK} = "xyes"; then
     SHARK_OPTION="--enable-shark";
     PATH=${LLVM_INSTALL}/bin:$PATH
@@ -149,7 +172,8 @@ CONFIG_OPTS="--with-parallel-jobs=${PARALLEL_JOBS} \
     --with-java=${GCJ_JDK_INSTALL}/bin/java ${JAVAH_OPTION} \
     --with-jar=${GCJ_JDK_INSTALL}/bin/jar --with-rmic=${GCJ_JDK_INSTALL}/bin/rmic ${DOCS_OPTION} \
     ${CACAO_OPTION} ${CACAO_ZIP_OPTION} ${SHARK_OPTION} ${VISUALVM_OPTION} ${PULSEAUDIO_OPTION} \
-    --with-icedtea-home=${ICEDTEA_INSTALL} ${GCJ_OPTION} ${HOTSPOT_ZIP_OPTION} ${OPTS}"
+    --with-icedtea-home=${ICEDTEA_INSTALL} ${GCJ_OPTION} ${HOTSPOT_ZIP_OPTION} ${CORBA_ZIP_OPTION} \
+    ${JAXP_ZIP_OPTION} ${JAXWS_ZIP_OPTION} ${JDK_ZIP_OPTION} ${LANGTOOLS_ZIP_OPTION} ${OPTS}"
 
 (PATH=/bin:/usr/bin ./autogen.sh &&
 cd ${BUILD_DIR} &&
