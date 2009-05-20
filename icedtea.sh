@@ -17,19 +17,26 @@ if [ $VERCHECK ]; then
 elif [ $(echo $0|grep 'cvmi') ]; then
     VERSION=icedtea;
     BUILD=cvmi;
+    OPENJDK_ZIP=$CVMI_ZIP;
     OPENJDK_DIR=$CVMI_DIR;
     OPTS="--with-icedtea --with-project=${BUILD}";
 elif [ $(echo $0|grep 'caciocavallo') ]; then
     VERSION=icedtea;
     BUILD=caciocavallo;
+    OPENJDK_ZIP=$CACIOCAVALLO_ZIP;
+    OPENJDK_DIR=$CACIOCAVALLO_DIR;
     OPTS="--with-icedtea --with-project=${BUILD}";
 elif [ $(echo $0|grep 'closures') ]; then
     VERSION=icedtea;
     BUILD=closures;
+    OPENJDK_ZIP=$CLOSURES_ZIP;
+    OPENJDK_DIR=$CLOSURES_DIR;
     OPTS="--with-icedtea --with-project=${BUILD}";
 elif [ $(echo $0|grep 'nio2') ]; then
     VERSION=icedtea;
     BUILD=nio2;
+    OPENJDK_ZIP=$NIO2_ZIP;
+    OPENJDK_DIR=$NIO2_DIR;
     OPTS="--with-icedtea --with-project=${BUILD}";
 elif [ $(echo $0|grep 'zero6') ]; then
     VERSION=icedtea6;
@@ -43,6 +50,30 @@ elif [ $(echo $0|grep 'zero') ]; then
     OPENJDK_ZIP=$OPENJDK7_ZIP;
     OPENJDK_DIR=$OPENJDK7_DIR;
     OPTS="--enable-zero";
+elif [ $(echo $0|grep 'shark6') ]; then
+    VERSION=icedtea6;
+    BUILD=shark6;
+    OPENJDK_ZIP=$OPENJDK6_ZIP;
+    OPENJDK_DIR=$OPENJDK6_DIR;
+    OPTS="--enable-shark";
+elif [ $(echo $0|grep 'shark') ]; then
+    VERSION=icedtea;
+    BUILD=shark;
+    OPENJDK_ZIP=$OPENJDK7_ZIP;
+    OPENJDK_DIR=$OPENJDK7_DIR;
+    OPTS="--enable-shark";
+elif [ $(echo $0|grep 'cacao6') ]; then
+    VERSION=icedtea6;
+    BUILD=cacao-icedtea6;
+    OPENJDK_ZIP=$OPENJDK6_ZIP;
+    OPENJDK_DIR=$OPENJDK6_DIR;
+    OPTS="--enable-cacao";
+elif [ $(echo $0|grep 'cacao') ]; then
+    VERSION=icedtea;
+    BUILD=cacao-icedtea;
+    OPENJDK_ZIP=$OPENJDK7_ZIP;
+    OPENJDK_DIR=$OPENJDK7_DIR;
+    OPTS="--enable-cacao";
 elif [ $(echo $0|grep 'no-bootstrap') ]; then
     VERSION=icedtea;
     BUILD=icedtea-no-bootstrap;
@@ -181,6 +212,8 @@ $ICEDTEA_HOME/configure ${CONFIG_OPTS}
 if test "x$1" = "xrelease"; then
     DISTCHECK_CONFIGURE_FLAGS=${CONFIG_OPTS} make distcheck;
 elif test "$BUILD" = "zero"; then
+    make icedtea-ecj && echo DONE
+elif test "$BUILD" = "shark"; then
     make icedtea-ecj && echo DONE
 else
     make && 

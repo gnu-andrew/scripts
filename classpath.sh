@@ -25,7 +25,7 @@ fi
 
 if [ -e $CP_HOME ]; then
     cd $CP_HOME;
-    cvs update -dP;
+    #cvs update -dP;
     make distclean;
 else
     cd `dirname $CP_HOME`;
@@ -35,17 +35,38 @@ else
     cvs -z3 -d:pserver:anonymous@cvs.savannah.gnu.org:/sources/classpath co ${revision} classpath;
     cd $CP_HOME;
 fi
+
+if test "x${CLASSPATH_WITH_GSTREAMER}" = "xyes"; then
+    GSTREAMER_OPTION="--enable-gstreamer-peer";
+fi
+
+if test "x${CLASSPATH_WITH_QT}" = "xyes"; then
+    QT_OPTION="--enable-qt-peer";
+fi
+
+if test "x${CLASSPATH_WITH_TOOL_WRAPPERS}" = "xyes"; then
+    TOOL_OPTION="--enable-tool-wrappers";
+fi
+
+if test "x${CLASSPATH_WITH_DOCS}" = "xyes"; then
+    DOCS_OPTION="--with-gjdoc";
+fi
+
+if test "x${CLASSPATH_WITH_PLUGIN}" = "xno"; then
+    PLUGIN_OPTION="--disable-plugin";
+fi
+
 ./autogen.sh &&
 create_working_dir
 (rm -rf ${BUILD_DIR} &&
 mkdir ${BUILD_DIR} &&
 cd ${BUILD_DIR} &&
 JAVA="$VM" \
-${CP_HOME}/configure --prefix=${INSTALL_DIR} --enable-examples --enable-qt-peer \
-    --enable-Werror --with-ecj-jar=${ECJ_JAR} --enable-gstreamer-peer \
-    --with-javah=$HOME/build/classpath/bin/gjavah \
-    --with-fastjar=$HOME/build/classpath/bin/gjar \
-    --with-gjdoc --disable-plugin &&
+${CP_HOME}/configure --prefix=${INSTALL_DIR} --enable-examples \
+    --enable-Werror --with-ecj-jar=${ECJ_JAR} ${GSTREAMER_OPTION} \
+    ${QT_OPTION} --with-javah=${GCC_INSTALL}/bin/gjavah \
+    --with-fastjar=${GCC_INSTALL}/bin/gjar \
+    ${TOOL_OPTION} ${DOCS_OPTION} ${PLUGIN_OPTION} &&
 if test x$1 != "x"; then
     make distcheck && echo DONE;
     #rm -rf $HOME/projects/httpdocs/classpath/doc;
