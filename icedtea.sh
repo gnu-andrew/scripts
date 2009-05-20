@@ -190,6 +190,10 @@ if test x${ICEDTEA_WITH_DOCS} = "xno"; then
     DOCS_OPTION="--disable-docs";
 fi
 
+if test x${ICEDTEA_WITH_NIMBUS} = "xno"; then
+    NIMBUS_OPTION="--disable-nimbus";
+fi
+
 if test x${ICEDTEA_JAVAH} = "x"; then
     JAVAH_OPTION="--with-javah=${GCJ_JDK_INSTALL}/bin/javah";
 else
@@ -204,7 +208,8 @@ CONFIG_OPTS="--with-parallel-jobs=${PARALLEL_JOBS} \
     --with-jar=${GCJ_JDK_INSTALL}/bin/jar --with-rmic=${GCJ_JDK_INSTALL}/bin/rmic ${DOCS_OPTION} \
     ${CACAO_OPTION} ${CACAO_ZIP_OPTION} ${SHARK_OPTION} ${VISUALVM_OPTION} ${PULSEAUDIO_OPTION} \
     --with-icedtea-home=${ICEDTEA_INSTALL} ${GCJ_OPTION} ${HOTSPOT_ZIP_OPTION} ${CORBA_ZIP_OPTION} \
-    ${JAXP_ZIP_OPTION} ${JAXWS_ZIP_OPTION} ${JDK_ZIP_OPTION} ${LANGTOOLS_ZIP_OPTION} ${OPTS}"
+    ${JAXP_ZIP_OPTION} ${JAXWS_ZIP_OPTION} ${JDK_ZIP_OPTION} ${LANGTOOLS_ZIP_OPTION} ${NIMBUS_OPTION} \
+    ${OPTS}"
 
 (PATH=/bin:/usr/bin ./autogen.sh &&
 cd ${BUILD_DIR} &&
