@@ -1,3 +1,11 @@
+2009-05-21  Andrew John Hughes  <gnu_andrew@member.fsf.org>
+
+	* environment.in:
+	Add new ICEDTEA_WITH_NIMBUS_GENERATION
+	variable.
+	* icedtea.sh:
+	Support --enable-nimbus-generation.
+
 2009-05-20  Andrew John Hughes  <gnu_andrew@member.fsf.org>
 
 	* environment.in:

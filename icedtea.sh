@@ -208,6 +208,10 @@ if test x${ICEDTEA_WITH_NIMBUS} = "xno"; then
     NIMBUS_OPTION="--disable-nimbus";
 fi
 
+if test x${ICEDTEA_WITH_NIMBUS_GENERATION} = "xyes"; then
+    NIMBUS_GEN_OPTION="--enable-nimbus-generation";
+fi
+
 if test x${ICEDTEA_WITH_SYSTEMTAP} = "xyes"; then
     SYSTEMTAP_OPTION="--enable-systemtap";
 fi
@@ -227,7 +231,7 @@ CONFIG_OPTS="--with-parallel-jobs=${PARALLEL_JOBS} \
     ${CACAO_OPTION} ${CACAO_ZIP_OPTION} ${SHARK_OPTION} ${VISUALVM_OPTION} ${PULSEAUDIO_OPTION} \
     --with-icedtea-home=${ICEDTEA_INSTALL} ${GCJ_OPTION} ${HOTSPOT_ZIP_OPTION} ${CORBA_ZIP_OPTION} \
     ${JAXP_ZIP_OPTION} ${JAXWS_ZIP_OPTION} ${JDK_ZIP_OPTION} ${LANGTOOLS_ZIP_OPTION} ${NIMBUS_OPTION} \
-    ${SYSTEMTAP_OPTION} --with-abs-install-dir=${INSTALL_DIR} ${OPTS}"
+    ${SYSTEMTAP_OPTION} --with-abs-install-dir=${INSTALL_DIR} ${NIMBUS_GEN_OPTION} ${OPTS}"
 
 (PATH=/bin:/usr/bin ./autogen.sh &&
 cd ${BUILD_DIR} &&
