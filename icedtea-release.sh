@@ -1,4 +1,4 @@
 #!/bin/bash
 
-icedtea-1.9sh release
+$HOME/projects/scripts/icedtea.sh release
 

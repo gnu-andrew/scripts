@@ -1,3 +1,18 @@
+2009-06-10  Andrew John Hughes  <gnu_andrew@member.fsf.org>
+
+	* environment.in:
+	Add plugin options.
+	* icedtea-release.sh:
+	Generalise for all releases.
+	* icedtea.sh:
+	Fix zero6 build, use same logic
+	for Shark builds performed using shark/shark6
+	and the ICEDTEA_WITH_SHARK option, add xrender
+	and plugin configure option support, do full
+	Shark builds now this is possible.
+	* llvm.sh:
+	Fix typo.
+
 2009-05-21  Andrew John Hughes  <gnu_andrew@member.fsf.org>
 
 	* environment.in:

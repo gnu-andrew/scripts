@@ -40,7 +40,7 @@ elif [ $(echo $0|grep 'nio2') ]; then
     OPTS="--with-icedtea --with-project=${BUILD}";
 elif [ $(echo $0|grep 'zero6') ]; then
     VERSION=icedtea6;
-    BUILD=zero;
+    BUILD=zero6;
     OPENJDK_ZIP=$OPENJDK6_ZIP;
     OPENJDK_DIR=$OPENJDK6_DIR;
     OPTS="--enable-zero";
@@ -55,13 +55,11 @@ elif [ $(echo $0|grep 'shark6') ]; then
     BUILD=shark6;
     OPENJDK_ZIP=$OPENJDK6_ZIP;
     OPENJDK_DIR=$OPENJDK6_DIR;
-    OPTS="--enable-shark";
 elif [ $(echo $0|grep 'shark') ]; then
     VERSION=icedtea;
     BUILD=shark;
     OPENJDK_ZIP=$OPENJDK7_ZIP;
     OPENJDK_DIR=$OPENJDK7_DIR;
-    OPTS="--enable-shark";
 elif [ $(echo $0|grep 'cacao6') ]; then
     VERSION=icedtea6;
     BUILD=cacao-icedtea6;
@@ -176,7 +174,7 @@ if test x${CACAO_ZIP} != "x"; then
     CACAO_ZIP_OPTION="--with-cacao-src-zip=${CACAO_ZIP}";
 fi
 
-if test x${ICEDTEA_WITH_SHARK} = "xyes"; then
+if test x${ICEDTEA_WITH_SHARK} = "xyes" || [ $(echo ${BUILD}|grep 'shark') ]; then
     SHARK_OPTION="--enable-shark";
     PATH=${LLVM_INSTALL}/bin:$PATH
 fi
@@ -216,6 +214,18 @@ if test x${ICEDTEA_WITH_SYSTEMTAP} = "xyes"; then
     SYSTEMTAP_OPTION="--enable-systemtap";
 fi
 
+if test x${ICEDTEA_WITH_XRENDER} = "xno"; then
+    XRENDER_OPTION="--disable-xrender";
+fi
+
+if test x${ICEDTEA_WITH_PLUGIN} = "xno"; then
+    PLUGIN_OPTION="--disable-plugin";
+fi
+
+if test x${ICEDTEA_WITH_NEW_PLUGIN} = "xyes"; then
+    NEW_PLUGIN_OPTION="--enable-npplugin";
+fi
+
 if test x${ICEDTEA_JAVAH} = "x"; then
     JAVAH_OPTION="--with-javah=${GCJ_JDK_INSTALL}/bin/javah";
 else
@@ -229,9 +239,10 @@ CONFIG_OPTS="--with-parallel-jobs=${PARALLEL_JOBS} \
     --with-java=${GCJ_JDK_INSTALL}/bin/java ${JAVAH_OPTION} \
     --with-jar=${GCJ_JDK_INSTALL}/bin/jar --with-rmic=${GCJ_JDK_INSTALL}/bin/rmic ${DOCS_OPTION} \
     ${CACAO_OPTION} ${CACAO_ZIP_OPTION} ${SHARK_OPTION} ${VISUALVM_OPTION} ${PULSEAUDIO_OPTION} \
-    --with-icedtea-home=${ICEDTEA_INSTALL} ${GCJ_OPTION} ${HOTSPOT_ZIP_OPTION} ${CORBA_ZIP_OPTION} \
+    --with-icedtea-home=${ICEDTEA6_INSTALL} ${GCJ_OPTION} ${HOTSPOT_ZIP_OPTION} ${CORBA_ZIP_OPTION} \
     ${JAXP_ZIP_OPTION} ${JAXWS_ZIP_OPTION} ${JDK_ZIP_OPTION} ${LANGTOOLS_ZIP_OPTION} ${NIMBUS_OPTION} \
-    ${SYSTEMTAP_OPTION} --with-abs-install-dir=${INSTALL_DIR} ${NIMBUS_GEN_OPTION} ${OPTS}"
+    ${SYSTEMTAP_OPTION} --with-abs-install-dir=${INSTALL_DIR} ${NIMBUS_GEN_OPTION} ${XRENDER_OPTION} \
+    ${PLUGIN_OPTION} ${NEW_PLUGIN_OPTION} ${OPTS}"
 
 (PATH=/bin:/usr/bin ./autogen.sh &&
 cd ${BUILD_DIR} &&
@@ -239,8 +250,6 @@ $ICEDTEA_HOME/configure ${CONFIG_OPTS}
 if test "x$1" = "xrelease"; then
     DISTCHECK_CONFIGURE_FLAGS=${CONFIG_OPTS} make distcheck;
 elif test "$BUILD" = "zero"; then
-    make icedtea-ecj && echo DONE
-elif test "$BUILD" = "shark"; then
     make icedtea-ecj && echo DONE
 else
     make && 

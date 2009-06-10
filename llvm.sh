@@ -4,7 +4,7 @@
 
 if [ ! -e $LLVM_HOME ]; then
     cd `dirname $LLVM_HOME`;
-    svn co svn co http://llvm.org/svn/llvm-project/llvm/trunk llvm;
+    svn co http://llvm.org/svn/llvm-project/llvm/trunk llvm;
     cd $LLVM_HOME;
 else
     cd $LLVM_HOME;
