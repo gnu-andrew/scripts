@@ -8,6 +8,7 @@ JAVACFLAGS=
 JAVA_HOME=
 JDK_HOME=
 
+ICEDTEA_BUILD_OPT="--with-openjdk=${ICEDTEA6_INSTALL}"
 VERCHECK=$(echo $0|grep 'icedtea6')
 if [ $VERCHECK ]; then
     VERSION=icedtea6;
@@ -19,25 +20,25 @@ elif [ $(echo $0|grep 'cvmi') ]; then
     BUILD=cvmi;
     OPENJDK_ZIP=$CVMI_ZIP;
     OPENJDK_DIR=$CVMI_DIR;
-    OPTS="--with-icedtea --with-project=${BUILD}";
+    OPTS="${ICEDTEA_BUILD_OPT} --with-project=${BUILD}";
 elif [ $(echo $0|grep 'caciocavallo') ]; then
     VERSION=icedtea;
     BUILD=caciocavallo;
     OPENJDK_ZIP=$CACIOCAVALLO_ZIP;
     OPENJDK_DIR=$CACIOCAVALLO_DIR;
-    OPTS="--with-icedtea --with-project=${BUILD}";
+    OPTS="${ICEDTEA_BUILD_OPT} --with-project=${BUILD}";
 elif [ $(echo $0|grep 'closures') ]; then
     VERSION=icedtea;
     BUILD=closures;
     OPENJDK_ZIP=$CLOSURES_ZIP;
     OPENJDK_DIR=$CLOSURES_DIR;
-    OPTS="--with-icedtea --with-project=${BUILD}";
+    OPTS="${ICEDTEA_BUILD_OPT} --with-project=${BUILD}";
 elif [ $(echo $0|grep 'nio2') ]; then
     VERSION=icedtea;
     BUILD=nio2;
     OPENJDK_ZIP=$NIO2_ZIP;
     OPENJDK_DIR=$NIO2_DIR;
-    OPTS="--with-icedtea --with-project=${BUILD}";
+    OPTS="${ICEDTEA_BUILD_OPT} --with-project=${BUILD}";
 elif [ $(echo $0|grep 'zero6') ]; then
     VERSION=icedtea6;
     BUILD=zero6;
@@ -72,12 +73,18 @@ elif [ $(echo $0|grep 'cacao') ]; then
     OPENJDK_ZIP=$OPENJDK7_ZIP;
     OPENJDK_DIR=$OPENJDK7_DIR;
     OPTS="--enable-cacao";
+elif [ $(echo $0|grep 'no-bootstrap6') ]; then
+    VERSION=icedtea6;
+    BUILD=icedtea6-no-bootstrap;
+    OPENJDK_ZIP=$OPENJDK6_ZIP;
+    OPENJDK_DIR=$OPENJDK6_DIR;
+    OPTS=${ICEDTEA_BUILD_OPT};
 elif [ $(echo $0|grep 'no-bootstrap') ]; then
     VERSION=icedtea;
     BUILD=icedtea-no-bootstrap;
     OPENJDK_ZIP=$OPENJDK7_ZIP;
     OPENJDK_DIR=$OPENJDK7_DIR;
-    OPTS="--with-icedtea";
+    OPTS=${ICEDTEA_BUILD_OPT};
 elif [ $(echo $0|grep 'icedtea-1.9') ]; then
     VERSION=icedtea;
     BUILD=icedtea-1.9;
@@ -131,6 +138,10 @@ else
     if test x${HOTSPOT_ZIP} != "x"; then
 	HOTSPOT_ZIP_OPTION="--with-hotspot-src-zip=${HOTSPOT_ZIP}";
     fi
+fi
+
+if test x${CACAO_ZIP} != "x"; then
+    CACAO_ZIP_OPTION="--with-cacao-src-zip=${CACAO_ZIP}";
 fi
 
 echo "Building ${ICEDTEA_HOME} in ${BUILD_DIR}..."
@@ -239,10 +250,10 @@ CONFIG_OPTS="--with-parallel-jobs=${PARALLEL_JOBS} \
     --with-java=${GCJ_JDK_INSTALL}/bin/java ${JAVAH_OPTION} \
     --with-jar=${GCJ_JDK_INSTALL}/bin/jar --with-rmic=${GCJ_JDK_INSTALL}/bin/rmic ${DOCS_OPTION} \
     ${CACAO_OPTION} ${CACAO_ZIP_OPTION} ${SHARK_OPTION} ${VISUALVM_OPTION} ${PULSEAUDIO_OPTION} \
-    --with-icedtea-home=${ICEDTEA6_INSTALL} ${GCJ_OPTION} ${HOTSPOT_ZIP_OPTION} ${CORBA_ZIP_OPTION} \
+    ${GCJ_OPTION} ${HOTSPOT_ZIP_OPTION} ${CORBA_ZIP_OPTION} \
     ${JAXP_ZIP_OPTION} ${JAXWS_ZIP_OPTION} ${JDK_ZIP_OPTION} ${LANGTOOLS_ZIP_OPTION} ${NIMBUS_OPTION} \
     ${SYSTEMTAP_OPTION} --with-abs-install-dir=${INSTALL_DIR} ${NIMBUS_GEN_OPTION} ${XRENDER_OPTION} \
-    ${PLUGIN_OPTION} ${NEW_PLUGIN_OPTION} ${OPTS}"
+    ${PLUGIN_OPTION} ${NEW_PLUGIN_OPTION} ${CACAO_ZIP_OPTION} ${OPTS}"
 
 (PATH=/bin:/usr/bin ./autogen.sh &&
 cd ${BUILD_DIR} &&
