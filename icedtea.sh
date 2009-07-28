@@ -84,7 +84,7 @@ elif [ $(echo $0|grep 'no-bootstrap') ]; then
     BUILD=icedtea-no-bootstrap;
     OPENJDK_ZIP=$OPENJDK7_ZIP;
     OPENJDK_DIR=$OPENJDK7_DIR;
-    OPTS=${ICEDTEA_BUILD_OPT};
+    OPTS="--disable-bootstrap --with-jdk-home=${ICEDTEA6_INSTALL}";
 elif [ $(echo $0|grep 'icedtea-1.9') ]; then
     VERSION=icedtea;
     BUILD=icedtea-1.9;
@@ -245,10 +245,12 @@ fi
 
 RT_JAR=${CLASSPATH_INSTALL}/share/classpath/glibj.zip
 
+# Old
+# --with-java=${GCJ_JDK_INSTALL}/bin/java ${JAVAH_OPTION} \
+# --with-jar=${GCJ_JDK_INSTALL}/bin/jar --with-rmic=${GCJ_JDK_INSTALL}/bin/rmic
+
 CONFIG_OPTS="--with-parallel-jobs=${PARALLEL_JOBS} \
-    --with-gcj-home=${GCJ_JDK_INSTALL} ${ZIP_OPTION} ${DIR_OPTION} ${RHINO_OPTION} \
-    --with-java=${GCJ_JDK_INSTALL}/bin/java ${JAVAH_OPTION} \
-    --with-jar=${GCJ_JDK_INSTALL}/bin/jar --with-rmic=${GCJ_JDK_INSTALL}/bin/rmic ${DOCS_OPTION} \
+    --with-jdk-home=${GCJ_JDK_INSTALL} ${ZIP_OPTION} ${DIR_OPTION} ${RHINO_OPTION} ${DOCS_OPTION} \
     ${CACAO_OPTION} ${CACAO_ZIP_OPTION} ${SHARK_OPTION} ${VISUALVM_OPTION} ${PULSEAUDIO_OPTION} \
     ${GCJ_OPTION} ${HOTSPOT_ZIP_OPTION} ${CORBA_ZIP_OPTION} \
     ${JAXP_ZIP_OPTION} ${JAXWS_ZIP_OPTION} ${JDK_ZIP_OPTION} ${LANGTOOLS_ZIP_OPTION} ${NIMBUS_OPTION} \
