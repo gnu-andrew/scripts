@@ -4,6 +4,7 @@ OS=linux
 CLASSPATH_HOME=$HOME/projects/classpath/classpath
 CLASSPATH_RELEASE_HOME=$HOME/projects/classpath/classpath.release
 ECJ_JAR=$HOME/bin/ecj.jar
+GCJ_ECJ_JAR=$HOME/projects/classpath/gcj/dependencies/ecj.2007.jar
 WORKING_DIR=$HOME/builder
 INSTALL_DIR=$HOME/build
 CLASSPATH_INSTALL=$INSTALL_DIR/classpath
