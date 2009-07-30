@@ -16,25 +16,25 @@ if [ $VERCHECK ]; then
     OPENJDK_ZIP=$OPENJDK6_ZIP;
     OPENJDK_DIR=$OPENJDK6_DIR;
 elif [ $(echo $0|grep 'cvmi') ]; then
-    VERSION=icedtea;
+    VERSION=icedtea7;
     BUILD=cvmi;
     OPENJDK_ZIP=$CVMI_ZIP;
     OPENJDK_DIR=$CVMI_DIR;
     OPTS="${ICEDTEA_BUILD_OPT} --with-project=${BUILD}";
 elif [ $(echo $0|grep 'caciocavallo') ]; then
-    VERSION=icedtea;
+    VERSION=icedtea7;
     BUILD=caciocavallo;
     OPENJDK_ZIP=$CACIOCAVALLO_ZIP;
     OPENJDK_DIR=$CACIOCAVALLO_DIR;
     OPTS="${ICEDTEA_BUILD_OPT} --with-project=${BUILD}";
 elif [ $(echo $0|grep 'closures') ]; then
-    VERSION=icedtea;
+    VERSION=icedtea7;
     BUILD=closures;
     OPENJDK_ZIP=$CLOSURES_ZIP;
     OPENJDK_DIR=$CLOSURES_DIR;
     OPTS="${ICEDTEA_BUILD_OPT} --with-project=${BUILD}";
 elif [ $(echo $0|grep 'nio2') ]; then
-    VERSION=icedtea;
+    VERSION=icedtea7;
     BUILD=nio2;
     OPENJDK_ZIP=$NIO2_ZIP;
     OPENJDK_DIR=$NIO2_DIR;
@@ -46,8 +46,8 @@ elif [ $(echo $0|grep 'zero6') ]; then
     OPENJDK_DIR=$OPENJDK6_DIR;
     OPTS="--enable-zero";
 elif [ $(echo $0|grep 'zero') ]; then
-    VERSION=icedtea;
-    BUILD=zero;
+    VERSION=icedtea7;
+    BUILD=zero7;
     OPENJDK_ZIP=$OPENJDK7_ZIP;
     OPENJDK_DIR=$OPENJDK7_DIR;
     OPTS="--enable-zero";
@@ -57,8 +57,8 @@ elif [ $(echo $0|grep 'shark6') ]; then
     OPENJDK_ZIP=$OPENJDK6_ZIP;
     OPENJDK_DIR=$OPENJDK6_DIR;
 elif [ $(echo $0|grep 'shark') ]; then
-    VERSION=icedtea;
-    BUILD=shark;
+    VERSION=icedtea7;
+    BUILD=shark7;
     OPENJDK_ZIP=$OPENJDK7_ZIP;
     OPENJDK_DIR=$OPENJDK7_DIR;
 elif [ $(echo $0|grep 'cacao6') ]; then
@@ -68,8 +68,8 @@ elif [ $(echo $0|grep 'cacao6') ]; then
     OPENJDK_DIR=$OPENJDK6_DIR;
     OPTS="--enable-cacao";
 elif [ $(echo $0|grep 'cacao') ]; then
-    VERSION=icedtea;
-    BUILD=cacao-icedtea;
+    VERSION=icedtea7;
+    BUILD=cacao-icedtea7;
     OPENJDK_ZIP=$OPENJDK7_ZIP;
     OPENJDK_DIR=$OPENJDK7_DIR;
     OPTS="--enable-cacao";
@@ -80,20 +80,20 @@ elif [ $(echo $0|grep 'no-bootstrap6') ]; then
     OPENJDK_DIR=$OPENJDK6_DIR;
     OPTS=${ICEDTEA_BUILD_OPT};
 elif [ $(echo $0|grep 'no-bootstrap') ]; then
-    VERSION=icedtea;
-    BUILD=icedtea-no-bootstrap;
+    VERSION=icedtea7;
+    BUILD=icedtea7-no-bootstrap;
     OPENJDK_ZIP=$OPENJDK7_ZIP;
     OPENJDK_DIR=$OPENJDK7_DIR;
     OPTS="--disable-bootstrap --with-jdk-home=${ICEDTEA6_INSTALL}";
 elif [ $(echo $0|grep 'icedtea-1.9') ]; then
-    VERSION=icedtea;
+    VERSION=icedtea7;
     BUILD=icedtea-1.9;
     OPENJDK_ZIP=$OPENJDK7_ZIP;
     OPENJDK_DIR=$OPENJDK7_DIR;
     RELEASE="1.9"
 else
-    VERSION=icedtea;
-    BUILD=icedtea;
+    VERSION=icedtea7;
+    BUILD=icedtea7;
     OPENJDK_ZIP=$OPENJDK7_ZIP;
     OPENJDK_DIR=$OPENJDK7_DIR;
     OPTS="";

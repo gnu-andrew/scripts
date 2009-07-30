@@ -15,10 +15,10 @@ fi
 
 # List of excluded packages is taken from jdk/make/docs/CORE_PKGS.gmk
 bin/japize as ${INSTALL_DIR}/japi/icedtea6 packages $ICEDTEA6_INSTALL/jre/lib/rt.jar +java \
-    $ICEDTEA_INSTALL/jre/lib/jce.jar +javax +org -java.awt.dnd.peer -java.awt.peer -java.text.resources \
+    $ICEDTEA6_INSTALL/jre/lib/jce.jar +javax +org -java.awt.dnd.peer -java.awt.peer -java.text.resources \
     -org.w3c.dom.css  -org.w3c.dom.html -org.w3c.dom.stylesheets -org.w3c.dom.traversal    \
     -org.w3c.dom.ranges -org.w3c.dom.views -org.omg.stub.javax.management.remote.rmi
-bin/japize as ${INSTALL_DIR}/japi/icedtea packages $ICEDTEA_INSTALL/jre/lib/rt.jar +java \
-    $ICEDTEA_INSTALL/jre/lib/jce.jar +javax +org -java.awt.dnd.peer -java.awt.peer -java.text.resources \
+bin/japize as ${INSTALL_DIR}/japi/icedtea7 packages $ICEDTEA7_INSTALL/jre/lib/rt.jar +java \
+    $ICEDTEA7_INSTALL/jre/lib/jce.jar +javax +org -java.awt.dnd.peer -java.awt.peer -java.text.resources \
     -org.w3c.dom.css  -org.w3c.dom.html -org.w3c.dom.stylesheets -org.w3c.dom.traversal    \
     -org.w3c.dom.ranges -org.w3c.dom.views -org.omg.stub.javax.management.remote.rmi

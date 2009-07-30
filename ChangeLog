@@ -1,3 +1,10 @@
+2009-07-30  Andrew John Hughes  <gnu_andrew@member.fsf.org>
+
+	* environment.in,
+	* icedtea.sh,
+	* japi.sh:
+	Version icedtea as icedtea7.
+	
 2009-07-28  Andrew John Hughes  <gnu_andrew@member.fsf.org>
 
 	* environment.in: Add GCJ_ECJ_JAR option.
