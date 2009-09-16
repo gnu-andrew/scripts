@@ -3,14 +3,26 @@
 . $HOME/projects/scripts/functions
 
 # Don't use Gentoo's dumb variables
-JAVAC=
-JAVACFLAGS=
-JAVA_HOME=
-JDK_HOME=
+#JAVAC=
+#JAVACFLAGS=
+#JAVA_HOME=
+#JDK_HOME=
 
+CFLAGS="-O2 -pipe -march=core2 -ggdb -mno-tls-direct-seg-refs"
 ICEDTEA_BUILD_OPT="--with-openjdk=${ICEDTEA6_INSTALL}"
-VERCHECK=$(echo $0|grep 'icedtea6')
-if [ $VERCHECK ]; then
+if [ $(echo $0|grep 'icedtea6-1.5') ]; then
+    VERSION=icedtea6;
+    BUILD=icedtea6-1.5;
+    OPENJDK_ZIP=$OPENJDK6_ZIP;
+    OPENJDK_DIR=$OPENJDK6_DIR;
+    RELEASE="1.5"
+elif [ $(echo $0|grep 'icedtea6-1.6') ]; then
+    VERSION=icedtea6;
+    BUILD=icedtea6-1.6;
+    OPENJDK_ZIP=$OPENJDK6_ZIP;
+    OPENJDK_DIR=$OPENJDK6_DIR;
+    RELEASE="1.6"
+elif [ $(echo $0|grep 'icedtea6') ]; then
     VERSION=icedtea6;
     BUILD=icedtea6;
     OPENJDK_ZIP=$OPENJDK6_ZIP;
@@ -91,6 +103,18 @@ elif [ $(echo $0|grep 'icedtea-1.9') ]; then
     OPENJDK_ZIP=$OPENJDK7_ZIP;
     OPENJDK_DIR=$OPENJDK7_DIR;
     RELEASE="1.9"
+elif [ $(echo $0|grep 'addvm6') ]; then
+    VERSION=icedtea6;
+    BUILD=addvm-icedtea6;
+    OPENJDK_ZIP=$OPENJDK6_ZIP;
+    OPENJDK_DIR=$OPENJDK6_DIR;
+    OPTS="--with-additional-vms=cacao,zero";
+elif [ $(echo $0|grep 'addvm') ]; then
+    VERSION=icedtea7;
+    BUILD=addvm-icedtea7;
+    OPENJDK_ZIP=$OPENJDK7_ZIP;
+    OPENJDK_DIR=$OPENJDK7_DIR;
+    OPTS="--with-additional-vms=cacao,zero";
 else
     VERSION=icedtea7;
     BUILD=icedtea7;
@@ -243,6 +267,14 @@ else
     JAVAH_OPTION="--with-javah=${ICEDTEA_JAVAH}";
 fi
 
+if test x${ICEDTEA_WITH_NSS} = "xyes"; then
+    NSS_OPTION="--enable-nss";
+fi
+
+if test x${ICEDTEA6_WITH_NIO2} = "xyes"; then
+    NIO2_OPTION="--enable-nio2";
+fi
+
 RT_JAR=${CLASSPATH_INSTALL}/share/classpath/glibj.zip
 
 # Old
@@ -255,7 +287,7 @@ CONFIG_OPTS="--with-parallel-jobs=${PARALLEL_JOBS} \
     ${GCJ_OPTION} ${HOTSPOT_ZIP_OPTION} ${CORBA_ZIP_OPTION} \
     ${JAXP_ZIP_OPTION} ${JAXWS_ZIP_OPTION} ${JDK_ZIP_OPTION} ${LANGTOOLS_ZIP_OPTION} ${NIMBUS_OPTION} \
     ${SYSTEMTAP_OPTION} --with-abs-install-dir=${INSTALL_DIR} ${NIMBUS_GEN_OPTION} ${XRENDER_OPTION} \
-    ${PLUGIN_OPTION} ${NEW_PLUGIN_OPTION} ${CACAO_ZIP_OPTION} ${OPTS}"
+    ${PLUGIN_OPTION} ${NEW_PLUGIN_OPTION} ${CACAO_ZIP_OPTION} ${NSS_OPTION} ${NIO2_OPTION} ${OPTS}"
 
 (PATH=/bin:/usr/bin ./autogen.sh &&
 cd ${BUILD_DIR} &&
@@ -265,7 +297,7 @@ if test "x$1" = "xrelease"; then
 elif test "$BUILD" = "zero"; then
     make icedtea-ecj && echo DONE
 else
-    make && 
+    CFLAGS=${CFLAGS} make && 
     rm -rf ${INSTALL_DIR}/${BUILD} &&
     mv ${BUILD_DIR}/openjdk${DIR}/build/${OS}-${ARCH}/j2sdk-image ${INSTALL_DIR}/${BUILD} &&
     echo DONE

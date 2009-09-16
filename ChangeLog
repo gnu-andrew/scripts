@@ -1,3 +1,13 @@
+2009-09-17  Andrew John Hughes  <gnu_andrew@member.fsf.org>
+
+	* icedtea.sh: Support NIO2,
+	NSS, multiple VMs, passing CFLAGS
+	* dynamite.sh: New.
+	* environment.in: Support DynamiTE
+	and IcedTea NSS & NIO2.
+	* openjdk.sh: Support QUIETLY
+	and NSS vars.
+	
 2009-07-30  Andrew John Hughes  <gnu_andrew@member.fsf.org>
 
 	* environment.in,

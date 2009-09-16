@@ -31,6 +31,10 @@ LANG=C make ALT_BOOTDIR=/usr/lib/icedtea6 \
     ZERO_BITSPERWORD=64 \
     ZERO_ENDIANNESS=little \
     ZERO_ARCHFLAG=-m64 \
-    LIBFFI_LIBS="-lffi"
+    LIBFFI_LIBS="-lffi" \
+    QUIETLY="" \
+    USE_SYSTEM_NSS=true \
+    SYSTEM_NSS_DIR=/usr/lib64/nss \
+    SYSTEM_NSPR_DIR=/usr/lib64/nspr
 #    GENSRCDIR=/tmp/generated
 ) 2>&1 | tee errors
