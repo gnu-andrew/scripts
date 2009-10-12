@@ -25,7 +25,7 @@ LANG=C make ALT_BOOTDIR=/usr/lib/icedtea6 \
     HOTSPOT_BUILD_JOBS=$PARALLEL_JOBS \
     ALT_JIBX_LIBS_PATH=${OPENJDK_HOME}/jibx \
     ANT=/usr/bin/ant \
-    CORE_BUILD=true ZERO_BUILD=true \
+    ZERO_BUILD=true \
     ZERO_LIBARCH=amd64 \
     ZERO_ARCHDEF=AMD64 \
     ZERO_BITSPERWORD=64 \
@@ -33,8 +33,7 @@ LANG=C make ALT_BOOTDIR=/usr/lib/icedtea6 \
     ZERO_ARCHFLAG=-m64 \
     LIBFFI_LIBS="-lffi" \
     QUIETLY="" \
-    USE_SYSTEM_NSS=true \
-    SYSTEM_NSS_DIR=/usr/lib64/nss \
-    SYSTEM_NSPR_DIR=/usr/lib64/nspr
+    DISABLE_INTREE_EC=true \
+    ALT_DROP_DIR=/home/downloads/java/drops
 #    GENSRCDIR=/tmp/generated
 ) 2>&1 | tee errors

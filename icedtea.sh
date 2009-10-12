@@ -294,7 +294,7 @@ cd ${BUILD_DIR} &&
 $ICEDTEA_HOME/configure ${CONFIG_OPTS}
 if test "x$1" = "xrelease"; then
     DISTCHECK_CONFIGURE_FLAGS=${CONFIG_OPTS} make distcheck;
-elif test "$BUILD" = "zero"; then
+elif echo "$BUILD" | grep "zero"; then
     make icedtea-ecj && echo DONE
 else
     CFLAGS=${CFLAGS} make && 

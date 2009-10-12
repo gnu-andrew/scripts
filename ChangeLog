@@ -1,3 +1,10 @@
+2009-10-12  Andrew John Hughes  <gnu_andrew@member.fsf.org>
+
+	* icedtea.sh: Don't check 'zero' exactly,
+	grep for it to match zero7.
+	* openjdk.sh: Remove redundant NSS options,
+	add DISABLE_INTREE_EC and ALT_DROP_DIR.
+
 2009-09-17  Andrew John Hughes  <gnu_andrew@member.fsf.org>
 
 	* icedtea.sh: Support NIO2,
