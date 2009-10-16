@@ -1,5 +1,10 @@
 2009-10-16  Andrew John Hughes  <gnu_andrew@member.fsf.org>
 
+	* dynamite-recompile.sh:
+	Handle DynamiTE recompilation.
+	
+2009-10-16  Andrew John Hughes  <gnu_andrew@member.fsf.org>
+
 	* dynamite.sh: Allow debug level to be
 	specified.
 	* environment.in: Updated.
