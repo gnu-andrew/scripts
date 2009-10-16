@@ -15,7 +15,7 @@ create_working_dir
 rm -rf dynamite
 mkdir dynamite
 (cd dynamite &&
-$DYNAMITE_HOME/configure --prefix=$DYNAMITE_INSTALL --with-debug-level=CONFIG &&
+$DYNAMITE_HOME/configure --prefix=$DYNAMITE_INSTALL --with-debug-level=$DYNAMITE_DEBUG_LEVEL &&
 make all install && echo DONE) 2>&1 | tee $DYNAMITE_HOME/errors
 
  

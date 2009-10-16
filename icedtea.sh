@@ -162,6 +162,15 @@ else
     if test x${HOTSPOT_ZIP} != "x"; then
 	HOTSPOT_ZIP_OPTION="--with-hotspot-src-zip=${HOTSPOT_ZIP}";
     fi
+    if test x${JAXP_DROP_ZIP} != "x"; then
+	JAXP_DROP_ZIP_OPTION="--with-jaxp-drop-zip=${JAXP_DROP_ZIP}";
+    fi
+    if test x${JAF_DROP_ZIP} != "x"; then
+	JAF_DROP_ZIP_OPTION="--with-jaf-drop-zip=${JAF_DROP_ZIP}";
+    fi
+    if test x${JAXWS_DROP_ZIP} != "x"; then
+	JAXWS_DROP_ZIP_OPTION="--with-jaxws-drop-zip=${JAXWS_DROP_ZIP}";
+    fi
 fi
 
 if test x${CACAO_ZIP} != "x"; then
@@ -287,7 +296,8 @@ CONFIG_OPTS="--with-parallel-jobs=${PARALLEL_JOBS} \
     ${GCJ_OPTION} ${HOTSPOT_ZIP_OPTION} ${CORBA_ZIP_OPTION} \
     ${JAXP_ZIP_OPTION} ${JAXWS_ZIP_OPTION} ${JDK_ZIP_OPTION} ${LANGTOOLS_ZIP_OPTION} ${NIMBUS_OPTION} \
     ${SYSTEMTAP_OPTION} --with-abs-install-dir=${INSTALL_DIR} ${NIMBUS_GEN_OPTION} ${XRENDER_OPTION} \
-    ${PLUGIN_OPTION} ${NEW_PLUGIN_OPTION} ${CACAO_ZIP_OPTION} ${NSS_OPTION} ${NIO2_OPTION} ${OPTS}"
+    ${PLUGIN_OPTION} ${NEW_PLUGIN_OPTION} ${CACAO_ZIP_OPTION} ${NSS_OPTION} ${NIO2_OPTION} ${OPTS} \
+    ${JAXP_DROP_ZIP_OPTION} ${JAF_DROP_ZIP_OPTION} ${JAXWS_DROP_ZIP_OPTION}"
 
 (PATH=/bin:/usr/bin ./autogen.sh &&
 cd ${BUILD_DIR} &&
