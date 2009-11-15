@@ -1,3 +1,20 @@
+2009-11-15  Andrew John Hughes  <gnu_andrew@member.fsf.org>
+
+	* environment.in:
+	Add MUSIK_INSTALL and HOTSPOT{6,7}_BUILD.
+	* icedtea.sh:
+	Uncomment JAVA_HOME unsetting, still needed by IcedTea6
+	1.5 and 1.6 builds.  Support ICEDTEA6_WITH_NIO2 and
+	HOTSPOT6_BUILD for IcedTea6 in IcedTea6 conditional.
+	Support HOTSPOT7_BUILD in IcedTea7 conditional.  Add
+	HOTSPOT_BUILD_OPTION to configure call.  Rename
+	icedtea-ecj to icedtea-boot.  Symlink install directory
+	back to version in the build for jtreg.
+	* openjdk.sh:
+	Drop ALT_JIBX_LIBS_PATH, rename ZERO_BITSPERWORD
+	to ARCH_DATA_MODEL and ALT_DROP_DIR to ALT_DROPS_DIR.
+	Use system install of ICEDTEA6.
+	
 2009-10-16  Andrew John Hughes  <gnu_andrew@member.fsf.org>
 
 	* dynamite-recompile.sh:

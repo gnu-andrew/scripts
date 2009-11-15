@@ -5,7 +5,7 @@
 # Don't use Gentoo's dumb variables
 #JAVAC=
 #JAVACFLAGS=
-#JAVA_HOME=
+JAVA_HOME=
 #JDK_HOME=
 
 CFLAGS="-O2 -pipe -march=core2 -ggdb -mno-tls-direct-seg-refs"
@@ -143,6 +143,12 @@ if test x${VERSION} = "xicedtea6"; then
     if test x${HOTSPOT6_ZIP} != "x"; then
 	HOTSPOT_ZIP_OPTION="--with-hotspot-src-zip=${HOTSPOT6_ZIP}";
     fi
+    if test x${ICEDTEA6_WITH_NIO2} = "xyes"; then
+	NIO2_OPTION="--enable-nio2";
+    fi
+    if test x${HOTSPOT6_BUILD} != "x"; then
+	HOTSPOT_BUILD_OPTION="--with-hotspot-build=${HOTSPOT6_BUILD}";
+    fi
 else
     if test x${CORBA_ZIP} != "x"; then
 	CORBA_ZIP_OPTION="--with-corba-src-zip=${CORBA_ZIP}";
@@ -171,10 +177,9 @@ else
     if test x${JAXWS_DROP_ZIP} != "x"; then
 	JAXWS_DROP_ZIP_OPTION="--with-jaxws-drop-zip=${JAXWS_DROP_ZIP}";
     fi
-fi
-
-if test x${CACAO_ZIP} != "x"; then
-    CACAO_ZIP_OPTION="--with-cacao-src-zip=${CACAO_ZIP}";
+    if test x${HOTSPOT7_BUILD} != "x"; then
+	HOTSPOT_BUILD_OPTION="--with-hotspot-build=${HOTSPOT7_BUILD}";
+    fi
 fi
 
 echo "Building ${ICEDTEA_HOME} in ${BUILD_DIR}..."
@@ -280,10 +285,6 @@ if test x${ICEDTEA_WITH_NSS} = "xyes"; then
     NSS_OPTION="--enable-nss";
 fi
 
-if test x${ICEDTEA6_WITH_NIO2} = "xyes"; then
-    NIO2_OPTION="--enable-nio2";
-fi
-
 RT_JAR=${CLASSPATH_INSTALL}/share/classpath/glibj.zip
 
 # Old
@@ -297,7 +298,7 @@ CONFIG_OPTS="--with-parallel-jobs=${PARALLEL_JOBS} \
     ${JAXP_ZIP_OPTION} ${JAXWS_ZIP_OPTION} ${JDK_ZIP_OPTION} ${LANGTOOLS_ZIP_OPTION} ${NIMBUS_OPTION} \
     ${SYSTEMTAP_OPTION} --with-abs-install-dir=${INSTALL_DIR} ${NIMBUS_GEN_OPTION} ${XRENDER_OPTION} \
     ${PLUGIN_OPTION} ${NEW_PLUGIN_OPTION} ${CACAO_ZIP_OPTION} ${NSS_OPTION} ${NIO2_OPTION} ${OPTS} \
-    ${JAXP_DROP_ZIP_OPTION} ${JAF_DROP_ZIP_OPTION} ${JAXWS_DROP_ZIP_OPTION}"
+    ${JAXP_DROP_ZIP_OPTION} ${JAF_DROP_ZIP_OPTION} ${JAXWS_DROP_ZIP_OPTION} ${HOTSPOT_BUILD_OPTION}"
 
 (PATH=/bin:/usr/bin ./autogen.sh &&
 cd ${BUILD_DIR} &&
@@ -305,10 +306,11 @@ $ICEDTEA_HOME/configure ${CONFIG_OPTS}
 if test "x$1" = "xrelease"; then
     DISTCHECK_CONFIGURE_FLAGS=${CONFIG_OPTS} make distcheck;
 elif echo "$BUILD" | grep "zero"; then
-    make icedtea-ecj && echo DONE
+    make icedtea-boot && echo DONE
 else
     CFLAGS=${CFLAGS} make && 
     rm -rf ${INSTALL_DIR}/${BUILD} &&
     mv ${BUILD_DIR}/openjdk${DIR}/build/${OS}-${ARCH}/j2sdk-image ${INSTALL_DIR}/${BUILD} &&
+    ln -s ${INSTALL_DIR}/${BUILD} ${BUILD_DIR}/openjdk${DIR}/build/${OS}-${ARCH}/j2sdk-image &&
     echo DONE
 fi) 2>&1 | tee $ICEDTEA_HOME/errors
