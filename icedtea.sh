@@ -255,10 +255,6 @@ if test x${ICEDTEA_WITH_NIMBUS} = "xno"; then
     NIMBUS_OPTION="--disable-nimbus";
 fi
 
-if test x${ICEDTEA_WITH_NIMBUS_GENERATION} = "xyes"; then
-    NIMBUS_GEN_OPTION="--enable-nimbus-generation";
-fi
-
 if test x${ICEDTEA_WITH_SYSTEMTAP} = "xyes"; then
     SYSTEMTAP_OPTION="--enable-systemtap";
 fi
