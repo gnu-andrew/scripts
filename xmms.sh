@@ -2,7 +2,7 @@
 
 . $HOME/projects/scripts/functions
 
-if [ ! -e $XMMS_HOME ]; then
+(if [ ! -e $XMMS_HOME ]; then
     cd `dirname $XMMS_HOME`;
     svn co https://xmmsroot2.svn.sourceforge.net/svnroot/xmmsroot2/xmms/trunk xmms;
     cd $XMMS_HOME;
@@ -14,8 +14,6 @@ fi
 create_working_dir
 rm -rf xmms
 mkdir xmms
-(cd xmms &&
+cd xmms &&
 $XMMS_HOME/configure --prefix=$XMMS_INSTALL &&
 make all install && echo DONE) 2>&1 | tee $XMMS_HOME/errors
-
- 

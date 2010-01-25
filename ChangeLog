@@ -1,3 +1,21 @@
+2010-01-25  Andrew John Hughes  <gnu_andrew@member.fsf.org>
+
+	* classpath.sh:
+	Log running of autogen.sh.
+	* icedtea.sh:
+	Use specific zips for release.  Only
+	use directory for hg branch.  Build cacao,shark
+	additional VMs rather than cacao,zero.  Support
+	the hg branch and OpenJDK6 drop zips.  Simplify
+	changing permissions on the build directory using
+	chmod -R u+w.  Always set path to LLVM.  Don't do
+	a full build for zero6 by default.
+	* jikesrvm.sh: Comment out CVS build.
+	* openjdk.sh: Add maximum warnings to JAVAC.
+	* xmms-recompile.sh: Don't do a clean.  No longer necessary
+	now Vorbis plugin issue is fixed.
+	* xmms.sh: Log all output.
+
 2009-11-15  Andrew John Hughes  <gnu_andrew@member.fsf.org>
 
 	* environment.in,

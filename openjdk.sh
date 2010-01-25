@@ -32,6 +32,7 @@ LANG=C make ALT_BOOTDIR=${SYSTEM_ICEDTEA6} \
     LIBFFI_LIBS="-lffi" \
     QUIETLY="" \
     DISABLE_INTREE_EC=true \
-    ALT_DROPS_DIR=/home/downloads/java/drops
+    ALT_DROPS_DIR=/home/downloads/java/drops \
+    JAVAC_MAX_WARNINGS=true
 #    GENSRCDIR=/tmp/generated
 ) 2>&1 | tee errors

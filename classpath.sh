@@ -60,9 +60,9 @@ if test "x${CLASSPATH_WITH_WERROR}" = "xno"; then
     WERROR_OPTION="--disable-Werror";
 fi
 
-./autogen.sh &&
+(./autogen.sh &&
 create_working_dir
-(rm -rf ${BUILD_DIR} &&
+rm -rf ${BUILD_DIR} &&
 mkdir ${BUILD_DIR} &&
 cd ${BUILD_DIR} &&
 JAVA="$VM" \

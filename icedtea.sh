@@ -13,20 +13,36 @@ ICEDTEA_BUILD_OPT="--with-openjdk=${ICEDTEA6_INSTALL}"
 if [ $(echo $0|grep 'icedtea6-1.5') ]; then
     VERSION=icedtea6;
     BUILD=icedtea6-1.5;
-    OPENJDK_ZIP=$OPENJDK6_ZIP;
-    OPENJDK_DIR=$OPENJDK6_DIR;
+    OPENJDK_ZIP=$OPENJDK6_B16_ZIP;
+    OPENJDK_DIR=$OPENJDK6_B16_DIR;
+    HOTSPOT6_ZIP=$HOTSPOT6_B14_ZIP;
     RELEASE="1.5"
 elif [ $(echo $0|grep 'icedtea6-1.6') ]; then
     VERSION=icedtea6;
     BUILD=icedtea6-1.6;
-    OPENJDK_ZIP=$OPENJDK6_ZIP;
-    OPENJDK_DIR=$OPENJDK6_DIR;
+    OPENJDK_ZIP=$OPENJDK6_B16_ZIP;
+    OPENJDK_DIR=$OPENJDK6_B16_DIR;
+    HOTSPOT6_ZIP=$HOTSPOT6_B14_ZIP;
     RELEASE="1.6"
+    OPTS="--enable-shark"
+    HOTSPOT6_BUILD="default"
+elif [ $(echo $0|grep 'icedtea6-1.7') ]; then
+    VERSION=icedtea6;
+    BUILD=icedtea6-1.7;
+    OPENJDK_ZIP=$OPENJDK6_B17_ZIP;
+    OPENJDK_DIR=$OPENJDK6_B17_DIR;
+    HOTSPOT6_ZIP=$HOTSPOT6_B16_ZIP;
+    RELEASE="1.7"
+elif [ $(echo $0|grep 'icedtea6-hg') ]; then
+    VERSION=icedtea6;
+    BUILD=icedtea6-hg;
+    OPENJDK_DIR=$OPENJDK6_DIR;
+    RELEASE="hg"
+    #OPTS="--with-openjdk"
 elif [ $(echo $0|grep 'icedtea6') ]; then
     VERSION=icedtea6;
     BUILD=icedtea6;
     OPENJDK_ZIP=$OPENJDK6_ZIP;
-    OPENJDK_DIR=$OPENJDK6_DIR;
 elif [ $(echo $0|grep 'cvmi') ]; then
     VERSION=icedtea7;
     BUILD=cvmi;
@@ -55,7 +71,6 @@ elif [ $(echo $0|grep 'zero6') ]; then
     VERSION=icedtea6;
     BUILD=zero6;
     OPENJDK_ZIP=$OPENJDK6_ZIP;
-    OPENJDK_DIR=$OPENJDK6_DIR;
     OPTS="--enable-zero";
 elif [ $(echo $0|grep 'zero') ]; then
     VERSION=icedtea7;
@@ -67,7 +82,6 @@ elif [ $(echo $0|grep 'shark6') ]; then
     VERSION=icedtea6;
     BUILD=shark6;
     OPENJDK_ZIP=$OPENJDK6_ZIP;
-    OPENJDK_DIR=$OPENJDK6_DIR;
 elif [ $(echo $0|grep 'shark') ]; then
     VERSION=icedtea7;
     BUILD=shark7;
@@ -77,7 +91,6 @@ elif [ $(echo $0|grep 'cacao6') ]; then
     VERSION=icedtea6;
     BUILD=cacao-icedtea6;
     OPENJDK_ZIP=$OPENJDK6_ZIP;
-    OPENJDK_DIR=$OPENJDK6_DIR;
     OPTS="--enable-cacao";
 elif [ $(echo $0|grep 'cacao') ]; then
     VERSION=icedtea7;
@@ -89,14 +102,13 @@ elif [ $(echo $0|grep 'no-bootstrap6') ]; then
     VERSION=icedtea6;
     BUILD=icedtea6-no-bootstrap;
     OPENJDK_ZIP=$OPENJDK6_ZIP;
-    OPENJDK_DIR=$OPENJDK6_DIR;
     OPTS=${ICEDTEA_BUILD_OPT};
 elif [ $(echo $0|grep 'no-bootstrap') ]; then
     VERSION=icedtea7;
     BUILD=icedtea7-no-bootstrap;
     OPENJDK_ZIP=$OPENJDK7_ZIP;
     OPENJDK_DIR=$OPENJDK7_DIR;
-    OPTS="--disable-bootstrap --with-jdk-home=${ICEDTEA6_INSTALL}";
+    OPTS="--disable-bootstrap --with-jdk-home=${SYSTEM_ICEDTEA6}";
 elif [ $(echo $0|grep 'icedtea-1.9') ]; then
     VERSION=icedtea7;
     BUILD=icedtea-1.9;
@@ -107,14 +119,13 @@ elif [ $(echo $0|grep 'addvm6') ]; then
     VERSION=icedtea6;
     BUILD=addvm-icedtea6;
     OPENJDK_ZIP=$OPENJDK6_ZIP;
-    OPENJDK_DIR=$OPENJDK6_DIR;
-    OPTS="--with-additional-vms=cacao,zero";
+    OPTS="--with-additional-vms=cacao,shark";
 elif [ $(echo $0|grep 'addvm') ]; then
     VERSION=icedtea7;
     BUILD=addvm-icedtea7;
     OPENJDK_ZIP=$OPENJDK7_ZIP;
     OPENJDK_DIR=$OPENJDK7_DIR;
-    OPTS="--with-additional-vms=cacao,zero";
+    OPTS="--with-additional-vms=cacao,shark";
 else
     VERSION=icedtea7;
     BUILD=icedtea7;
@@ -125,6 +136,7 @@ fi
 
 BUILD_DIR=${WORKING_DIR}/${BUILD}
 ICEDTEA_ROOT="http://icedtea.classpath.org/hg"
+ANDREW_ROOT="http://icedtea.classpath.org/people/andrew"
 
 # Dead with b16
 #if test x${VERSION} = "xicedtea6"; then
@@ -134,6 +146,9 @@ ICEDTEA_ROOT="http://icedtea.classpath.org/hg"
 if test "x${RELEASE}" = "x"; then
     ICEDTEA_URL=${ICEDTEA_ROOT}/${VERSION};
     ICEDTEA_HOME=${OPENJDK_HOME}/${VERSION};
+elif test "x${RELEASE}" = "xhg"; then
+    ICEDTEA_URL=${ANDREW_ROOT}/${VERSION}-${RELEASE};
+    ICEDTEA_HOME=${OPENJDK_HOME}/${VERSION}-${RELEASE};
 else
     ICEDTEA_URL=${ICEDTEA_ROOT}/release/${VERSION}-${RELEASE}
     ICEDTEA_HOME=${OPENJDK_HOME}/${VERSION}-${RELEASE}
@@ -145,6 +160,15 @@ if test x${VERSION} = "xicedtea6"; then
     fi
     if test x${ICEDTEA6_WITH_NIO2} = "xyes"; then
 	NIO2_OPTION="--enable-nio2";
+    fi
+    if test x${JAXP6_DROP_ZIP} != "x"; then
+	JAXP_DROP_ZIP_OPTION="--with-jaxp-drop-zip=${JAXP6_DROP_ZIP}";
+    fi
+    if test x${JAF6_DROP_ZIP} != "x"; then
+	JAF_DROP_ZIP_OPTION="--with-jaf-drop-zip=${JAF6_DROP_ZIP}";
+    fi
+    if test x${JAXWS6_DROP_ZIP} != "x"; then
+	JAXWS_DROP_ZIP_OPTION="--with-jaxws-drop-zip=${JAXWS6_DROP_ZIP}";
     fi
     if test x${HOTSPOT6_BUILD} != "x"; then
 	HOTSPOT_BUILD_OPTION="--with-hotspot-build=${HOTSPOT6_BUILD}";
@@ -168,14 +192,14 @@ else
     if test x${HOTSPOT_ZIP} != "x"; then
 	HOTSPOT_ZIP_OPTION="--with-hotspot-src-zip=${HOTSPOT_ZIP}";
     fi
-    if test x${JAXP_DROP_ZIP} != "x"; then
-	JAXP_DROP_ZIP_OPTION="--with-jaxp-drop-zip=${JAXP_DROP_ZIP}";
+    if test x${JAXP7_DROP_ZIP} != "x"; then
+	JAXP_DROP_ZIP_OPTION="--with-jaxp-drop-zip=${JAXP7_DROP_ZIP}";
     fi
-    if test x${JAF_DROP_ZIP} != "x"; then
-	JAF_DROP_ZIP_OPTION="--with-jaf-drop-zip=${JAF_DROP_ZIP}";
+    if test x${JAF7_DROP_ZIP} != "x"; then
+	JAF_DROP_ZIP_OPTION="--with-jaf-drop-zip=${JAF7_DROP_ZIP}";
     fi
-    if test x${JAXWS_DROP_ZIP} != "x"; then
-	JAXWS_DROP_ZIP_OPTION="--with-jaxws-drop-zip=${JAXWS_DROP_ZIP}";
+    if test x${JAXWS7_DROP_ZIP} != "x"; then
+	JAXWS_DROP_ZIP_OPTION="--with-jaxws-drop-zip=${JAXWS7_DROP_ZIP}";
     fi
     if test x${HOTSPOT7_BUILD} != "x"; then
 	HOTSPOT_BUILD_OPTION="--with-hotspot-build=${HOTSPOT7_BUILD}";
@@ -184,11 +208,10 @@ fi
 
 echo "Building ${ICEDTEA_HOME} in ${BUILD_DIR}..."
 
-if test x$1 = "x"; then
+if test x$1 != "xquick"; then
     echo "Building from scratch"
     if [ -e ${BUILD_DIR} ]; then
-	find ${BUILD_DIR}/${BUILD}-* -type f -exec chmod 640 '{}' ';' \
-	    -o -type d -exec chmod 750 '{}' ';';
+	chmod -R u+w ${BUILD_DIR}
 	rm -rf ${BUILD_DIR};
     fi
 fi
@@ -223,9 +246,9 @@ if test x${CACAO_ZIP} != "x"; then
     CACAO_ZIP_OPTION="--with-cacao-src-zip=${CACAO_ZIP}";
 fi
 
-if test x${ICEDTEA_WITH_SHARK} = "xyes" || [ $(echo ${BUILD}|grep 'shark') ]; then
+if test x${ICEDTEA_WITH_SHARK} = "xyes" \
+    || [ $(echo ${BUILD}|grep 'shark') ]; then
     SHARK_OPTION="--enable-shark";
-    PATH=${LLVM_INSTALL}/bin:$PATH
 fi
 
 if test x${ICEDTEA_WITH_PULSEAUDIO} = "xyes"; then
@@ -295,12 +318,15 @@ CONFIG_OPTS="--with-parallel-jobs=${PARALLEL_JOBS} \
     ${SYSTEMTAP_OPTION} --with-abs-install-dir=${INSTALL_DIR} ${NIMBUS_GEN_OPTION} ${XRENDER_OPTION} \
     ${PLUGIN_OPTION} ${NEW_PLUGIN_OPTION} ${CACAO_ZIP_OPTION} ${NSS_OPTION} ${NIO2_OPTION} ${OPTS} \
     ${JAXP_DROP_ZIP_OPTION} ${JAF_DROP_ZIP_OPTION} ${JAXWS_DROP_ZIP_OPTION} ${HOTSPOT_BUILD_OPTION}"
+PATH=${LLVM_INSTALL}/bin:$PATH
 
 (PATH=/bin:/usr/bin ./autogen.sh &&
 cd ${BUILD_DIR} &&
 $ICEDTEA_HOME/configure ${CONFIG_OPTS}
 if test "x$1" = "xrelease"; then
     DISTCHECK_CONFIGURE_FLAGS=${CONFIG_OPTS} make distcheck;
+elif echo "$BUILD" | grep "zero6"; then
+    make icedtea-ecj && echo DONE
 elif echo "$BUILD" | grep "zero"; then
     make icedtea-boot && echo DONE
 else
