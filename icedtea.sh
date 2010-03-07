@@ -24,7 +24,6 @@ elif [ $(echo $0|grep 'icedtea6-1.6') ]; then
     OPENJDK_DIR=$OPENJDK6_B16_DIR;
     HOTSPOT6_ZIP=$HOTSPOT6_B14_ZIP;
     RELEASE="1.6"
-    OPTS="--enable-shark"
     HOTSPOT6_BUILD="default"
 elif [ $(echo $0|grep 'icedtea6-1.7') ]; then
     VERSION=icedtea6;
@@ -37,6 +36,7 @@ elif [ $(echo $0|grep 'icedtea6-hg') ]; then
     VERSION=icedtea6;
     BUILD=icedtea6-hg;
     OPENJDK_DIR=$OPENJDK6_DIR;
+    JAXP6_DROP_ZIP=$JAXP6_HG_DROP_ZIP
     RELEASE="hg"
     #OPTS="--with-openjdk"
 elif [ $(echo $0|grep 'icedtea6') ]; then
@@ -102,7 +102,7 @@ elif [ $(echo $0|grep 'no-bootstrap6') ]; then
     VERSION=icedtea6;
     BUILD=icedtea6-no-bootstrap;
     OPENJDK_ZIP=$OPENJDK6_ZIP;
-    OPTS=${ICEDTEA_BUILD_OPT};
+    OPTS="${ICEDTEA_BUILD_OPT}";
 elif [ $(echo $0|grep 'no-bootstrap') ]; then
     VERSION=icedtea7;
     BUILD=icedtea7-no-bootstrap;

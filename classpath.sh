@@ -69,7 +69,7 @@ JAVA="$VM" \
 ${CP_HOME}/configure --prefix=${INSTALL_DIR} --enable-examples \
     ${WERROR_OPTION} --with-ecj-jar=${ECJ_JAR} ${GSTREAMER_OPTION} \
     ${QT_OPTION} --with-javah=${GCC_INSTALL}/bin/gjavah \
-    --with-fastjar=${GCC_INSTALL}/bin/gjar \
+    --with-jar=${GCC_INSTALL}/bin/gjar \
     ${TOOL_OPTION} ${DOCS_OPTION} ${PLUGIN_OPTION} &&
 if test x$1 != "x"; then
     make distcheck && echo DONE;
