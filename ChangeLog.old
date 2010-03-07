@@ -3,7 +3,7 @@
 	* trim.sh: Add script to build trim.
 	* trim-recompile.sh: Recompilation script for trim.
 	* environment.in: Add TRIM_HOME and TRIM_INSTALL.
-	
+
 2010-01-25  Andrew John Hughes  <gnu_andrew@member.fsf.org>
 
 	* classpath.sh:
