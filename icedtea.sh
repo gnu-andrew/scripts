@@ -3,20 +3,28 @@
 . $HOME/projects/scripts/functions
 
 # Don't use Gentoo's dumb variables
-#JAVAC=
-#JAVACFLAGS=
+JAVAC=
+JAVACFLAGS=
 JAVA_HOME=
-#JDK_HOME=
+JDK_HOME=
 
 CFLAGS="-O2 -pipe -march=core2 -ggdb -mno-tls-direct-seg-refs"
 ICEDTEA_BUILD_OPT="--with-openjdk=${ICEDTEA6_INSTALL}"
-if [ $(echo $0|grep 'icedtea6-1.5') ]; then
+if [ $(echo $0|grep 'icedtea6-1.2') ]; then
+    VERSION=icedtea6;
+    BUILD=icedtea6-1.2;
+    OPENJDK_ZIP=$OPENJDK6_B09_ZIP;
+    OPENJDK_DIR=$OPENJDK6_B09_DIR;
+    RELEASE="1.2"
+    OPTS="--disable-plugin --with-gcj-home=${SYSTEM_GCJ}"
+elif [ $(echo $0|grep 'icedtea6-1.5') ]; then
     VERSION=icedtea6;
     BUILD=icedtea6-1.5;
     OPENJDK_ZIP=$OPENJDK6_B16_ZIP;
     OPENJDK_DIR=$OPENJDK6_B16_DIR;
     HOTSPOT6_ZIP=$HOTSPOT6_B14_ZIP;
     RELEASE="1.5"
+    OPTS="--disable-plugin"
 elif [ $(echo $0|grep 'icedtea6-1.6') ]; then
     VERSION=icedtea6;
     BUILD=icedtea6-1.6;
@@ -24,7 +32,7 @@ elif [ $(echo $0|grep 'icedtea6-1.6') ]; then
     OPENJDK_DIR=$OPENJDK6_B16_DIR;
     HOTSPOT6_ZIP=$HOTSPOT6_B14_ZIP;
     RELEASE="1.6"
-    HOTSPOT6_BUILD="default"
+    OPTS="--disable-plugin --disable-npplugin"
 elif [ $(echo $0|grep 'icedtea6-1.7') ]; then
     VERSION=icedtea6;
     BUILD=icedtea6-1.7;
@@ -288,10 +296,6 @@ fi
 
 if test x${ICEDTEA_WITH_PLUGIN} = "xno"; then
     PLUGIN_OPTION="--disable-plugin";
-fi
-
-if test x${ICEDTEA_WITH_NEW_PLUGIN} = "xyes"; then
-    NEW_PLUGIN_OPTION="--enable-npplugin";
 fi
 
 if test x${ICEDTEA_JAVAH} = "x"; then

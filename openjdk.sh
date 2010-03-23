@@ -11,6 +11,7 @@ LD_LIBRARY_PATH=
 CLASSPATH=
 
 # Add Zero support
+if test "x${OPENJDK_WITH_ZERO}" = "xyes"; then
 ZERO_SUPPORT=\
     ZERO_BUILD=true \
     ZERO_LIBARCH=amd64 \
@@ -19,6 +20,7 @@ ZERO_SUPPORT=\
     ZERO_ENDIANNESS=little \
     ZERO_ARCHFLAG=-m64 \
     LIBFFI_LIBS="-lffi"
+fi
 
 # First argument should be directory
 BUILD_DIR=$1
@@ -35,7 +37,8 @@ LANG=C make ALT_BOOTDIR=${SYSTEM_ICEDTEA6} \
     ANT=/usr/bin/ant \
     QUIETLY="" \
     DISABLE_INTREE_EC=true \
-    ALT_DROPS_DIR=/home/downloads/java/drops
+    ALT_DROPS_DIR=/home/downloads/java/drops \
+    ${ZERO_SUPPORT}
 #    JAVAC_MAX_WARNINGS=true
 #    GENSRCDIR=/tmp/generated
 ) 2>&1 | tee errors
