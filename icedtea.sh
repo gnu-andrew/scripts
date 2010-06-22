@@ -33,6 +33,7 @@ elif [ $(echo $0|grep 'icedtea6-1.6') ]; then
     HOTSPOT6_ZIP=$HOTSPOT6_B14_ZIP;
     RELEASE="1.6"
     OPTS="--disable-plugin --disable-npplugin"
+    HOTSPOT6_BUILD=$HOTSPOT6_1_6_BUILD
 elif [ $(echo $0|grep 'icedtea6-1.7') ]; then
     VERSION=icedtea6;
     BUILD=icedtea6-1.7;
@@ -40,13 +41,24 @@ elif [ $(echo $0|grep 'icedtea6-1.7') ]; then
     OPENJDK_DIR=$OPENJDK6_B17_DIR;
     HOTSPOT6_ZIP=$HOTSPOT6_B16_ZIP;
     RELEASE="1.7"
+elif [ $(echo $0|grep 'icedtea6-1.8') ]; then
+    VERSION=icedtea6;
+    BUILD=icedtea6-1.8;
+    OPENJDK_ZIP=$OPENJDK6_B18_ZIP;
+    OPENJDK_DIR=$OPENJDK6_B18_DIR;
+    HOTSPOT6_ZIP=$HOTSPOT6_B16_ZIP;
+    RELEASE="1.8"
 elif [ $(echo $0|grep 'icedtea6-hg') ]; then
     VERSION=icedtea6;
     BUILD=icedtea6-hg;
     OPENJDK_DIR=$OPENJDK6_DIR;
     JAXP6_DROP_ZIP=$JAXP6_HG_DROP_ZIP
+    JAXWS6_DROP_ZIP=$JAXWS6_HG_DROP_ZIP
+    JAF6_DROP_ZIP=$JAF6_HG_DROP_ZIP
     RELEASE="hg"
-    #OPTS="--with-openjdk"
+    HOTSPOT6_BUILD=$HOTSPOT6_HG_BUILD
+    HOTSPOT6_ZIP=$HOTSPOT6_HG_ZIP
+    OPTS="--with-openjdk --enable-zero"
 elif [ $(echo $0|grep 'icedtea6') ]; then
     VERSION=icedtea6;
     BUILD=icedtea6;
@@ -181,6 +193,9 @@ if test x${VERSION} = "xicedtea6"; then
     if test x${HOTSPOT6_BUILD} != "x"; then
 	HOTSPOT_BUILD_OPTION="--with-hotspot-build=${HOTSPOT6_BUILD}";
     fi
+    if test x${CACAO6_ZIP} != "x"; then
+	CACAO_ZIP_OPTION="--with-cacao-src-zip=${CACAO6_ZIP}";
+    fi
 else
     if test x${CORBA_ZIP} != "x"; then
 	CORBA_ZIP_OPTION="--with-corba-src-zip=${CORBA_ZIP}";
@@ -211,6 +226,9 @@ else
     fi
     if test x${HOTSPOT7_BUILD} != "x"; then
 	HOTSPOT_BUILD_OPTION="--with-hotspot-build=${HOTSPOT7_BUILD}";
+    fi
+    if test x${CACAO7_ZIP} != "x"; then
+	CACAO_ZIP_OPTION="--with-cacao-src-zip=${CACAO7_ZIP}";
     fi
 fi
 
@@ -248,10 +266,6 @@ fi
 
 if test x${ICEDTEA_WITH_CACAO} = "xyes"; then
     CACAO_OPTION="--enable-cacao";
-fi
-
-if test x${CACAO_ZIP} != "x"; then
-    CACAO_ZIP_OPTION="--with-cacao-src-zip=${CACAO_ZIP}";
 fi
 
 if test x${ICEDTEA_WITH_SHARK} = "xyes" \
@@ -334,9 +348,14 @@ elif echo "$BUILD" | grep "zero6"; then
 elif echo "$BUILD" | grep "zero"; then
     make icedtea-boot && echo DONE
 else
-    CFLAGS=${CFLAGS} make && 
+    CFLAGS=${CFLAGS} make && echo COMPILED &&
     rm -rf ${INSTALL_DIR}/${BUILD} &&
-    mv ${BUILD_DIR}/openjdk${DIR}/build/${OS}-${ARCH}/j2sdk-image ${INSTALL_DIR}/${BUILD} &&
-    ln -s ${INSTALL_DIR}/${BUILD} ${BUILD_DIR}/openjdk${DIR}/build/${OS}-${ARCH}/j2sdk-image &&
+    (if [ -e ${BUILD_DIR}/openjdk.build ] ; then
+	mv ${BUILD_DIR}/openjdk.build/j2sdk-image ${INSTALL_DIR}/${BUILD} &&
+	ln -s ${INSTALL_DIR}/${BUILD} ${BUILD_DIR}/openjdk.build/j2sdk-image
+    else
+	mv ${BUILD_DIR}/openjdk/build/${OS}-${JDK_ARCH}/j2sdk-image ${INSTALL_DIR}/${BUILD} &&
+	ln -s ${INSTALL_DIR}/${BUILD} ${BUILD_DIR}/openjdk/build/${OS}-${JDK_ARCH}/j2sdk-image
+    fi) &&
     echo DONE
 fi) 2>&1 | tee $ICEDTEA_HOME/errors

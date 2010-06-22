@@ -52,8 +52,8 @@ if test "x${CLASSPATH_WITH_DOCS}" = "xyes"; then
     DOCS_OPTION="--with-gjdoc";
 fi
 
-if test "x${CLASSPATH_WITH_PLUGIN}" = "xno"; then
-    PLUGIN_OPTION="--disable-plugin";
+if test "x${CLASSPATH_WITH_PLUGIN}" = "xyes"; then
+    PLUGIN_OPTION="--enable-plugin";
 fi
 
 if test "x${CLASSPATH_WITH_WERROR}" = "xno"; then
@@ -68,9 +68,7 @@ cd ${BUILD_DIR} &&
 JAVA="$VM" \
 ${CP_HOME}/configure --prefix=${INSTALL_DIR} --enable-examples \
     ${WERROR_OPTION} --with-ecj-jar=${ECJ_JAR} ${GSTREAMER_OPTION} \
-    ${QT_OPTION} --with-javah=${GCC_INSTALL}/bin/gjavah \
-    --with-jar=${GCC_INSTALL}/bin/gjar \
-    ${TOOL_OPTION} ${DOCS_OPTION} ${PLUGIN_OPTION} &&
+    ${QT_OPTION} ${TOOL_OPTION} ${DOCS_OPTION} ${PLUGIN_OPTION} &&
 if test x$1 != "x"; then
     make distcheck && echo DONE;
     #rm -rf $HOME/projects/httpdocs/classpath/doc;

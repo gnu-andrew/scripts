@@ -12,15 +12,22 @@ CLASSPATH=
 
 # Add Zero support
 if test "x${OPENJDK_WITH_ZERO}" = "xyes"; then
-ZERO_SUPPORT=\
+ZERO_SUPPORT="
     ZERO_BUILD=true \
-    ZERO_LIBARCH=amd64 \
-    ZERO_ARCHDEF=AMD64 \
-    ARCH_DATA_MODEL=64 \
-    ZERO_ENDIANNESS=little \
-    ZERO_ARCHFLAG=-m64 \
-    LIBFFI_LIBS="-lffi"
+    ZERO_LIBARCH=${JDK_ARCH} \
+    ZERO_ARCHDEF=$(echo ${JDK_ARCH}|tr a-z A-Z) \
+    ARCH_DATA_MODEL=${DATA_MODEL} \
+    ZERO_ENDIANNESS=${ENDIAN} \
+    ZERO_ARCHFLAG=-m${DATA_MODEL} \
+    LIBFFI_LIBS=-lffi"
 fi
+
+# Warnings?
+if test "x${OPENJDK_WITH_WARNINGS}" = "xyes"; then
+     WARNINGS="JAVAC_MAX_WARNINGS=true"
+fi
+
+#    GENSRCDIR=/tmp/generated
 
 # First argument should be directory
 BUILD_DIR=$1
@@ -38,7 +45,6 @@ LANG=C make ALT_BOOTDIR=${SYSTEM_ICEDTEA6} \
     QUIETLY="" \
     DISABLE_INTREE_EC=true \
     ALT_DROPS_DIR=/home/downloads/java/drops \
-    ${ZERO_SUPPORT}
-#    JAVAC_MAX_WARNINGS=true
-#    GENSRCDIR=/tmp/generated
+    ${ZERO_SUPPORT} \
+    ${WARNINGS} \
 ) 2>&1 | tee errors

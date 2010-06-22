@@ -16,7 +16,7 @@ create_working_dir
 rm -rf gcj
 mkdir gcj
 cd gcj
-(PATH=${GCJ_DEPENDENCIES}:${CLASSPATH_INSTALL}/bin:$PATH \
+(PATH=${GCJ_DEPENDENCIES}:$PATH && \
 $GCC_HOME/configure --prefix=$GCC_INSTALL --disable-multilib --enable-languages=c,c++,java \
     --enable-java-awt=gtk,xlib,qt --enable-gconf-peer --enable-gstreamer-peer --enable-gjdoc \
     --enable-java-maintainer-mode --with-java-home=$GCC_INSTALL --enable-java-home \

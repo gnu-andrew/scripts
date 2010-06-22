@@ -1,14 +1,14 @@
 # Configure to suit
-ARCH=amd64
-OS=linux
+ARCH=$(uname -m)
+OS=$(uname -s|tr A-Z a-z)
 CLASSPATH_HOME=$HOME/projects/classpath/classpath
 CLASSPATH_RELEASE_HOME=$HOME/projects/classpath/classpath.release
 ECJ_JAR=$HOME/bin/ecj.jar
-WORKING_DIR=$HOME/builder
-INSTALL_DIR=$HOME/build
-CLASSPATH_INSTALL=$INSTALL_DIR/classpath
+WORKING_DIR=${HOME}/builder
+INSTALL_DIR=${HOME}/build
+CLASSPATH_INSTALL=${INSTALL_DIR}/classpath
 CLASSPATH_RELEASE_INSTALL=$INSTALL_DIR/classpath.release
-PARALLEL_JOBS=5
+PARALLEL_JOBS=$(($(getconf _NPROCESSORS_ONLN) + 1))
 MAKE_OPTS="-j ${PARALLEL_JOBS}"
 JIKESRVM_HOME=$HOME/projects/classpath/jikesrvm
 JIKESRVM_CACHE=$JIKESRVM_HOME/cache
@@ -19,7 +19,7 @@ CACAO_INSTALL=$INSTALL_DIR/cacao
 ICEDTEA_HOME=$HOME/projects/openjdk/icedtea7
 BRANDWEG_HOME=$HOME/projects/classpath/brandweg
 GCC_HOME=$HOME/projects/classpath/gcj/sources/gcc
-GCC_INSTALL=$INSTALL_DIR/gcj 
+GCC_INSTALL=${INSTALL_DIR}/gcj 
 GCJ_DEPENDENCIES=$HOME/projects/classpath/gcj/dependencies
 GCJ_ECJ_JAR=${GCJ_DEPENDENCIES}/ecj.2007.jar
 XMMS_HOME=$HOME/projects/xmms
@@ -29,13 +29,14 @@ TRIM_INSTALL=$INSTALL_DIR/trim
 OPENJDK_HOME=$HOME/projects/openjdk
 OPENJDK7_DIR=/home/andrew/projects/openjdk/upstream/icedtea
 OPENJDK6_DIR=/home/andrew/projects/openjdk/upstream/jdk6
-ICEDTEA_WITH_CACAO="yes"
+ICEDTEA_WITH_CACAO="no"
 ICEDTEA_WITH_VISUALVM="no"
-ICEDTEA_WITH_SHARK="yes"
+ICEDTEA_WITH_SHARK="no"
 ICEDTEA_WITH_PULSEAUDIO="yes"
-ICEDTEA_WITH_NATIVE_ECJ="yes"
+ICEDTEA_WITH_NATIVE_ECJ="no"
 ICEDTEA_WITH_RHINO="yes"
 ICEDTEA_WITH_DOCS="yes"
+ICEDTEA_WITH_PLUGIN="yes"
 CLASSPATH_WITH_GSTREAMER="no"
 CLASSPATH_WITH_QT="no"
 CLASSPATH_WITH_TOOL_WRAPPERS="no"
@@ -43,12 +44,14 @@ CLASSPATH_WITH_DOCS="no"
 CLASSPATH_WITH_PLUGIN="no"
 CLASSPATH_TOOLS_HOME=$HOME/projects/classpath/cp-tools
 CLASSPATH_TOOLS_INSTALL=$INSTALL_DIR/cp-tools
-VM=${CACAO_INSTALL}/bin/cacao
+VM=${GCC_INSTALL}/bin/gij
 MAUVE_HOME=$HOME/projects/classpath/mauve
 CVMI_DIR=$HOME/projects/openjdk/cvi/cvmi
 LLVM_HOME=$HOME/projects/openjdk/llvm
 LLVM_INSTALL=$INSTALL_DIR/llvm
 ICEDTEA6_INSTALL=/usr/lib/jvm/icedtea6
+SYSTEM_ICEDTEA6=/usr/lib/jvm/icedtea6
+SYSTEM_GCJ=/usr/lib/jvm/gcj-jdk
 GCJ_JDK_INSTALL=${SYSTEM_GCJ}
 DVBTOOLS_HOME=$HOME/projects/dvb/dvbtools
 DVBTOOLS_INSTALL=$INSTALL_DIR/dvbtools
@@ -60,31 +63,33 @@ CLOSURES_DIR=
 NIO2_ZIP=
 NIO2_DIR=
 CVMI_ZIP=
-ICEDTEA_WITH_NIMBUS=yes
 ICEDTEA_WITH_SYSTEMTAP=yes
 ICEDTEA_WITH_PLUGIN="no"
 ICEDTEA_WITH_NEW_PLUGIN="no"
-CACAO_ZIP=/usr/portage/distfiles/cacao-0.99.4.tar.bz2
+CACAO6_ZIP=/usr/portage/distfiles/cacao-0.99.4.tar.bz2
+CACAO7_ZIP=/home/downloads/java/icedtea/misc/8948a434c10d.tar.bz2
 CLASSPATH_WITH_WERROR="no"
 DYNAMITE_HOME=$HOME/academic/research/dynamite
 DYNAMITE_INSTALL=$INSTALL_DIR/dynamite
 DYNAMITE_DEBUG_LEVEL=FINE
 ICEDTEA_WITH_NSS=yes
 ICEDTEA6_WITH_NIO2=yes
-SYSTEM_ICEDTEA6=/usr/lib/jvm/icedtea6
-SYSTEM_GCJ=/usr/lib/jvm/gcj-jdk
 MUSIK_INSTALL=$INSTALL_DIR/musik
-HOTSPOT6_BUILD=
+HOTSPOT6_BUILD=original
+HOTSPOT6_1_6_BUILD=default
+HOTSPOT6_HG_BUILD=original
 HOTSPOT7_BUILD=
 ARCHIVER_HOME=$HOME/projects/mail_archiver
 ARCHIVER_INSTALL=$INSTALL_DIR/archiver
-OPENJDK_WITH_ZERO=yes
 OPENJDK6_B09_ZIP=/mnt/home/andrew/java/drops/openjdk-6-src-b09-11_apr_2008.tar.gz
 OPENJDK6_B16_ZIP=/usr/portage/distfiles/openjdk-6-src-b16-24_apr_2009.tar.gz
 OPENJDK6_B17_ZIP=/usr/portage/distfiles/openjdk-6-src-b17-14_oct_2009.tar.gz
 OPENJDK6_B18_ZIP=/usr/portage/distfiles/openjdk-6-src-b18-16_feb_2010.tar.gz
-OPENJDK6_ZIP=${OPENJDK6_B18_ZIP}
-HOTSPOT6_ZIP=/home/downloads/java/icedtea/hs16.tar.gz
+OPENJDK6_B19_ZIP=/usr/portage/distfiles/openjdk-6-src-b19-15_apr_2010.tar.gz
+OPENJDK6_B20_ZIP=/usr/portage/distfiles/openjdk-6-src-b20-21_jun_2010.tar.gz
+OPENJDK6_ZIP=${OPENJDK6_B20_ZIP}
+HOTSPOT6_ZIP=/home/downloads/java/icedtea/hs17.tar.gz
+HOTSPOT6_HG_ZIP=/home/downloads/java/icedtea/hs17.tar.gz
 HOTSPOT6_B14_ZIP=/home/downloads/java/icedtea/hotspot-14b16.tar.gz
 HOTSPOT6_B16_ZIP=/home/downloads/java/icedtea/hs16.tar.gz
 OPENJDK7_ZIP=/home/downloads/java/icedtea/openjdk.tar.gz
@@ -105,3 +110,27 @@ JAXP6_DROP_ZIP=/home/downloads/java/drops/jaxp6.zip
 JAXP6_HG_DROP_ZIP=/home/downloads/java/drops/jaxp6-hg.zip
 JAXWS6_DROP_ZIP=/home/downloads/java/drops/jaxws6.zip
 JAF6_DROP_ZIP=/home/downloads/java/drops/jaf6.zip
+OPENJDK_WITH_ZERO=no
+OPENJDK_WITH_WARNINGS=yes
+XMMS_DEBUG=yes
+
+if test "${ARCH}" == "x86_64"; then
+    JDK_ARCH=amd64;
+else
+    JDK_ARCH=${ARCH};
+fi
+
+case "${JDK_ARCH}" in
+    amd64)
+	DATA_MODEL=64;
+	ENDIAN=little;
+	;;
+    ppc)
+	DATA_MODEL=32;
+	ENDIAN=big;
+	;;
+    ppc64)
+	DATA_MODEL=64;
+	ENDIAN=big;
+	;;
+esac

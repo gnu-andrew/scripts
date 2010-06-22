@@ -4,16 +4,18 @@
 
 (if [ ! -e $XMMS_HOME ]; then
     cd `dirname $XMMS_HOME`;
-    svn co https://xmmsroot2.svn.sourceforge.net/svnroot/xmmsroot2/xmms/trunk xmms;
+    git clone git://xmmsroot2.git.sourceforge.net/gitroot/xmmsroot2/xmmsroot2 xmms;
     cd $XMMS_HOME;
-else
-    cd $XMMS_HOME;
-    svn update;
 fi
+
+if test "x$XMMS_DEBUG" = "xyes"; then
+    DEBUG="--enable-debug";
+fi
+
 ./autogen.sh;
 create_working_dir
 rm -rf xmms
 mkdir xmms
 cd xmms &&
-$XMMS_HOME/configure --prefix=$XMMS_INSTALL &&
+$XMMS_HOME/configure --prefix=$XMMS_INSTALL $DEBUG &&
 make all install && echo DONE) 2>&1 | tee $XMMS_HOME/errors
