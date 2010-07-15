@@ -20,7 +20,7 @@ exec > $MAUVE_HOME/errors 2>&1
 rm -rf ${BUILD_DIR} &&
 mkdir ${BUILD_DIR} &&
 cd ${BUILD_DIR} &&
-${MAUVE_HOME}/configure --with-vm=${VM} --with-ecj-jar=${ECJ_JAR} --enable-auto-compilation &&
+${MAUVE_HOME}/configure --with-vm=${TEST_VM} --with-ecj-jar=${ECJ_JAR} --enable-auto-compilation &&
 make ${MAKE_OPTS} &&
-xvfb-run ${VM} Harness gnu.testlet -vm ${VM} -showpasses -timeout 180000
+xvfb-run ${VM} Harness gnu.testlet -vm ${TEST_VM} -showpasses -timeout 180000
 )

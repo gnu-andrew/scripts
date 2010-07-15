@@ -63,6 +63,7 @@ elif [ $(echo $0|grep 'icedtea6') ]; then
     VERSION=icedtea6;
     BUILD=icedtea6;
     OPENJDK_ZIP=$OPENJDK6_ZIP;
+    CLEAN_TREE=yes;
 elif [ $(echo $0|grep 'cvmi') ]; then
     VERSION=icedtea7;
     BUILD=cvmi;
@@ -146,17 +147,24 @@ elif [ $(echo $0|grep 'addvm') ]; then
     OPENJDK_ZIP=$OPENJDK7_ZIP;
     OPENJDK_DIR=$OPENJDK7_DIR;
     OPTS="--with-additional-vms=cacao,shark";
+elif [ $(echo $0|grep 'azul') ]; then
+    VERSION=icedtea6;
+    BUILD=azul;
+    OPENJDK_ZIP=$OPENJDK6_ZIP;
+    OPENJDK_DIR=$AZUL_DIR;
+    OPTS="--enable-azul --with-azul-hotspot=${AZHOTSPOT} ${ICEDTEA_BUILD_OPT}";
+    RELEASE="mri";
 else
     VERSION=icedtea7;
     BUILD=icedtea7;
     OPENJDK_ZIP=$OPENJDK7_ZIP;
     OPENJDK_DIR=$OPENJDK7_DIR;
     OPTS="";
+    CLEAN_TREE=yes;
 fi
 
 BUILD_DIR=${WORKING_DIR}/${BUILD}
 ICEDTEA_ROOT="http://icedtea.classpath.org/hg"
-ANDREW_ROOT="http://icedtea.classpath.org/people/andrew"
 
 # Dead with b16
 #if test x${VERSION} = "xicedtea6"; then
@@ -167,7 +175,7 @@ if test "x${RELEASE}" = "x"; then
     ICEDTEA_URL=${ICEDTEA_ROOT}/${VERSION};
     ICEDTEA_HOME=${OPENJDK_HOME}/${VERSION};
 elif test "x${RELEASE}" = "xhg"; then
-    ICEDTEA_URL=${ANDREW_ROOT}/${VERSION}-${RELEASE};
+    ICEDTEA_URL=${ICEDTEA_ROOT}/${VERSION}-${RELEASE};
     ICEDTEA_HOME=${OPENJDK_HOME}/${VERSION}-${RELEASE};
 else
     ICEDTEA_URL=${ICEDTEA_ROOT}/release/${VERSION}-${RELEASE}
@@ -238,7 +246,14 @@ if test x$1 != "xquick"; then
     echo "Building from scratch"
     if [ -e ${BUILD_DIR} ]; then
 	chmod -R u+w ${BUILD_DIR}
-	rm -rf ${BUILD_DIR};
+	if test "x${CLEAN_TREE}" = "xyes"; then
+	    if ! (make -C ${BUILD_DIR} distclean && rmdir ${BUILD_DIR}) ; then
+		echo "Cleaning tree failed.";
+		exit -1;
+	    fi
+	else
+	    rm -rf ${BUILD_DIR};
+	fi
     fi
 fi
 
@@ -324,6 +339,10 @@ fi
 
 RT_JAR=${CLASSPATH_INSTALL}/share/classpath/glibj.zip
 
+if test x${CHOST} != "x"; then
+    CHOST_OPTION="--build=${CHOST}"
+fi
+
 # Old
 # --with-java=${GCJ_JDK_INSTALL}/bin/java ${JAVAH_OPTION} \
 # --with-jar=${GCJ_JDK_INSTALL}/bin/jar --with-rmic=${GCJ_JDK_INSTALL}/bin/rmic
@@ -331,12 +350,16 @@ RT_JAR=${CLASSPATH_INSTALL}/share/classpath/glibj.zip
 CONFIG_OPTS="--with-parallel-jobs=${PARALLEL_JOBS} \
     --with-jdk-home=${GCJ_JDK_INSTALL} ${ZIP_OPTION} ${DIR_OPTION} ${RHINO_OPTION} ${DOCS_OPTION} \
     ${CACAO_OPTION} ${CACAO_ZIP_OPTION} ${SHARK_OPTION} ${VISUALVM_OPTION} ${PULSEAUDIO_OPTION} \
-    ${GCJ_OPTION} ${HOTSPOT_ZIP_OPTION} ${CORBA_ZIP_OPTION} \
+    ${GCJ_OPTION} ${HOTSPOT_ZIP_OPTION} ${CORBA_ZIP_OPTION} ${CHOST_OPTION} \
     ${JAXP_ZIP_OPTION} ${JAXWS_ZIP_OPTION} ${JDK_ZIP_OPTION} ${LANGTOOLS_ZIP_OPTION} ${NIMBUS_OPTION} \
     ${SYSTEMTAP_OPTION} --with-abs-install-dir=${INSTALL_DIR} ${NIMBUS_GEN_OPTION} ${XRENDER_OPTION} \
-    ${PLUGIN_OPTION} ${NEW_PLUGIN_OPTION} ${CACAO_ZIP_OPTION} ${NSS_OPTION} ${NIO2_OPTION} ${OPTS} \
+    ${PLUGIN_OPTION} ${NEW_PLUGIN_OPTION} ${NSS_OPTION} ${NIO2_OPTION} ${OPTS} \
     ${JAXP_DROP_ZIP_OPTION} ${JAF_DROP_ZIP_OPTION} ${JAXWS_DROP_ZIP_OPTION} ${HOTSPOT_BUILD_OPTION}"
 PATH=${LLVM_INSTALL}/bin:$PATH
+
+if test "${BUILD}" = "azul"; then
+    export PKG_CONFIG_PATH=${AZTOOLS_INSTALL}/lib/pkgconfig
+fi
 
 (PATH=/bin:/usr/bin ./autogen.sh &&
 cd ${BUILD_DIR} &&

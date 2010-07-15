@@ -45,6 +45,7 @@ CLASSPATH_WITH_PLUGIN="no"
 CLASSPATH_TOOLS_HOME=$HOME/projects/classpath/cp-tools
 CLASSPATH_TOOLS_INSTALL=$INSTALL_DIR/cp-tools
 VM=${GCC_INSTALL}/bin/gij
+TEST_VM=${VM}
 MAUVE_HOME=$HOME/projects/classpath/mauve
 CVMI_DIR=$HOME/projects/openjdk/cvi/cvmi
 LLVM_HOME=$HOME/projects/openjdk/llvm
@@ -113,6 +114,10 @@ JAF6_DROP_ZIP=/home/downloads/java/drops/jaf6.zip
 OPENJDK_WITH_ZERO=no
 OPENJDK_WITH_WARNINGS=yes
 XMMS_DEBUG=yes
+TRIM_DEBUG=yes
+AZTOOLS_HOME=$HOME/projects/openjdk/mri/aztools
+AZTOOLS_INSTALL=$INSTALL_DIR/aztools
+AZHOTSPOT=${WORKING_DIR}/openjdk.mri/hotspot
 
 if test "${ARCH}" == "x86_64"; then
     JDK_ARCH=amd64;
@@ -134,3 +139,8 @@ case "${JDK_ARCH}" in
 	ENDIAN=big;
 	;;
 esac
+
+if [ -e /etc/make.conf ] ; then
+   CHOST=$(grep CHOST /etc/make.conf|sed -e 's#CHOST="##' -e 's#"$##')
+   echo "CHOST set to ${CHOST}"
+fi
