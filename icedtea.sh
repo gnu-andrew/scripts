@@ -246,7 +246,7 @@ if test x$1 != "xquick"; then
     echo "Building from scratch"
     if [ -e ${BUILD_DIR} ]; then
 	chmod -R u+w ${BUILD_DIR}
-	if test "x${CLEAN_TREE}" = "xyes"; then
+	if test "x${CLEAN_TREE}" = "xyes" && test -e ${BUILD_DIR}/Makefile; then
 	    if ! (make -C ${BUILD_DIR} distclean && rmdir ${BUILD_DIR}) ; then
 		echo "Cleaning tree failed.";
 		exit -1;
