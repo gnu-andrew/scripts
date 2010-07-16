@@ -337,6 +337,22 @@ if test x${ICEDTEA_WITH_NSS} = "xyes"; then
     NSS_OPTION="--enable-nss";
 fi
 
+if test x${ICEDTEA_WITH_TESTS} = "xno"; then
+    TESTS_OPTION="--disable-tests"
+fi
+
+if test x${ICEDTEA_WITH_JDK_TESTS} = "xno"; then
+    TESTS_OPTION="${TESTS_OPTION} --disable-jdk-tests"
+fi
+
+if test x${ICEDTEA_WITH_LANGTOOLS_TESTS} = "xno"; then
+    TESTS_OPTION="${TESTS_OPTION} --disable-langtools-tests"
+fi
+
+if test x${ICEDTEA_WITH_HOTSPOT_TESTS} = "xno"; then
+    TESTS_OPTION="${TESTS_OPTION} --disable-hotspot-tests"
+fi
+
 RT_JAR=${CLASSPATH_INSTALL}/share/classpath/glibj.zip
 
 if test x${CHOST} != "x"; then
