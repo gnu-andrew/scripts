@@ -146,4 +146,6 @@ esac
 if [ -e /etc/make.conf ] ; then
    CHOST=$(grep CHOST /etc/make.conf|sed -e 's#CHOST="##' -e 's#"$##')
    echo "CHOST set to ${CHOST}"
+   CFLAGS=$(grep '^CFLAGS=' /etc/make.conf|sed -e 's#CFLAGS="##' -e 's#"$##')
+   echo "CFLAGS set to ${CFLAGS}"
 fi
