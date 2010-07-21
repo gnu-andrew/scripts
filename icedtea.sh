@@ -31,7 +31,6 @@ elif [ $(echo $0|grep 'icedtea6-1.6') ]; then
     OPENJDK_DIR=$OPENJDK6_B16_DIR;
     HOTSPOT6_ZIP=$HOTSPOT6_B14_ZIP;
     RELEASE="1.6"
-    OPTS="--disable-plugin --disable-npplugin"
     HOTSPOT6_BUILD=$HOTSPOT6_1_6_BUILD
 elif [ $(echo $0|grep 'icedtea6-1.7') ]; then
     VERSION=icedtea6;
