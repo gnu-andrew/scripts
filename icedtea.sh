@@ -378,6 +378,7 @@ fi
 
 (PATH=/bin:/usr/bin ./autogen.sh &&
 cd ${BUILD_DIR} &&
+echo $ICEDTEA_HOME/configure ${CONFIG_OPTS} &&
 $ICEDTEA_HOME/configure ${CONFIG_OPTS}
 if test "x$1" = "xrelease"; then
     DISTCHECK_CONFIGURE_FLAGS=${CONFIG_OPTS} make distcheck;
