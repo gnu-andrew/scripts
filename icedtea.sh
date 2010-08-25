@@ -8,7 +8,7 @@ JAVACFLAGS=
 JAVA_HOME=
 JDK_HOME=
 
-ICEDTEA_BUILD_OPT="--with-openjdk=${ICEDTEA6_INSTALL}"
+ICEDTEA_BUILD_OPT="--with-openjdk=${SYSTEM_ICEDTEA6} --disable-bootstrap --with-jdk-home=${SYSTEM_ICEDTEA6}"
 if [ $(echo $0|grep 'icedtea6-1.2') ]; then
     VERSION=icedtea6;
     BUILD=icedtea6-1.2;
@@ -45,7 +45,17 @@ elif [ $(echo $0|grep 'icedtea6-1.8') ]; then
     OPENJDK_ZIP=$OPENJDK6_B18_ZIP;
     OPENJDK_DIR=$OPENJDK6_B18_DIR;
     HOTSPOT6_ZIP=$HOTSPOT6_B16_ZIP;
+    JAXP6_DROP_ZIP=$JAXP6_18_DROP_ZIP
+    JAXWS6_DROP_ZIP=$JAXWS6_18_DROP_ZIP
+    JAF6_DROP_ZIP=$JAF6_18_DROP_ZIP
     RELEASE="1.8"
+elif [ $(echo $0|grep 'icedtea6-1.9') ]; then
+    VERSION=icedtea6;
+    BUILD=icedtea6-1.9;
+    OPENJDK_ZIP=$OPENJDK6_B20_ZIP;
+    JAXP6_DROP_ZIP=$JAXP6_19_DROP_ZIP
+    JAXWS6_DROP_ZIP=$JAXWS6_19_DROP_ZIP
+    JAF6_DROP_ZIP=$JAF6_19_DROP_ZIP
 elif [ $(echo $0|grep 'icedtea6-hg') ]; then
     VERSION=icedtea6;
     BUILD=icedtea6-hg;
@@ -61,7 +71,7 @@ elif [ $(echo $0|grep 'icedtea6') ]; then
     VERSION=icedtea6;
     BUILD=icedtea6;
     OPENJDK_ZIP=$OPENJDK6_ZIP;
-    CLEAN_TREE=yes;
+    CLEAN_TREE=no;
 elif [ $(echo $0|grep 'cvmi') ]; then
     VERSION=icedtea7;
     BUILD=cvmi;
@@ -122,12 +132,17 @@ elif [ $(echo $0|grep 'no-bootstrap6') ]; then
     BUILD=icedtea6-no-bootstrap;
     OPENJDK_ZIP=$OPENJDK6_ZIP;
     OPTS="${ICEDTEA_BUILD_OPT}";
+elif [ $(echo $0|grep 'icedtea-bootstrap6') ]; then
+    VERSION=icedtea6;
+    BUILD=icedtea6-icedtea-bootstrap;
+    OPENJDK_ZIP=$OPENJDK6_ZIP;
+    OPTS="--with-jdk-home=${BOOTSTRAP_ICEDTEA6}"
 elif [ $(echo $0|grep 'no-bootstrap') ]; then
     VERSION=icedtea7;
     BUILD=icedtea7-no-bootstrap;
     OPENJDK_ZIP=$OPENJDK7_ZIP;
     OPENJDK_DIR=$OPENJDK7_DIR;
-    OPTS="--disable-bootstrap --with-jdk-home=${SYSTEM_ICEDTEA6}";
+    OPTS="${ICEDTEA_BUILD_OPT}";
 elif [ $(echo $0|grep 'icedtea-1.9') ]; then
     VERSION=icedtea7;
     BUILD=icedtea-1.9;
@@ -239,6 +254,7 @@ else
 fi
 
 echo "Building ${ICEDTEA_HOME} in ${BUILD_DIR}..."
+echo "Additional options: ${OPTS}"
 
 if test x$1 != "xquick"; then
     echo "Building from scratch"
@@ -357,6 +373,8 @@ if test x${CHOST} != "x"; then
     CHOST_OPTION="--build=${CHOST}"
 fi
 
+INSTALLATION_DIR=${INSTALL_DIR}/${BUILD}
+
 # Old
 # --with-java=${GCJ_JDK_INSTALL}/bin/java ${JAVAH_OPTION} \
 # --with-jar=${GCJ_JDK_INSTALL}/bin/jar --with-rmic=${GCJ_JDK_INSTALL}/bin/rmic
@@ -366,7 +384,7 @@ CONFIG_OPTS="--with-parallel-jobs=${PARALLEL_JOBS} \
     ${CACAO_OPTION} ${CACAO_ZIP_OPTION} ${SHARK_OPTION} ${VISUALVM_OPTION} ${PULSEAUDIO_OPTION} \
     ${GCJ_OPTION} ${HOTSPOT_ZIP_OPTION} ${CORBA_ZIP_OPTION} ${CHOST_OPTION} ${TESTS_OPTION} \
     ${JAXP_ZIP_OPTION} ${JAXWS_ZIP_OPTION} ${JDK_ZIP_OPTION} ${LANGTOOLS_ZIP_OPTION} ${NIMBUS_OPTION} \
-    ${SYSTEMTAP_OPTION} --with-abs-install-dir=${INSTALL_DIR} ${NIMBUS_GEN_OPTION} ${XRENDER_OPTION} \
+    ${SYSTEMTAP_OPTION} --with-abs-install-dir=${INSTALLATION_DIR} ${NIMBUS_GEN_OPTION} ${XRENDER_OPTION} \
     ${PLUGIN_OPTION} ${NEW_PLUGIN_OPTION} ${NSS_OPTION} ${NIO2_OPTION} ${OPTS} \
     ${JAXP_DROP_ZIP_OPTION} ${JAF_DROP_ZIP_OPTION} ${JAXWS_DROP_ZIP_OPTION} ${HOTSPOT_BUILD_OPTION}"
 PATH=${LLVM_INSTALL}/bin:$PATH
@@ -374,6 +392,8 @@ PATH=${LLVM_INSTALL}/bin:$PATH
 if test "${BUILD}" = "azul"; then
     export PKG_CONFIG_PATH=${AZTOOLS_INSTALL}/lib/pkgconfig
 fi
+
+echo "Passing ${CONFIG_OPTS} to configure..."
 
 (PATH=/bin:/usr/bin ./autogen.sh &&
 cd ${BUILD_DIR} &&
@@ -387,7 +407,7 @@ elif echo "$BUILD" | grep "zero"; then
     make icedtea-boot && echo DONE
 else
     CFLAGS=${CFLAGS} make && echo COMPILED &&
-    rm -rf ${INSTALL_DIR}/${BUILD} &&
+    rm -rf ${INSTALLATION_DIR} &&
     (if [ -e ${BUILD_DIR}/openjdk.build ] ; then
 	mv ${BUILD_DIR}/openjdk.build/j2sdk-image ${INSTALL_DIR}/${BUILD} &&
 	ln -s ${INSTALL_DIR}/${BUILD} ${BUILD_DIR}/openjdk.build/j2sdk-image
