@@ -38,6 +38,7 @@ elif [ $(echo $0|grep 'icedtea6-1.7') ]; then
     OPENJDK_ZIP=$OPENJDK6_B17_ZIP;
     OPENJDK_DIR=$OPENJDK6_B17_DIR;
     HOTSPOT6_ZIP=$HOTSPOT6_B16_ZIP;
+    HOTSPOT6_BUILD=$HOTSPOT6_1_7_BUILD
     RELEASE="1.7"
 elif [ $(echo $0|grep 'icedtea6-1.8') ]; then
     VERSION=icedtea6;
@@ -45,6 +46,7 @@ elif [ $(echo $0|grep 'icedtea6-1.8') ]; then
     OPENJDK_ZIP=$OPENJDK6_B18_ZIP;
     OPENJDK_DIR=$OPENJDK6_B18_DIR;
     HOTSPOT6_ZIP=$HOTSPOT6_B16_ZIP;
+    HOTSPOT6_BUILD=$HOTSPOT6_1_8_BUILD
     JAXP6_DROP_ZIP=$JAXP6_18_DROP_ZIP
     JAXWS6_DROP_ZIP=$JAXWS6_18_DROP_ZIP
     JAF6_DROP_ZIP=$JAF6_18_DROP_ZIP
@@ -56,6 +58,9 @@ elif [ $(echo $0|grep 'icedtea6-1.9') ]; then
     JAXP6_DROP_ZIP=$JAXP6_19_DROP_ZIP
     JAXWS6_DROP_ZIP=$JAXWS6_19_DROP_ZIP
     JAF6_DROP_ZIP=$JAF6_19_DROP_ZIP
+    HOTSPOT6_ZIP=$HOTSPOT6_B19_ZIP
+    HOTSPOT6_BUILD=$HOTSPOT6_1_9_BUILD
+    RELEASE="1.9"
 elif [ $(echo $0|grep 'icedtea6-hg') ]; then
     VERSION=icedtea6;
     BUILD=icedtea6-hg;
@@ -66,7 +71,12 @@ elif [ $(echo $0|grep 'icedtea6-hg') ]; then
     RELEASE="hg"
     HOTSPOT6_BUILD=$HOTSPOT6_HG_BUILD
     HOTSPOT6_ZIP=$HOTSPOT6_HG_ZIP
-    OPTS="--with-openjdk --enable-zero"
+    OPTS=""
+elif [ $(echo $0|grep 'icedtea6-sec') ]; then
+    VERSION=icedtea6;
+    BUILD=icedtea6-sec;
+    OPENJDK_ZIP=$OPENJDK6_ZIP;
+    RELEASE="sec"
 elif [ $(echo $0|grep 'icedtea6') ]; then
     VERSION=icedtea6;
     BUILD=icedtea6;
@@ -190,6 +200,8 @@ if test "x${RELEASE}" = "x"; then
 elif test "x${RELEASE}" = "xhg"; then
     ICEDTEA_URL=${ICEDTEA_ROOT}/${VERSION}-${RELEASE};
     ICEDTEA_HOME=${OPENJDK_HOME}/${VERSION}-${RELEASE};
+elif test "x${RELEASE}" = "xsec"; then
+    ICEDTEA_HOME=${OPENJDK_HOME}/${VERSION}-${RELEASE};
 else
     ICEDTEA_URL=${ICEDTEA_ROOT}/release/${VERSION}-${RELEASE}
     ICEDTEA_HOME=${OPENJDK_HOME}/${VERSION}-${RELEASE}
@@ -216,6 +228,9 @@ if test x${VERSION} = "xicedtea6"; then
     fi
     if test x${CACAO6_ZIP} != "x"; then
 	CACAO_ZIP_OPTION="--with-cacao-src-zip=${CACAO6_ZIP}";
+    fi
+    if test x${JAMVM6_ZIP} != "x"; then
+	JAMVM_ZIP_OPTION="--with-jamvm-src-zip=${JAMVM6_ZIP}";
     fi
 else
     if test x${CORBA_ZIP} != "x"; then
@@ -250,6 +265,9 @@ else
     fi
     if test x${CACAO7_ZIP} != "x"; then
 	CACAO_ZIP_OPTION="--with-cacao-src-zip=${CACAO7_ZIP}";
+    fi
+    if test x${JAMVM7_ZIP} != "x"; then
+	JAMVM_ZIP_OPTION="--with-jamvm-src-zip=${JAMVM7_ZIP}";
     fi
 fi
 
@@ -297,6 +315,10 @@ if test x${ICEDTEA_WITH_CACAO} = "xyes"; then
     CACAO_OPTION="--enable-cacao";
 fi
 
+if test x${ICEDTEA_WITH_JAMVM} = "xyes"; then
+    JAMVM_OPTION="--enable-jamvm";
+fi
+
 if test x${ICEDTEA_WITH_SHARK} = "xyes" \
     || [ $(echo ${BUILD}|grep 'shark') ]; then
     SHARK_OPTION="--enable-shark";
@@ -339,6 +361,10 @@ fi
 
 if test x${ICEDTEA_WITH_PLUGIN} = "xno"; then
     PLUGIN_OPTION="--disable-plugin";
+fi
+
+if test x${ICEDTEA_WITH_NETX} = "xno"; then
+    PLUGIN_OPTION="--disable-webstart";
 fi
 
 if test x${ICEDTEA_JAVAH} = "x"; then
@@ -386,7 +412,8 @@ CONFIG_OPTS="--with-parallel-jobs=${PARALLEL_JOBS} \
     ${JAXP_ZIP_OPTION} ${JAXWS_ZIP_OPTION} ${JDK_ZIP_OPTION} ${LANGTOOLS_ZIP_OPTION} ${NIMBUS_OPTION} \
     ${SYSTEMTAP_OPTION} --with-abs-install-dir=${INSTALLATION_DIR} ${NIMBUS_GEN_OPTION} ${XRENDER_OPTION} \
     ${PLUGIN_OPTION} ${NEW_PLUGIN_OPTION} ${NSS_OPTION} ${NIO2_OPTION} ${OPTS} \
-    ${JAXP_DROP_ZIP_OPTION} ${JAF_DROP_ZIP_OPTION} ${JAXWS_DROP_ZIP_OPTION} ${HOTSPOT_BUILD_OPTION}"
+    ${JAXP_DROP_ZIP_OPTION} ${JAF_DROP_ZIP_OPTION} ${JAXWS_DROP_ZIP_OPTION} ${HOTSPOT_BUILD_OPTION} \
+    ${JAMVM_OPTION} ${JAMVM_ZIP_OPTION}"
 PATH=${LLVM_INSTALL}/bin:$PATH
 
 if test "${BUILD}" = "azul"; then

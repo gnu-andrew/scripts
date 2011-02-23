@@ -22,6 +22,8 @@ ZERO_SUPPORT="
     LIBFFI_LIBS=-lffi"
 fi
 
+AZUL_SUPPORT="AVX_INCLUDE_DIR=-I/home/andrew/build/aztools/include AZNIX_API_VERSION=200"
+
 # Warnings?
 if test "x${OPENJDK_WITH_WARNINGS}" = "xyes"; then
      WARNINGS="JAVAC_MAX_WARNINGS=true"
@@ -45,6 +47,6 @@ LANG=C make ALT_BOOTDIR=${SYSTEM_ICEDTEA6} \
     QUIETLY="" \
     DISABLE_INTREE_EC=true \
     ALT_DROPS_DIR=/home/downloads/java/drops \
-    ${ZERO_SUPPORT} \
+    ${ZERO_SUPPORT} ${AZUL_SUPPORT} \
     ${WARNINGS} \
 ) 2>&1 | tee errors
