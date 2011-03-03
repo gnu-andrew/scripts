@@ -61,6 +61,16 @@ elif [ $(echo $0|grep 'icedtea6-1.9') ]; then
     HOTSPOT6_ZIP=$HOTSPOT6_B19_ZIP
     HOTSPOT6_BUILD=$HOTSPOT6_1_9_BUILD
     RELEASE="1.9"
+elif [ $(echo $0|grep 'icedtea6-1.10') ]; then
+    VERSION=icedtea6;
+    BUILD=icedtea6-1.10;
+    OPENJDK_ZIP=$OPENJDK6_B22_ZIP;
+    JAXP6_DROP_ZIP=$JAXP6_1_10_DROP_ZIP
+    JAXWS6_DROP_ZIP=$JAXWS6_1_10_DROP_ZIP
+    JAF6_DROP_ZIP=$JAF6_1_10_DROP_ZIP
+    HOTSPOT6_ZIP=$HOTSPOT6_1_10_ZIP
+    HOTSPOT6_BUILD=$HOTSPOT6_1_10_BUILD
+    RELEASE="1.10"
 elif [ $(echo $0|grep 'icedtea6-hg') ]; then
     VERSION=icedtea6;
     BUILD=icedtea6-hg;
@@ -131,12 +141,23 @@ elif [ $(echo $0|grep 'cacao6') ]; then
     BUILD=cacao-icedtea6;
     OPENJDK_ZIP=$OPENJDK6_ZIP;
     OPTS="--enable-cacao";
+elif [ $(echo $0|grep 'jamvm6') ]; then
+    VERSION=icedtea6;
+    BUILD=jamvm-icedtea6;
+    OPENJDK_ZIP=$OPENJDK6_ZIP;
+    OPTS="--enable-jamvm";
 elif [ $(echo $0|grep 'cacao') ]; then
     VERSION=icedtea7;
     BUILD=cacao-icedtea7;
     OPENJDK_ZIP=$OPENJDK7_ZIP;
     OPENJDK_DIR=$OPENJDK7_DIR;
     OPTS="--enable-cacao";
+elif [ $(echo $0|grep 'jamvm') ]; then
+    VERSION=icedtea7;
+    BUILD=jamvm-icedtea6;
+    OPENJDK_ZIP=$OPENJDK7_ZIP;
+    OPENJDK_DIR=$OPENJDK7_DIR;
+    OPTS="--enable-jamvm";
 elif [ $(echo $0|grep 'no-bootstrap6') ]; then
     VERSION=icedtea6;
     BUILD=icedtea6-no-bootstrap;
@@ -295,7 +316,9 @@ fi
 
 if [ -e $ICEDTEA_HOME ]; then
     cd $ICEDTEA_HOME;
-    hg pull -u;
+    if ! [ $(echo $BUILD|grep 'hg$') ]; then
+	hg pull -u;
+    fi
     make distclean;
 else
     cd `dirname $ICEDTEA_HOME`;
@@ -414,7 +437,6 @@ CONFIG_OPTS="--with-parallel-jobs=${PARALLEL_JOBS} \
     ${PLUGIN_OPTION} ${NEW_PLUGIN_OPTION} ${NSS_OPTION} ${NIO2_OPTION} ${OPTS} \
     ${JAXP_DROP_ZIP_OPTION} ${JAF_DROP_ZIP_OPTION} ${JAXWS_DROP_ZIP_OPTION} ${HOTSPOT_BUILD_OPTION} \
     ${JAMVM_OPTION} ${JAMVM_ZIP_OPTION}"
-PATH=${LLVM_INSTALL}/bin:$PATH
 
 if test "${BUILD}" = "azul"; then
     export PKG_CONFIG_PATH=${AZTOOLS_INSTALL}/lib/pkgconfig
