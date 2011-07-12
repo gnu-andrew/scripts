@@ -36,6 +36,10 @@ else
     cd $CP_HOME;
 fi
 
+if [ -e ${CLASSPATH_INSTALL}/bin/gjavah ] ; then
+    JAVAH_OPTION="--with-javah=${CLASSPATH_INSTALL}/bin/gjavah";
+fi
+
 if test "x${CLASSPATH_WITH_GSTREAMER}" = "xyes"; then
     GSTREAMER_OPTION="--enable-gstreamer-peer";
 fi
@@ -67,6 +71,7 @@ mkdir ${BUILD_DIR} &&
 cd ${BUILD_DIR} &&
 JAVA="$VM" \
 ${CP_HOME}/configure --prefix=${INSTALL_DIR} --enable-examples \
+    ${JAVAH_OPTION} \
     ${WERROR_OPTION} --with-ecj-jar=${ECJ_JAR} ${GSTREAMER_OPTION} \
     ${QT_OPTION} ${TOOL_OPTION} ${DOCS_OPTION} ${PLUGIN_OPTION} &&
 if test x$1 != "x"; then

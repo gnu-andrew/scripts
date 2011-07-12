@@ -16,6 +16,7 @@ if [ $(echo $0|grep 'icedtea6-1.2') ]; then
     OPENJDK_DIR=$OPENJDK6_B09_DIR;
     RELEASE="1.2"
     OPTS="--disable-plugin --with-gcj-home=${SYSTEM_GCJ}"
+    MAKE_OPTS=
 elif [ $(echo $0|grep 'icedtea6-1.5') ]; then
     VERSION=icedtea6;
     BUILD=icedtea6-1.5;
@@ -24,6 +25,7 @@ elif [ $(echo $0|grep 'icedtea6-1.5') ]; then
     HOTSPOT6_ZIP=$HOTSPOT6_B14_ZIP;
     RELEASE="1.5"
     OPTS="--disable-plugin"
+    MAKE_OPTS=
 elif [ $(echo $0|grep 'icedtea6-1.6') ]; then
     VERSION=icedtea6;
     BUILD=icedtea6-1.6;
@@ -32,6 +34,7 @@ elif [ $(echo $0|grep 'icedtea6-1.6') ]; then
     HOTSPOT6_ZIP=$HOTSPOT6_B14_ZIP;
     RELEASE="1.6"
     HOTSPOT6_BUILD=$HOTSPOT6_1_6_BUILD
+    MAKE_OPTS=
 elif [ $(echo $0|grep 'icedtea6-1.7') ]; then
     VERSION=icedtea6;
     BUILD=icedtea6-1.7;
@@ -40,6 +43,7 @@ elif [ $(echo $0|grep 'icedtea6-1.7') ]; then
     HOTSPOT6_ZIP=$HOTSPOT6_B16_ZIP;
     HOTSPOT6_BUILD=$HOTSPOT6_1_7_BUILD
     RELEASE="1.7"
+    MAKE_OPTS=
 elif [ $(echo $0|grep 'icedtea6-1.8') ]; then
     VERSION=icedtea6;
     BUILD=icedtea6-1.8;
@@ -51,6 +55,7 @@ elif [ $(echo $0|grep 'icedtea6-1.8') ]; then
     JAXWS6_DROP_ZIP=$JAXWS6_18_DROP_ZIP
     JAF6_DROP_ZIP=$JAF6_18_DROP_ZIP
     RELEASE="1.8"
+    MAKE_OPTS=
 elif [ $(echo $0|grep 'icedtea6-1.9') ]; then
     VERSION=icedtea6;
     BUILD=icedtea6-1.9;
@@ -61,6 +66,7 @@ elif [ $(echo $0|grep 'icedtea6-1.9') ]; then
     HOTSPOT6_ZIP=$HOTSPOT6_B19_ZIP
     HOTSPOT6_BUILD=$HOTSPOT6_1_9_BUILD
     RELEASE="1.9"
+    MAKE_OPTS=
 elif [ $(echo $0|grep 'icedtea6-1.10') ]; then
     VERSION=icedtea6;
     BUILD=icedtea6-1.10;
@@ -158,28 +164,35 @@ elif [ $(echo $0|grep 'jamvm') ]; then
     OPENJDK_ZIP=$OPENJDK7_ZIP;
     OPENJDK_DIR=$OPENJDK7_DIR;
     OPTS="--enable-jamvm";
-elif [ $(echo $0|grep 'no-bootstrap6') ]; then
-    VERSION=icedtea6;
-    BUILD=icedtea6-no-bootstrap;
-    OPENJDK_ZIP=$OPENJDK6_ZIP;
-    OPTS="${ICEDTEA_BUILD_OPT}";
-elif [ $(echo $0|grep 'icedtea-bootstrap6') ]; then
-    VERSION=icedtea6;
-    BUILD=icedtea6-icedtea-bootstrap;
-    OPENJDK_ZIP=$OPENJDK6_ZIP;
-    OPTS="--with-jdk-home=${BOOTSTRAP_ICEDTEA6}"
 elif [ $(echo $0|grep 'no-bootstrap') ]; then
     VERSION=icedtea7;
     BUILD=icedtea7-no-bootstrap;
     OPENJDK_ZIP=$OPENJDK7_ZIP;
     OPENJDK_DIR=$OPENJDK7_DIR;
     OPTS="${ICEDTEA_BUILD_OPT}";
+elif [ $(echo $0|grep 'no-bootstrap6') ]; then
+    VERSION=icedtea6;
+    BUILD=icedtea6-no-bootstrap;
+    OPENJDK_ZIP=$OPENJDK6_ZIP;
+    OPTS="${ICEDTEA_BUILD_OPT}";
+elif [ $(echo $0|grep 'icedtea-bootstrap') ]; then
+    VERSION=icedtea7;
+    BUILD=icedtea-icedtea-bootstrap;
+    OPENJDK_ZIP=$OPENJDK7_ZIP;
+    OPENJDK_DIR=$OPENJDK7_DIR;
+    OPTS="--with-jdk-home=${BOOTSTRAP_ICEDTEA6}"
+elif [ $(echo $0|grep 'icedtea-bootstrap6') ]; then
+    VERSION=icedtea6;
+    BUILD=icedtea6-icedtea-bootstrap;
+    OPENJDK_ZIP=$OPENJDK6_ZIP;
+    OPTS="--with-jdk-home=${BOOTSTRAP_ICEDTEA6}"
 elif [ $(echo $0|grep 'icedtea-1.9') ]; then
     VERSION=icedtea7;
     BUILD=icedtea-1.9;
     OPENJDK_ZIP=$OPENJDK7_ZIP;
     OPENJDK_DIR=$OPENJDK7_DIR;
     RELEASE="1.9"
+    MAKE_OPTS=
 elif [ $(echo $0|grep 'addvm6') ]; then
     VERSION=icedtea6;
     BUILD=addvm-icedtea6;
@@ -203,7 +216,7 @@ else
     BUILD=icedtea7;
     OPENJDK_ZIP=$OPENJDK7_ZIP;
     OPENJDK_DIR=$OPENJDK7_DIR;
-    OPTS="";
+    MAKE_OPTS="";
     CLEAN_TREE=no;
 fi
 
@@ -449,13 +462,13 @@ cd ${BUILD_DIR} &&
 echo $ICEDTEA_HOME/configure ${CONFIG_OPTS} &&
 $ICEDTEA_HOME/configure ${CONFIG_OPTS}
 if test "x$1" = "xrelease"; then
-    DISTCHECK_CONFIGURE_FLAGS=${CONFIG_OPTS} make distcheck;
+    DISTCHECK_CONFIGURE_FLAGS=${CONFIG_OPTS} make ${MAKE_OPTS} distcheck;
 elif echo "$BUILD" | grep "zero6"; then
-    make icedtea-ecj && echo DONE
+    make ${MAKE_OPTS} icedtea-ecj && echo DONE
 elif echo "$BUILD" | grep "zero"; then
-    make icedtea-boot && echo DONE
+    make ${MAKE_OPTS} icedtea-boot && echo DONE
 else
-    CFLAGS=${CFLAGS} make && echo COMPILED &&
+    CFLAGS=${CFLAGS} make ${MAKE_OPTS} && echo COMPILED &&
     rm -rf ${INSTALLATION_DIR} &&
     (if [ -e ${BUILD_DIR}/openjdk.build ] ; then
 	mv ${BUILD_DIR}/openjdk.build/j2sdk-image ${INSTALL_DIR}/${BUILD} &&

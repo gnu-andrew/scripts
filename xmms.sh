@@ -18,4 +18,6 @@ rm -rf xmms
 mkdir xmms
 cd xmms &&
 $XMMS_HOME/configure --prefix=$XMMS_INSTALL $DEBUG &&
-make all install && echo DONE) 2>&1 | tee $XMMS_HOME/errors
+make ${MAKE_OPTS} && 
+make ${MAKE_OPTS} install &&
+echo DONE) 2>&1 | tee $XMMS_HOME/errors

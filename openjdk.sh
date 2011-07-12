@@ -46,7 +46,10 @@ LANG=C make ALT_BOOTDIR=${SYSTEM_ICEDTEA6} \
     ANT=/usr/bin/ant \
     QUIETLY="" \
     DISABLE_INTREE_EC=true \
+    USE_SYSTEM_LCMS=true \
+    LCMS_LIBS=$(pkg-config --libs lcms2) \
+    LCMS_CFLAGS=$(pkg-config --cflags lcms2) \
     ALT_DROPS_DIR=/home/downloads/java/drops \
     ${ZERO_SUPPORT} ${AZUL_SUPPORT} \
-    ${WARNINGS} \
+    ${WARNINGS} STATIC_CXX=false \
 ) 2>&1 | tee errors
