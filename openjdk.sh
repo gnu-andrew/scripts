@@ -49,6 +49,8 @@ LANG=C make ALT_BOOTDIR=${SYSTEM_ICEDTEA6} \
     USE_SYSTEM_LCMS=true \
     LCMS_LIBS=$(pkg-config --libs lcms2) \
     LCMS_CFLAGS=$(pkg-config --cflags lcms2) \
+    FT2_LIBS=$(pkg-config --libs freetype2) \
+    FT2_CFLAGS=$(pkg-config --cflags freetype2) \
     ALT_DROPS_DIR=/home/downloads/java/drops \
     ${ZERO_SUPPORT} ${AZUL_SUPPORT} \
     ${WARNINGS} STATIC_CXX=false \

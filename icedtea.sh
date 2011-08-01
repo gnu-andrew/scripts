@@ -98,6 +98,13 @@ elif [ $(echo $0|grep 'icedtea6') ]; then
     BUILD=icedtea6;
     OPENJDK_ZIP=$OPENJDK6_ZIP;
     CLEAN_TREE=no;
+elif [ $(echo $0|grep 'icedtea7') ]; then
+    VERSION=icedtea7;
+    BUILD=icedtea7;
+    OPENJDK_ZIP=$OPENJDK7_ZIP;
+    OPENJDK_DIR=$OPENJDK7_DIR;
+    MAKE_OPTS="";
+    CLEAN_TREE=no;
 elif [ $(echo $0|grep 'cvmi') ]; then
     VERSION=icedtea7;
     BUILD=cvmi;
@@ -212,10 +219,10 @@ elif [ $(echo $0|grep 'azul') ]; then
     OPTS="--enable-azul --with-azul-hotspot=${AZHOTSPOT} ${ICEDTEA_BUILD_OPT}";
     RELEASE="mri";
 else
-    VERSION=icedtea7;
-    BUILD=icedtea7;
-    OPENJDK_ZIP=$OPENJDK7_ZIP;
-    OPENJDK_DIR=$OPENJDK7_DIR;
+    VERSION=icedtea8;
+    BUILD=icedtea8;
+    OPENJDK_ZIP=$OPENJDK8_ZIP;
+    OPENJDK_DIR=$OPENJDK8_DIR;
     MAKE_OPTS="";
     CLEAN_TREE=no;
 fi
@@ -266,24 +273,24 @@ if test x${VERSION} = "xicedtea6"; then
     if test x${JAMVM6_ZIP} != "x"; then
 	JAMVM_ZIP_OPTION="--with-jamvm-src-zip=${JAMVM6_ZIP}";
     fi
-else
-    if test x${CORBA_ZIP} != "x"; then
-	CORBA_ZIP_OPTION="--with-corba-src-zip=${CORBA_ZIP}";
+elif test x${VERSION} = "xicedtea7"; then
+    if test x${CORBA7_ZIP} != "x"; then
+	CORBA_ZIP_OPTION="--with-corba-src-zip=${CORBA7_ZIP}";
     fi
-    if test x${JAXP_ZIP} != "x"; then
-	JAXP_ZIP_OPTION="--with-jaxp-src-zip=${JAXP_ZIP}";
+    if test x${JAXP7_ZIP} != "x"; then
+	JAXP_ZIP_OPTION="--with-jaxp-src-zip=${JAXP7_ZIP}";
     fi
-    if test x${JAXWS_ZIP} != "x"; then
-	JAXWS_ZIP_OPTION="--with-jaxws-src-zip=${JAXWS_ZIP}";
+    if test x${JAXWS7_ZIP} != "x"; then
+	JAXWS_ZIP_OPTION="--with-jaxws-src-zip=${JAXWS7_ZIP}";
     fi
-    if test x${JDK_ZIP} != "x"; then
-	JDK_ZIP_OPTION="--with-jdk-src-zip=${JDK_ZIP}";
+    if test x${JDK7_ZIP} != "x"; then
+	JDK_ZIP_OPTION="--with-jdk-src-zip=${JDK7_ZIP}";
     fi
-    if test x${LANGTOOLS_ZIP} != "x"; then
-	LANGTOOLS_ZIP_OPTION="--with-langtools-src-zip=${LANGTOOLS_ZIP}";
+    if test x${LANGTOOLS7_ZIP} != "x"; then
+	LANGTOOLS_ZIP_OPTION="--with-langtools-src-zip=${LANGTOOLS7_ZIP}";
     fi
-    if test x${HOTSPOT_ZIP} != "x"; then
-	HOTSPOT_ZIP_OPTION="--with-hotspot-src-zip=${HOTSPOT_ZIP}";
+    if test x${HOTSPOT7_ZIP} != "x"; then
+	HOTSPOT_ZIP_OPTION="--with-hotspot-src-zip=${HOTSPOT7_ZIP}";
     fi
     if test x${JAXP7_DROP_ZIP} != "x"; then
 	JAXP_DROP_ZIP_OPTION="--with-jaxp-drop-zip=${JAXP7_DROP_ZIP}";
@@ -302,6 +309,43 @@ else
     fi
     if test x${JAMVM7_ZIP} != "x"; then
 	JAMVM_ZIP_OPTION="--with-jamvm-src-zip=${JAMVM7_ZIP}";
+    fi
+else
+    if test x${CORBA8_ZIP} != "x"; then
+	CORBA_ZIP_OPTION="--with-corba-src-zip=${CORBA8_ZIP}";
+    fi
+    if test x${JAXP8_ZIP} != "x"; then
+	JAXP_ZIP_OPTION="--with-jaxp-src-zip=${JAXP8_ZIP}";
+    fi
+    if test x${JAXWS8_ZIP} != "x"; then
+	JAXWS_ZIP_OPTION="--with-jaxws-src-zip=${JAXWS8_ZIP}";
+    fi
+    if test x${JDK8_ZIP} != "x"; then
+	JDK_ZIP_OPTION="--with-jdk-src-zip=${JDK8_ZIP}";
+    fi
+    if test x${LANGTOOLS8_ZIP} != "x"; then
+	LANGTOOLS_ZIP_OPTION="--with-langtools-src-zip=${LANGTOOLS8_ZIP}";
+    fi
+    if test x${HOTSPOT8_ZIP} != "x"; then
+	HOTSPOT_ZIP_OPTION="--with-hotspot-src-zip=${HOTSPOT8_ZIP}";
+    fi
+    if test x${JAXP8_DROP_ZIP} != "x"; then
+	JAXP_DROP_ZIP_OPTION="--with-jaxp-drop-zip=${JAXP8_DROP_ZIP}";
+    fi
+    if test x${JAF8_DROP_ZIP} != "x"; then
+	JAF_DROP_ZIP_OPTION="--with-jaf-drop-zip=${JAF8_DROP_ZIP}";
+    fi
+    if test x${JAXWS8_DROP_ZIP} != "x"; then
+	JAXWS_DROP_ZIP_OPTION="--with-jaxws-drop-zip=${JAXWS8_DROP_ZIP}";
+    fi
+    if test x${HOTSPOT8_BUILD} != "x"; then
+	HOTSPOT_BUILD_OPTION="--with-hotspot-build=${HOTSPOT8_BUILD}";
+    fi
+    if test x${CACAO8_ZIP} != "x"; then
+	CACAO_ZIP_OPTION="--with-cacao-src-zip=${CACAO8_ZIP}";
+    fi
+    if test x${JAMVM8_ZIP} != "x"; then
+	JAMVM_ZIP_OPTION="--with-jamvm-src-zip=${JAMVM8_ZIP}";
     fi
 fi
 

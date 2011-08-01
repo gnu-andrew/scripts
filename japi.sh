@@ -37,4 +37,5 @@ bin/japicompat -v -h -o ${JAPI_INSTALL}/classpath-icedtea6.html ${JAPI_INSTALL}/
 bin/japicompat -v -h -o ${JAPI_INSTALL}/icedtea7-classpath.html ${JAPI_INSTALL}/icedtea7.japi.gz ${JAPI_INSTALL}/classpath.japi.gz
 bin/japicompat -v -h -o ${JAPI_INSTALL}/classpath-icedtea7.html ${JAPI_INSTALL}/classpath.japi.gz ${JAPI_INSTALL}/icedtea7.japi.gz
 
-${JAPI_HOME}/bin/japize as ${JAPI_INSTALL}/icedtea6-jpeg packages $ICEDTEA6_INSTALL/jre/lib/rt.jar +com.sun.image.codec.jpeg
+${JAPI_HOME}/bin/japize as ${JAPI_INSTALL}/icedtea6-jpeg packages $ICEDTEA6_INSTALL/jre/lib/rt.jar +com.sun.image.codec.jpeg +sun.awt.image.codec
+

@@ -5,10 +5,11 @@
 if [ -e $JAMVM_HOME ]; then
     cd $JAMVM_HOME;
     make distclean;
-    cvs update -dP;
+    git pull;
 else
     cd `dirname $JAMVM_HOME`;
-    cvs -z3 -d:pserver:anonymous@cvs.jamvm.berlios.de:/cvsroot/jamvm co jamvm;
+    #cvs -z3 -d:pserver:anonymous@cvs.jamvm.berlios.de:/cvsroot/jamvm co jamvm;
+    git clone git://git.berlios.de/jamvm
     cd $JAMVM_HOME;
 fi
 ./autogen.sh --help
