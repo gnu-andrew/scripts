@@ -4,7 +4,7 @@
 
 if [ -e $JIKESRVM_HOME ]; then
     cd $JIKESRVM_HOME;
-    ant real-clean;
+    ant -Ddist.dir=${WORKING_DIR}/jikesrvm real-clean;
     rm -rf components;
     svn update;
 else
