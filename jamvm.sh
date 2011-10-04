@@ -5,7 +5,7 @@
 if [ -e $JAMVM_HOME ]; then
     cd $JAMVM_HOME;
     make distclean;
-    git pull;
+    git pull origin master;
 else
     cd `dirname $JAMVM_HOME`;
     #cvs -z3 -d:pserver:anonymous@cvs.jamvm.berlios.de:/cvsroot/jamvm co jamvm;

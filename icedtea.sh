@@ -134,42 +134,65 @@ elif [ $(echo $0|grep 'zero6') ]; then
     BUILD=zero6;
     OPENJDK_ZIP=$OPENJDK6_ZIP;
     OPTS="--enable-zero";
-elif [ $(echo $0|grep 'zero') ]; then
+elif [ $(echo $0|grep 'zero7') ]; then
     VERSION=icedtea7;
     BUILD=zero7;
     OPENJDK_ZIP=$OPENJDK7_ZIP;
     OPENJDK_DIR=$OPENJDK7_DIR;
     OPTS="--enable-zero";
+elif [ $(echo $0|grep 'zero') ]; then
+    VERSION=icedtea8;
+    BUILD=zero8;
+    OPENJDK_ZIP=$OPENJDK8_ZIP;
+    OPENJDK_DIR=$OPENJDK8_DIR;
+    OPTS="--enable-zero";
 elif [ $(echo $0|grep 'shark6') ]; then
     VERSION=icedtea6;
     BUILD=shark6;
     OPENJDK_ZIP=$OPENJDK6_ZIP;
-elif [ $(echo $0|grep 'shark') ]; then
+elif [ $(echo $0|grep 'shark7') ]; then
     VERSION=icedtea7;
     BUILD=shark7;
     OPENJDK_ZIP=$OPENJDK7_ZIP;
     OPENJDK_DIR=$OPENJDK7_DIR;
+elif [ $(echo $0|grep 'shark') ]; then
+    VERSION=icedtea8;
+    BUILD=shark8;
+    OPENJDK_ZIP=$OPENJDK8_ZIP;
+    OPENJDK_DIR=$OPENJDK8_DIR;
 elif [ $(echo $0|grep 'cacao6') ]; then
     VERSION=icedtea6;
     BUILD=cacao-icedtea6;
     OPENJDK_ZIP=$OPENJDK6_ZIP;
+    OPTS="--enable-cacao";
+elif [ $(echo $0|grep 'cacao7') ]; then
+    VERSION=icedtea7;
+    BUILD=cacao-icedtea7;
+    OPENJDK_ZIP=$OPENJDK7_ZIP;
+    OPENJDK_DIR=$OPENJDK7_DIR;
     OPTS="--enable-cacao";
 elif [ $(echo $0|grep 'jamvm6') ]; then
     VERSION=icedtea6;
     BUILD=jamvm-icedtea6;
     OPENJDK_ZIP=$OPENJDK6_ZIP;
     OPTS="--enable-jamvm";
-elif [ $(echo $0|grep 'cacao') ]; then
+elif [ $(echo $0|grep 'jamvm7') ]; then
     VERSION=icedtea7;
-    BUILD=cacao-icedtea7;
+    BUILD=jamvm-icedtea7;
     OPENJDK_ZIP=$OPENJDK7_ZIP;
     OPENJDK_DIR=$OPENJDK7_DIR;
+    OPTS="--enable-jamvm";
+elif [ $(echo $0|grep 'cacao') ]; then
+    VERSION=icedtea8;
+    BUILD=cacao-icedtea8;
+    OPENJDK_ZIP=$OPENJDK8_ZIP;
+    OPENJDK_DIR=$OPENJDK8_DIR;
     OPTS="--enable-cacao";
 elif [ $(echo $0|grep 'jamvm') ]; then
-    VERSION=icedtea7;
-    BUILD=jamvm-icedtea6;
-    OPENJDK_ZIP=$OPENJDK7_ZIP;
-    OPENJDK_DIR=$OPENJDK7_DIR;
+    VERSION=icedtea8;
+    BUILD=jamvm-icedtea8;
+    OPENJDK_ZIP=$OPENJDK8_ZIP;
+    OPENJDK_DIR=$OPENJDK8_DIR;
     OPTS="--enable-jamvm";
 elif [ $(echo $0|grep 'no-bootstrap') ]; then
     VERSION=icedtea7;
@@ -205,11 +228,17 @@ elif [ $(echo $0|grep 'addvm6') ]; then
     BUILD=addvm-icedtea6;
     OPENJDK_ZIP=$OPENJDK6_ZIP;
     OPTS="--with-additional-vms=cacao,shark";
-elif [ $(echo $0|grep 'addvm') ]; then
+elif [ $(echo $0|grep 'addvm7') ]; then
     VERSION=icedtea7;
     BUILD=addvm-icedtea7;
     OPENJDK_ZIP=$OPENJDK7_ZIP;
     OPENJDK_DIR=$OPENJDK7_DIR;
+    OPTS="--with-additional-vms=cacao,shark";
+elif [ $(echo $0|grep 'addvm') ]; then
+    VERSION=icedtea8;
+    BUILD=addvm-icedtea8;
+    OPENJDK_ZIP=$OPENJDK8_ZIP;
+    OPENJDK_DIR=$OPENJDK8_DIR;
     OPTS="--with-additional-vms=cacao,shark";
 elif [ $(echo $0|grep 'azul') ]; then
     VERSION=icedtea6;
@@ -291,15 +320,6 @@ elif test x${VERSION} = "xicedtea7"; then
     fi
     if test x${HOTSPOT7_ZIP} != "x"; then
 	HOTSPOT_ZIP_OPTION="--with-hotspot-src-zip=${HOTSPOT7_ZIP}";
-    fi
-    if test x${JAXP7_DROP_ZIP} != "x"; then
-	JAXP_DROP_ZIP_OPTION="--with-jaxp-drop-zip=${JAXP7_DROP_ZIP}";
-    fi
-    if test x${JAF7_DROP_ZIP} != "x"; then
-	JAF_DROP_ZIP_OPTION="--with-jaf-drop-zip=${JAF7_DROP_ZIP}";
-    fi
-    if test x${JAXWS7_DROP_ZIP} != "x"; then
-	JAXWS_DROP_ZIP_OPTION="--with-jaxws-drop-zip=${JAXWS7_DROP_ZIP}";
     fi
     if test x${HOTSPOT7_BUILD} != "x"; then
 	HOTSPOT_BUILD_OPTION="--with-hotspot-build=${HOTSPOT7_BUILD}";

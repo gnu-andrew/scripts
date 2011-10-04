@@ -16,6 +16,8 @@ rm -rf dvbtools
 mkdir dvbtools
 cd dvbtools
 $DVBTOOLS_HOME/configure --prefix=$DVBTOOLS_INSTALL
-(make ${MAKE_OPTS} all check install && echo DONE) 2>&1 | tee $DVBTOOLS_HOME/errors
+(make ${MAKE_OPTS} all &&
+ make ${MAKE_OPTS} check && 
+ make ${MAKE_OPTS} install && echo DONE) 2>&1 | tee $DVBTOOLS_HOME/errors
 
  
