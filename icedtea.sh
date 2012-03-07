@@ -56,6 +56,8 @@ elif [ $(echo $0|grep 'icedtea6-1.8') ]; then
     JAF6_DROP_ZIP=$JAF6_18_DROP_ZIP
     RELEASE="1.8"
     MAKE_OPTS=
+    ALTERNATIVE_JAVAH=${GCJ_JAVAH}
+    LEGACY_OPTS="--with-gcj-home=${CLASSPATH_JDK_INSTALL}"
 elif [ $(echo $0|grep 'icedtea6-1.9') ]; then
     VERSION=icedtea6;
     BUILD=icedtea6-1.9;
@@ -67,6 +69,7 @@ elif [ $(echo $0|grep 'icedtea6-1.9') ]; then
     HOTSPOT6_BUILD=$HOTSPOT6_1_9_BUILD
     RELEASE="1.9"
     MAKE_OPTS=
+    ALTERNATIVE_JAVAH=${GCJ_JAVAH}
 elif [ $(echo $0|grep 'icedtea6-1.10') ]; then
     VERSION=icedtea6;
     BUILD=icedtea6-1.10;
@@ -98,6 +101,32 @@ elif [ $(echo $0|grep 'icedtea6') ]; then
     BUILD=icedtea6;
     OPENJDK_ZIP=$OPENJDK6_ZIP;
     CLEAN_TREE=no;
+elif [ $(echo $0|grep 'icedtea7-2.1') ]; then
+    VERSION=icedtea7;
+    BUILD=icedtea7-2.1;
+    OPENJDK_ZIP=$OPENJDK7_21_ZIP;
+    CORBA7_ZIP=$CORBA7_21_ZIP;
+    JAXP7_ZIP=$JAXP7_21_ZIP;
+    JAXWS7_ZIP=$JAXWS7_21_ZIP;
+    JDK7_ZIP=$JDK7_21_ZIP;
+    LANGTOOLS7_ZIP=$LANGTOOLS7_21_ZIP;
+    HOTSPOT7_ZIP=$HOTSPOT7_21_ZIP;
+    MAKE_OPTS="";
+    CLEAN_TREE=no;
+    RELEASE="2.1"
+elif [ $(echo $0|grep 'icedtea7-2.0') ]; then
+    VERSION=icedtea7;
+    BUILD=icedtea7-2.0;
+    OPENJDK_ZIP=$OPENJDK7_20_ZIP;
+    CORBA7_ZIP=$CORBA7_20_ZIP;
+    JAXP7_ZIP=$JAXP7_20_ZIP;
+    JAXWS7_ZIP=$JAXWS7_20_ZIP;
+    JDK7_ZIP=$JDK7_20_ZIP;
+    LANGTOOLS7_ZIP=$LANGTOOLS7_20_ZIP;
+    HOTSPOT7_ZIP=$HOTSPOT7_20_ZIP;
+    MAKE_OPTS="";
+    CLEAN_TREE=no;
+    RELEASE="2.0"
 elif [ $(echo $0|grep 'icedtea7') ]; then
     VERSION=icedtea7;
     BUILD=icedtea7;
@@ -467,10 +496,10 @@ if test x${ICEDTEA_WITH_NETX} = "xno"; then
     PLUGIN_OPTION="--disable-webstart";
 fi
 
-if test x${ICEDTEA_JAVAH} = "x"; then
-    JAVAH_OPTION="--with-javah=${CLASSPATH_JDK_INSTALL}/bin/javah";
+if test x${ALTERNATIVE_JAVAH} = "x"; then
+    JAVAH_OPTION="--with-javah=${CLASSPATH_JAVAH}";
 else
-    JAVAH_OPTION="--with-javah=${ICEDTEA_JAVAH}";
+    JAVAH_OPTION="--with-javah=${ALTERNATIVE_JAVAH}";
 fi
 
 if test x${ICEDTEA_WITH_NSS} = "xyes"; then
@@ -513,7 +542,7 @@ CONFIG_OPTS="--with-parallel-jobs=${PARALLEL_JOBS} \
     ${SYSTEMTAP_OPTION} --with-abs-install-dir=${INSTALLATION_DIR} ${NIMBUS_GEN_OPTION} ${XRENDER_OPTION} \
     ${PLUGIN_OPTION} ${NEW_PLUGIN_OPTION} ${NSS_OPTION} ${NIO2_OPTION} ${OPTS} \
     ${JAXP_DROP_ZIP_OPTION} ${JAF_DROP_ZIP_OPTION} ${JAXWS_DROP_ZIP_OPTION} ${HOTSPOT_BUILD_OPTION} \
-    ${JAMVM_OPTION} ${JAMVM_ZIP_OPTION}"
+    ${JAMVM_OPTION} ${JAMVM_ZIP_OPTION} ${JAVAH_OPTION} ${LEGACY_OPTS}"
 
 if test "${BUILD}" = "azul"; then
     export PKG_CONFIG_PATH=${AZTOOLS_INSTALL}/lib/pkgconfig

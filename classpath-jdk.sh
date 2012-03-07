@@ -54,12 +54,14 @@ gen_script jarsigner gnu.classpath.tools.jarsigner.Main
 gen_script serialver gnu.classpath.tools.serialver.Main
 gen_script rmiregistry gnu.classpath.tools.rmiregistry.Main jre
 gen_script keytool gnu.classpath.tools.keytool.Main jre
-gen_script native2ascii gnu.classpath.tools.native2ascii.Main jre
+gen_script native2ascii gnu.classpath.tools.native2ascii.Native2ASCII jre
 gen_script orbd gnu.classpath.tools.orbd.Main jre
 gen_script rmid gnu.classpath.tools.rmid.Main jre
 gen_script tnameserv gnu.classpath.tools.tnameserv.Main jre
 
 mkdir -pv ${JDK_DIR}/jre/lib/${JDK_ARCH}/client
+ln -sv $(dirname ${VM_BINARY})/../lib/libjvm.so ${JDK_DIR}/jre/lib/${JDK_ARCH}/client
+ln -sv client ${JDK_DIR}/jre/lib/${JDK_ARCH}/server
 
 ln -sv ${CLASSPATH_RT} ${JDK_DIR}/jre/lib/rt.jar
 ln -sv ${CLASSPATH_TOOLS} ${JDK_DIR}/lib/tools.jar

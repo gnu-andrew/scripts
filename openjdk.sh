@@ -48,9 +48,17 @@ JAXP_ONLY="
     BUILD_HOTSPOT=false \
     ALT_JDK_IMPORT_PATH=${ICEDTEA7_INSTALL}"
 
+CORBA_ONLY="
+    BUILD_JAXP=false \
+    BUILD_JAXWS=false \
+    BUILD_LANGTOOLS=false \
+    BUILD_JDK=false \
+    BUILD_HOTSPOT=false \
+    ALT_JDK_IMPORT_PATH=${SYSTEM_ICEDTEA7}"
+
 # Warnings?
 if test "x${OPENJDK_WITH_WARNINGS}" = "xyes"; then
-     WARNINGS="JAVAC_MAX_WARNINGS=true"
+     WARNINGS='JAVAC_MAX_WARNINGS=true JAVAC_WARNINGS_FATAL=true'
 fi
 
 #    GENSRCDIR=/tmp/generated
@@ -69,9 +77,10 @@ if test "x$BUILD_DIR" = "x"; then
     exit -1;
 fi
 (echo Building in ${WORKING_DIR}/$BUILD_DIR &&
-ANT_RESPECT_JAVA_HOME=true LANG=C make ALT_BOOTDIR=${SYSTEM_ICEDTEA6} \
+ANT_RESPECT_JAVA_HOME=true LANG=C make ALT_BOOTDIR=${SYSTEM_ICEDTEA7} \
     ALT_OUTPUTDIR=${WORKING_DIR}/${BUILD_DIR} \
     ALT_PARALLEL_COMPILE_JOBS=$PARALLEL_JOBS \
+    ALT_DROPS_DIR=${DROPS_DIR} \
     HOTSPOT_BUILD_JOBS=$PARALLEL_JOBS \
     ANT=/usr/bin/ant \
     QUIETLY="" \
@@ -106,6 +115,7 @@ ANT_RESPECT_JAVA_HOME=true LANG=C make ALT_BOOTDIR=${SYSTEM_ICEDTEA6} \
     FONTCONFIG_LIBS="$(pkg-config --libs fontconfig)" \
     NO_DOCS="true" \
     COMPILE_AGAINST_SYSCALLS="true" \
-    ${ZERO_SUPPORT} ${AZUL_SUPPORT} ${JAXP_ONLY} \
+    OTHER_JAVACFLAGS="-Xmaxwarns 10000" \
+    ${ZERO_SUPPORT} ${AZUL_SUPPORT} \
     ${WARNINGS} STATIC_CXX=false \
 ) 2>&1 | tee errors
