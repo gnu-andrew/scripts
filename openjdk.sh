@@ -118,4 +118,5 @@ ANT_RESPECT_JAVA_HOME=true LANG=C make ALT_BOOTDIR=${SYSTEM_ICEDTEA7} \
     OTHER_JAVACFLAGS="-Xmaxwarns 10000" \
     ${ZERO_SUPPORT} ${AZUL_SUPPORT} \
     ${WARNINGS} STATIC_CXX=false \
+    ALT_STRIP_POLICY=no_strip \
 ) 2>&1 | tee errors

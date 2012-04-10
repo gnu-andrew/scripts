@@ -8,7 +8,7 @@ MAKE_OPTS=
 # Don't use Gentoo's dumb variable
 JAVAC=
 
-if test x$1 != "x"; then
+if test x$1 = "xrelease"; then
     CP_HOME=${CLASSPATH_RELEASE_HOME};
     CP_REV="classpath-0_97-release-branch";
     BUILD_DIR=${WORKING_DIR}/classpath.release;
@@ -17,10 +17,12 @@ if test x$1 != "x"; then
 	find ${BUILD_DIR} -type f -exec chmod 640 '{}' ';';
 	find ${BUILD_DIR} -type d -exec chmod 750 '{}' ';';
     fi
+    ERROR_LOG="${CLASSPATH_HOME}/errors.release"
 else
     CP_HOME=${CLASSPATH_HOME};
     BUILD_DIR=${WORKING_DIR}/classpath;
     INSTALL_DIR=${CLASSPATH_INSTALL};
+    ERROR_LOG="${CLASSPATH_HOME}/errors"
 fi
 
 if [ -e $CP_HOME ]; then
@@ -74,14 +76,13 @@ ${CP_HOME}/configure --prefix=${INSTALL_DIR} --enable-examples \
     ${JAVAH_OPTION} \
     ${WERROR_OPTION} --with-ecj-jar=${ECJ_JAR} ${GSTREAMER_OPTION} \
     ${QT_OPTION} ${TOOL_OPTION} ${DOCS_OPTION} ${PLUGIN_OPTION} &&
-if test x$1 != "x"; then
+if test x$1 = "xrelease"; then
     make distcheck && echo DONE;
     #rm -rf $HOME/projects/httpdocs/classpath/doc;
     #mv ${BUILD_DIR}/doc/api/html $HOME/projects/httpdocs/classpath/doc; 
 else
-    make ${MAKE_OPTS} all install;
-fi && echo DONE &&
-ln -sf ${CACAO_INSTALL}/lib/libjvm.so ${INSTALL_DIR}/lib) 2>&1 | tee $CLASSPATH_HOME/errors
-
+    make ${MAKE_OPTS} all dvi install && \
+    ln -sf ${CACAO_INSTALL}/lib/libjvm.so ${INSTALL_DIR}/lib
+fi) 2>&1 | tee ${ERROR_LOG} && echo DONE
 
 

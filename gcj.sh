@@ -20,7 +20,7 @@ echo "Building ${GCC_HOME} in ${WORKING_DIR}/${BUILD} for installation in ${GCC_
 
 if [ -e $GCC_HOME ]; then
     cd $GCC_HOME;
-    ./contrib/gcc_update 2>&1 | tee $GCC_HOME/update_output;
+    #./contrib/gcc_update 2>&1 | tee $GCC_HOME/update_output;
 else
     cd `dirname $GCC_HOME`;
     svn co svn+ssh://gandalf@gcc.gnu.org/svn/gcc/branches/gcc-4_3-branch;
