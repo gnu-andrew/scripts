@@ -12,4 +12,4 @@ cd $AUDACIOUS_PLUGINS_HOME
 PKG_CONFIG_PATH=${AUDACIOUS_INSTALL}/lib/pkgconfig ./configure --prefix=$AUDACIOUS_INSTALL &&
 make ${MAKE_OPTS} && 
 make ${MAKE_OPTS} install &&
-echo DONE) 2>&1 | tee $AUDACIOUS_PLUGINS_HOME/errors
+echo DONE) 2>&1 | tee ${LOG_DIR}/$0.errors

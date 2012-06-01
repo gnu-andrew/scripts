@@ -15,6 +15,6 @@ rm -rf llvm
 mkdir llvm
 cd llvm
 $LLVM_HOME/configure --prefix=$LLVM_INSTALL --enable-pic --with-pic
-(make ${MAKE_OPTS} all check install && echo DONE) 2>&1 | tee $LLVM_HOME/errors
+(make ${MAKE_OPTS} all check install && echo DONE) 2>&1 | tee ${LOG_DIR}/$0.errors
 
  

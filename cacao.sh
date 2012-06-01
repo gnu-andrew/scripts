@@ -20,4 +20,4 @@ rm -rf cacao
 cd cacao &&
 $CACAO_HOME/configure --prefix=$CACAO_INSTALL --with-java-runtime-library-prefix=$CLASSPATH_INSTALL \
     --enable-statistics &&
-make $MAKE_OPTS && make install) 2>&1 | tee $CACAO_HOME/errors && echo DONE
+make $MAKE_OPTS && make install) 2>&1 | tee ${LOG_DIR}/$0.errors && echo DONE

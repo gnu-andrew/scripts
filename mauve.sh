@@ -26,4 +26,5 @@ cd ${BUILD_DIR} &&
 JAVAC=${CLASSPATH_JDK_INSTALL}/bin/javac ${MAUVE_HOME}/configure --with-vm=${TEST_VM} --with-ecj-jar=${ECJ_JAR} --enable-auto-compilation &&
 make ${MAKE_OPTS} &&
 echo DONE
-) 2>&1 | tee $MAUVE_HOME/errors
+) 2>&1 | tee ${LOG_DIR}/$0.errors
+

@@ -132,6 +132,7 @@ TRIM_DEBUG=yes
 AZTOOLS_HOME=$HOME/projects/openjdk/mri/aztools
 AZTOOLS_INSTALL=$INSTALL_DIR/aztools
 AZHOTSPOT=${WORKING_DIR}/openjdk.mri/hotspot
+LOG_DIR=${WORKING_DIR}/logs
 
 if test "${ARCH}" == "x86_64"; then
     JDK_ARCH=amd64;

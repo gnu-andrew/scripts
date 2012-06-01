@@ -21,4 +21,4 @@ fi
 
 cd trim &&
 $TRIM_HOME/configure --prefix=$TRIM_INSTALL $DEBUG &&
-make all install && echo DONE) 2>&1 | tee $TRIM_HOME/errors
+make all install && echo DONE) 2>&1 | tee ${LOG_DIR}/$0.errors

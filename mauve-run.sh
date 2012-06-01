@@ -13,4 +13,5 @@ fi
 cd ${BUILD_DIR} &&
 xvfb-run ${VM} Harness gnu.testlet -vm ${TEST_VM} -showpasses -timeout 180000 &&
 echo DONE
-) 2>&1 | tee $MAUVE_HOME/test_run
+) 2>&1 | tee ${LOG_DIR}/$0-test_run
+

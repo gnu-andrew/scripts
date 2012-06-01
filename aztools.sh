@@ -17,4 +17,4 @@ mkdir aztools
 
 cd aztools &&
 $AZTOOLS_HOME/configure --prefix=$AZTOOLS_INSTALL &&
-make all install && echo DONE) 2>&1 | tee $AZTOOLS_HOME/errors
+make all install && echo DONE) 2>&1 | tee ${LOG_DIR}/$0.errors

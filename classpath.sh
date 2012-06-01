@@ -17,12 +17,12 @@ if test x$1 = "xrelease"; then
 	find ${BUILD_DIR} -type f -exec chmod 640 '{}' ';';
 	find ${BUILD_DIR} -type d -exec chmod 750 '{}' ';';
     fi
-    ERROR_LOG="${CLASSPATH_HOME}/errors.release"
+    ERROR_LOG="${LOG_DIR}/$0.release"
 else
     CP_HOME=${CLASSPATH_HOME};
     BUILD_DIR=${WORKING_DIR}/classpath;
     INSTALL_DIR=${CLASSPATH_INSTALL};
-    ERROR_LOG="${CLASSPATH_HOME}/errors"
+    ERROR_LOG="${LOG_DIR}/$0"
 fi
 
 if [ -e $CP_HOME ]; then

@@ -598,4 +598,4 @@ else
 	ln -s ${INSTALL_DIR}/${BUILD} ${BUILD_DIR}/openjdk/build/${OS}-${JDK_ARCH}/j2sdk-image
     fi) &&
     echo DONE
-fi) 2>&1 | tee $ICEDTEA_HOME/errors
+fi) 2>&1 | tee ${LOG_DIR}/$0.errors

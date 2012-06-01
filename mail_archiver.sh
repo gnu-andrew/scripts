@@ -16,4 +16,4 @@ rm -rf archiver
 mkdir archiver
 cd archiver &&
 $ARCHIVER_HOME/configure --prefix=$ARCHIVER_INSTALL &&
-make all install && echo DONE) 2>&1 | tee $ARCHIVER_HOME/errors
+make all install && echo DONE) 2>&1 | tee ${LOG_DIR}/$0.errors

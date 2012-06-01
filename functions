@@ -21,4 +21,9 @@ if [ ! -e $HOME/projects/scripts/environment ]; then
 	exit -1;
 else
 	. $HOME/projects/scripts/environment;
+	if test "x${LOG_DIR}" = "x"; then
+	  echo "ERROR: LOG_DIR not set";
+	  exit -1;
+	fi
+	mkdir -p ${LOG_DIR}
 fi

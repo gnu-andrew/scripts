@@ -26,7 +26,7 @@ mkdir ${BUILD_DIR} &&
 (cd ${BUILD_DIR} &&
 JAVA=$VM JAVAC=ecj \
 ${CLASSPATH_TOOLS_HOME}/configure --prefix=${CLASSPATH_TOOLS_INSTALL} --without-gnu-bytecode --disable-native
-make ${MAKE_OPTS} all install) 2>&1 | tee $CLASSPATH_TOOLS_HOME/errors && echo DONE;
+make ${MAKE_OPTS} all install) 2>&1 | tee ${LOG_DIR}/$0.errors && echo DONE;
 
 
 

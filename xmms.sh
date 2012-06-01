@@ -20,4 +20,4 @@ cd xmms &&
 $XMMS_HOME/configure --prefix=$XMMS_INSTALL $DEBUG &&
 make ${MAKE_OPTS} && 
 make ${MAKE_OPTS} install &&
-echo DONE) 2>&1 | tee $XMMS_HOME/errors
+echo DONE) 2>&1 | tee ${LOG_DIR}/$0.errors

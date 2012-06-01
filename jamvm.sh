@@ -18,5 +18,5 @@ create_working_dir
 mkdir jamvm &&
 cd jamvm &&
 $JAMVM_HOME/configure --with-classpath-install-dir=$CLASSPATH_INSTALL --prefix=$JAMVM_INSTALL
-make $MAKE_OPTS && make install && echo DONE ) 2>&1 | tee $JAMVM_HOME/errors 
+make $MAKE_OPTS && make install && echo DONE ) 2>&1 | tee ${LOG_DIR}/$0.errors 
 

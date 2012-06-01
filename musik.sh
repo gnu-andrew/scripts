@@ -31,4 +31,5 @@ if test "x$1" = "xrelease"; then
     DISTCHECK_CONFIGURE_FLAGS=${CONFIG_OPTS} make distcheck && echo DONE;
 else
     make all install && echo DONE
-fi) 2>&1 | tee $MUSIK_HOME/errors
+fi) 2>&1 | tee ${LOG_DIR}/$0.errors
+

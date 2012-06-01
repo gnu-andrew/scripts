@@ -35,4 +35,4 @@ $GCC_HOME/configure --prefix=$GCC_INSTALL --disable-multilib --enable-languages=
     --with-java-home=$GCC_INSTALL --enable-java-home --enable-java-maintainer-mode \
     --with-jvm-root-dir=$GCC_INSTALL/jdk --with-jvm-jar-dir=$GCC_INSTALL/jvm-exports \
     --with-ecj-jar=${GCJ_ECJ_JAR} &&
-    make ${MAKE_OPTS} && make install && echo DONE) 2>&1 | tee $GCC_HOME/errors
+    make ${MAKE_OPTS} && make install && echo DONE) 2>&1 | tee ${LOG_DIR}/$0.errors
