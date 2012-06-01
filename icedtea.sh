@@ -80,6 +80,14 @@ elif [ $(echo $0|grep 'icedtea6-1.10') ]; then
     HOTSPOT6_ZIP=$HOTSPOT6_1_10_ZIP
     HOTSPOT6_BUILD=$HOTSPOT6_1_10_BUILD
     RELEASE="1.10"
+elif [ $(echo $0|grep 'icedtea6-1.11') ]; then
+    VERSION=icedtea6;
+    BUILD=icedtea6-1.11;
+    OPENJDK_ZIP=$OPENJDK6_B24_ZIP;
+    JAXP6_DROP_ZIP=$JAXP6_1_11_DROP_ZIP
+    JAXWS6_DROP_ZIP=$JAXWS6_1_11_DROP_ZIP
+    JAF6_DROP_ZIP=$JAF6_1_11_DROP_ZIP
+    RELEASE="1.11"
 elif [ $(echo $0|grep 'icedtea6-hg') ]; then
     VERSION=icedtea6;
     BUILD=icedtea6-hg;
@@ -114,6 +122,19 @@ elif [ $(echo $0|grep 'icedtea7-2.1') ]; then
     MAKE_OPTS="";
     CLEAN_TREE=no;
     RELEASE="2.1"
+elif [ $(echo $0|grep 'icedtea7-2.2') ]; then
+    VERSION=icedtea7;
+    BUILD=icedtea7-2.2;
+    OPENJDK_ZIP=$OPENJDK7_22_ZIP;
+    CORBA7_ZIP=$CORBA7_22_ZIP;
+    JAXP7_ZIP=$JAXP7_22_ZIP;
+    JAXWS7_ZIP=$JAXWS7_22_ZIP;
+    JDK7_ZIP=$JDK7_22_ZIP;
+    LANGTOOLS7_ZIP=$LANGTOOLS7_22_ZIP;
+    HOTSPOT7_ZIP=$HOTSPOT7_22_ZIP;
+    MAKE_OPTS="";
+    CLEAN_TREE=no;
+    RELEASE="2.2"
 elif [ $(echo $0|grep 'icedtea7-2.0') ]; then
     VERSION=icedtea7;
     BUILD=icedtea7-2.0;
@@ -127,6 +148,23 @@ elif [ $(echo $0|grep 'icedtea7-2.0') ]; then
     MAKE_OPTS="";
     CLEAN_TREE=no;
     RELEASE="2.0"
+elif [ $(echo $0|grep 'icedtea7-bootstrap7') ]; then
+    VERSION=icedtea7;
+    BUILD=icedtea7-icedtea7-bootstrap;
+    OPENJDK_ZIP=$OPENJDK7_ZIP;
+    OPENJDK_DIR=$OPENJDK7_DIR;
+    OPTS="--with-jdk-home=${BOOTSTRAP_ICEDTEA7}"
+elif [ $(echo $0|grep 'icedtea7-bootstrap6') ]; then
+    VERSION=icedtea7;
+    BUILD=icedtea7-icedtea6-bootstrap;
+    OPENJDK_ZIP=$OPENJDK7_ZIP;
+    OPENJDK_DIR=$OPENJDK7_DIR;
+    OPTS="--with-jdk-home=${BOOTSTRAP_ICEDTEA6}"
+elif [ $(echo $0|grep 'icedtea6-bootstrap6') ]; then
+    VERSION=icedtea6;
+    BUILD=icedtea6-icedtea6-bootstrap;
+    OPENJDK_ZIP=$OPENJDK6_ZIP;
+    OPTS="--with-jdk-home=${BOOTSTRAP_ICEDTEA6}"
 elif [ $(echo $0|grep 'icedtea7') ]; then
     VERSION=icedtea7;
     BUILD=icedtea7;
@@ -223,28 +261,17 @@ elif [ $(echo $0|grep 'jamvm') ]; then
     OPENJDK_ZIP=$OPENJDK8_ZIP;
     OPENJDK_DIR=$OPENJDK8_DIR;
     OPTS="--enable-jamvm";
+elif [ $(echo $0|grep 'no-bootstrap6') ]; then
+    VERSION=icedtea6;
+    BUILD=icedtea6-no-bootstrap;
+    OPENJDK_ZIP=$OPENJDK6_ZIP;
+    OPTS="${ICEDTEA_BUILD_OPT}";
 elif [ $(echo $0|grep 'no-bootstrap') ]; then
     VERSION=icedtea7;
     BUILD=icedtea7-no-bootstrap;
     OPENJDK_ZIP=$OPENJDK7_ZIP;
     OPENJDK_DIR=$OPENJDK7_DIR;
     OPTS="${ICEDTEA_BUILD_OPT}";
-elif [ $(echo $0|grep 'no-bootstrap6') ]; then
-    VERSION=icedtea6;
-    BUILD=icedtea6-no-bootstrap;
-    OPENJDK_ZIP=$OPENJDK6_ZIP;
-    OPTS="${ICEDTEA_BUILD_OPT}";
-elif [ $(echo $0|grep 'icedtea-bootstrap') ]; then
-    VERSION=icedtea7;
-    BUILD=icedtea-icedtea-bootstrap;
-    OPENJDK_ZIP=$OPENJDK7_ZIP;
-    OPENJDK_DIR=$OPENJDK7_DIR;
-    OPTS="--with-jdk-home=${BOOTSTRAP_ICEDTEA6}"
-elif [ $(echo $0|grep 'icedtea-bootstrap6') ]; then
-    VERSION=icedtea6;
-    BUILD=icedtea6-icedtea-bootstrap;
-    OPENJDK_ZIP=$OPENJDK6_ZIP;
-    OPTS="--with-jdk-home=${BOOTSTRAP_ICEDTEA6}"
 elif [ $(echo $0|grep 'icedtea-1.9') ]; then
     VERSION=icedtea7;
     BUILD=icedtea-1.9;
@@ -542,7 +569,7 @@ CONFIG_OPTS="--with-parallel-jobs=${PARALLEL_JOBS} \
     ${SYSTEMTAP_OPTION} --with-abs-install-dir=${INSTALLATION_DIR} ${NIMBUS_GEN_OPTION} ${XRENDER_OPTION} \
     ${PLUGIN_OPTION} ${NEW_PLUGIN_OPTION} ${NSS_OPTION} ${NIO2_OPTION} ${OPTS} \
     ${JAXP_DROP_ZIP_OPTION} ${JAF_DROP_ZIP_OPTION} ${JAXWS_DROP_ZIP_OPTION} ${HOTSPOT_BUILD_OPTION} \
-    ${JAMVM_OPTION} ${JAMVM_ZIP_OPTION} ${JAVAH_OPTION} ${LEGACY_OPTS}"
+    ${JAMVM_OPTION} ${JAMVM_ZIP_OPTION} ${JAVAH_OPTION} ${LEGACY_OPTS} --disable-downloading"
 
 if test "${BUILD}" = "azul"; then
     export PKG_CONFIG_PATH=${AZTOOLS_INSTALL}/lib/pkgconfig

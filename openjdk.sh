@@ -106,8 +106,8 @@ ANT_RESPECT_JAVA_HOME=true LANG=C make ALT_BOOTDIR=${SYSTEM_ICEDTEA7} \
     PNG_CFLAGS="$(pkg-config --cflags libpng)" \
     PNG_LIBS="$(pkg-config --libs libpng)" \
     GIF_LIBS="-lgif" \
-    GTK_CFLAGS="$(pkg-config --cflags gtk+-2.0)" \
-    GTK_LIBS="$(pkg-config --libs gtk+-2.0)" \
+    GTK_CFLAGS="$(pkg-config --cflags gtk+-2.0 gthread-2.0)" \
+    GTK_LIBS="$(pkg-config --libs gtk+-2.0 gthread-2.0)" \
     GIO_CFLAGS="$(pkg-config --cflags gio-2.0)" \
     GIO_LIBS="$(pkg-config --libs gio-2.0)" \
     CUPS_LIBS="-lcups" \
@@ -118,5 +118,5 @@ ANT_RESPECT_JAVA_HOME=true LANG=C make ALT_BOOTDIR=${SYSTEM_ICEDTEA7} \
     OTHER_JAVACFLAGS="-Xmaxwarns 10000" \
     ${ZERO_SUPPORT} ${AZUL_SUPPORT} \
     ${WARNINGS} STATIC_CXX=false \
-    ALT_STRIP_POLICY=no_strip \
+    STRIP_POLICY=no_strip \
 ) 2>&1 | tee errors

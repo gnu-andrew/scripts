@@ -8,6 +8,10 @@ if [ -e $MAUVE_HOME ]; then
     cd $MAUVE_HOME;
     cvs update -dP;
     make distclean;
+    aclocal;
+    autoheader -ac;
+    automake;
+    autoconf;
 else
     cd `dirname $MAUVE_HOME`;
     cvs -z3 -d:pserver:anoncvs@sources.redhat.com:/cvs/mauve co mauve
@@ -16,11 +20,10 @@ fi
 autoreconf &&
 create_working_dir
 (
-exec > $MAUVE_HOME/errors 2>&1
 rm -rf ${BUILD_DIR} &&
 mkdir ${BUILD_DIR} &&
 cd ${BUILD_DIR} &&
-${MAUVE_HOME}/configure --with-vm=${TEST_VM} --with-ecj-jar=${ECJ_JAR} --enable-auto-compilation &&
+JAVAC=${CLASSPATH_JDK_INSTALL}/bin/javac ${MAUVE_HOME}/configure --with-vm=${TEST_VM} --with-ecj-jar=${ECJ_JAR} --enable-auto-compilation &&
 make ${MAKE_OPTS} &&
-xvfb-run ${VM} Harness gnu.testlet -vm ${TEST_VM} -showpasses -timeout 180000
-)
+echo DONE
+) 2>&1 | tee $MAUVE_HOME/errors
