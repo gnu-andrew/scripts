@@ -35,7 +35,7 @@ chmod -R u+w ${BUILD_DIR}
 rm -rf ${BUILD_DIR}
 mkdir ${BUILD_DIR}
 
-CONFIG_OPTS="--prefix=$ICEDTEA_WEB_INSTALL ${CHOST_OPTION} --with-jdk-home=${ICEDTEA_WEB_JDK}"
+CONFIG_OPTS="--prefix=$ICEDTEA_WEB_INSTALL ${CHOST_OPTION} --with-jdk-home=${ICEDTEA_WEB_JDK} --disable-plugin"
 
 cd ${BUILD_DIR} &&
 $ICEDTEA_WEB_HOME/configure ${CONFIG_OPTS} &&

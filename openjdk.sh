@@ -37,6 +37,10 @@ fi
 
 AZUL_SUPPORT="AVX_INCLUDE_DIR=-I/home/andrew/build/aztools/include AZNIX_API_VERSION=200"
 
+NO_HOTSPOT="
+    BUILD_HOTSPOT=false \
+    ALT_JDK_IMPORT_PATH=${BUILDVM}"
+
 JDK_ONLY="
     BUILD_CORBA=false \
     BUILD_JAXP=false \
@@ -110,6 +114,7 @@ ARGS="ALT_BOOTDIR=${BUILDVM} \
     DEBUG_BINARIES=true \
     DEBUG_CLASSFILES=true \
     DISABLE_INTREE_EC=true \
+    SYSTEM_ZLIB=true \
     ${SYSTEM_LCMS} \
     ${SYSTEM_GIO} \
     USE_SYSTEM_ZLIB=true \

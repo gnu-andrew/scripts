@@ -206,6 +206,7 @@ elif [ $(echo $0|grep 'zero7') ]; then
     BUILD=zero7;
     OPENJDK_ZIP=$OPENJDK7_ZIP;
     OPENJDK_DIR=$OPENJDK7_DIR;
+    HOTSPOT7_ZIP=$ZERO7_ZIP;
     OPTS="--enable-zero";
 elif [ $(echo $0|grep 'zero') ]; then
     VERSION=icedtea8;

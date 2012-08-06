@@ -84,5 +84,5 @@ else
     make ${MAKE_OPTS} all dvi install && \
     ln -sf ${CACAO_INSTALL}/lib/libjvm.so ${INSTALL_DIR}/lib
 fi) 2>&1 | tee ${ERROR_LOG} && echo DONE
-
-
+cat ${LOG_DIR}/$0.errors|grep WAR|awk {print }|sort|uniq -c|sort -n 2>&1 | tee ${LOG_DIR}/$0.stats
+cat ${ERROR_LOG}|grep 'warnings'
