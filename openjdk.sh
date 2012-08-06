@@ -10,6 +10,19 @@ JDK_HOME=
 LD_LIBRARY_PATH=
 CLASSPATH=
 
+if [ -e ${PWD}/common ] ; then
+    VERSION=OpenJDK8;
+    BUILDVM=${SYSTEM_ICEDTEA7};
+else
+    VERSION=OpenJDK7;
+    BUILDVM=${SYSTEM_ICEDTEA6};
+fi
+if test "x${BUILDVM}" = "x"; then
+    echo "No build VM available.  Exiting.";
+    exit -1;
+fi
+echo "Building ${VERSION} using ${BUILDVM}"
+
 # Add Zero support
 if test "x${OPENJDK_WITH_ZERO}" = "xyes"; then
 ZERO_SUPPORT="
@@ -30,7 +43,7 @@ JDK_ONLY="
     BUILD_JAXWS=false \
     BUILD_LANGTOOLS=false \
     BUILD_HOTSPOT=false \
-    ALT_JDK_IMPORT_PATH=${ICEDTEA7_INSTALL}"
+    ALT_JDK_IMPORT_PATH=${BUILDVM}"
 
 JAXWS_ONLY="
     BUILD_CORBA=false \
@@ -38,7 +51,7 @@ JAXWS_ONLY="
     BUILD_LANGTOOLS=false \
     BUILD_JDK=false \
     BUILD_HOTSPOT=false \
-    ALT_JDK_IMPORT_PATH=${ICEDTEA7_INSTALL}"
+    ALT_JDK_IMPORT_PATH=${BUILDVM}"
 
 JAXP_ONLY="
     BUILD_CORBA=false \
@@ -46,7 +59,7 @@ JAXP_ONLY="
     BUILD_LANGTOOLS=false \
     BUILD_JDK=false \
     BUILD_HOTSPOT=false \
-    ALT_JDK_IMPORT_PATH=${ICEDTEA7_INSTALL}"
+    ALT_JDK_IMPORT_PATH=${BUILDVM}"
 
 CORBA_ONLY="
     BUILD_JAXP=false \
@@ -54,7 +67,7 @@ CORBA_ONLY="
     BUILD_LANGTOOLS=false \
     BUILD_JDK=false \
     BUILD_HOTSPOT=false \
-    ALT_JDK_IMPORT_PATH=${SYSTEM_ICEDTEA7}"
+    ALT_JDK_IMPORT_PATH=${BUILDVM}"
 
 # Warnings?
 if test "x${OPENJDK_WITH_WARNINGS}" = "xyes"; then
@@ -69,6 +82,7 @@ fi
 if test "x${ICEDTEA_WITH_SYSTEM_GIO}" = "xyes"; then
     SYSTEM_GIO="USE_SYSTEM_GIO=true GIO_CFLAGS=\"$(pkg-config --cflags gio-2.0)\" GIO_LIBS=\"$(pkg-config --libs gio-2.0)\""
 fi
+
 
 #    GENSRCDIR=/tmp/generated
 #    USE_SYSTEM_GCONF=true \
@@ -86,7 +100,7 @@ if test "x$BUILD_DIR" = "x"; then
     exit -1;
 fi
 (echo Building in ${WORKING_DIR}/$BUILD_DIR &&
-ARGS="ALT_BOOTDIR=${SYSTEM_ICEDTEA6} \
+ARGS="ALT_BOOTDIR=${BUILDVM} \
     ALT_OUTPUTDIR=${WORKING_DIR}/${BUILD_DIR} \
     ALT_PARALLEL_COMPILE_JOBS=$PARALLEL_JOBS \
     ALT_DROPS_DIR=${DROPS_DIR} \
