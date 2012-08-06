@@ -549,6 +549,14 @@ if test x${ICEDTEA_WITH_HOTSPOT_TESTS} = "xno"; then
     TESTS_OPTION="${TESTS_OPTION} --disable-hotspot-tests"
 fi
 
+if test x${ICEDTEA_WITH_SYSTEM_LCMS} = "xno"; then
+    LCMS_OPTION="--disable-system-lcms"
+fi
+
+if test x${ICEDTEA_WITH_SYSTEM_GIO} = "xno"; then
+    GIO_OPTION="--disable-system-gio"
+fi
+
 RT_JAR=${CLASSPATH_INSTALL}/share/classpath/glibj.zip
 
 if test x${CHOST} != "x"; then
@@ -569,7 +577,8 @@ CONFIG_OPTS="--with-parallel-jobs=${PARALLEL_JOBS} \
     ${SYSTEMTAP_OPTION} --with-abs-install-dir=${INSTALLATION_DIR} ${NIMBUS_GEN_OPTION} ${XRENDER_OPTION} \
     ${PLUGIN_OPTION} ${NEW_PLUGIN_OPTION} ${NSS_OPTION} ${NIO2_OPTION} ${OPTS} \
     ${JAXP_DROP_ZIP_OPTION} ${JAF_DROP_ZIP_OPTION} ${JAXWS_DROP_ZIP_OPTION} ${HOTSPOT_BUILD_OPTION} \
-    ${JAMVM_OPTION} ${JAMVM_ZIP_OPTION} ${JAVAH_OPTION} ${LEGACY_OPTS} --disable-downloading"
+    ${JAMVM_OPTION} ${JAMVM_ZIP_OPTION} ${JAVAH_OPTION} ${LEGACY_OPTS} ${LCMS_OPTION} ${GIO_OPTION} \
+    --disable-downloading"
 
 if test "${BUILD}" = "azul"; then
     export PKG_CONFIG_PATH=${AZTOOLS_INSTALL}/lib/pkgconfig

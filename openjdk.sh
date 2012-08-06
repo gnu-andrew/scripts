@@ -61,6 +61,15 @@ if test "x${OPENJDK_WITH_WARNINGS}" = "xyes"; then
      WARNINGS='JAVAC_MAX_WARNINGS=true JAVAC_WARNINGS_FATAL=true'
 fi
 
+# System libraries
+if test "x${ICEDTEA_WITH_SYSTEM_LCMS}" = "xyes"; then
+    SYSTEM_LCMS="USE_SYSTEM_LCMS=true LCMS_LIBS=\"$(pkg-config --libs lcms2)\" LCMS_CFLAGS=\"$(pkg-config --cflags lcms2)\""
+fi
+
+if test "x${ICEDTEA_WITH_SYSTEM_GIO}" = "xyes"; then
+    SYSTEM_GIO="USE_SYSTEM_GIO=true GIO_CFLAGS=\"$(pkg-config --cflags gio-2.0)\" GIO_LIBS=\"$(pkg-config --libs gio-2.0)\""
+fi
+
 #    GENSRCDIR=/tmp/generated
 #    USE_SYSTEM_GCONF=true \
 #    GCONF_CFLAGS="$(pkg-config --cflags gconf-2.0)" \
@@ -77,17 +86,18 @@ if test "x$BUILD_DIR" = "x"; then
     exit -1;
 fi
 (echo Building in ${WORKING_DIR}/$BUILD_DIR &&
-ANT_RESPECT_JAVA_HOME=true LANG=C make ALT_BOOTDIR=${SYSTEM_ICEDTEA7} \
+ARGS="ALT_BOOTDIR=${SYSTEM_ICEDTEA6} \
     ALT_OUTPUTDIR=${WORKING_DIR}/${BUILD_DIR} \
     ALT_PARALLEL_COMPILE_JOBS=$PARALLEL_JOBS \
     ALT_DROPS_DIR=${DROPS_DIR} \
     HOTSPOT_BUILD_JOBS=$PARALLEL_JOBS \
     ANT=/usr/bin/ant \
     QUIETLY="" \
-    DEBUG_BINARIES="true" \
-    DEBUG_CLASSFILES="true" \
+    DEBUG_BINARIES=true \
+    DEBUG_CLASSFILES=true \
     DISABLE_INTREE_EC=true \
-    USE_SYSTEM_LCMS=true \
+    ${SYSTEM_LCMS} \
+    ${SYSTEM_GIO} \
     USE_SYSTEM_ZLIB=true \
     USE_SYSTEM_JPEG=true \
     USE_SYSTEM_PNG=true \
@@ -95,28 +105,24 @@ ANT_RESPECT_JAVA_HOME=true LANG=C make ALT_BOOTDIR=${SYSTEM_ICEDTEA7} \
     USE_SYSTEM_GTK=true \
     USE_SYSTEM_CUPS=true \
     USE_SYSTEM_FONTCONFIG=true \
-    USE_SYSTEM_GIO=true \
-    LCMS_LIBS="$(pkg-config --libs lcms2)" \
-    LCMS_CFLAGS="$(pkg-config --cflags lcms2)" \
-    FT2_LIBS="$(pkg-config --libs freetype2)" \
-    FT2_CFLAGS="$(pkg-config --cflags freetype2)" \
-    ZLIB_LIBS="$(pkg-config --libs zlib)" \
-    ZLIB_CFLAGS="$(pkg-config --cflags zlib)" \
-    JPEG_LIBS="-ljpeg" \
-    PNG_CFLAGS="$(pkg-config --cflags libpng)" \
-    PNG_LIBS="$(pkg-config --libs libpng)" \
-    GIF_LIBS="-lgif" \
-    GTK_CFLAGS="$(pkg-config --cflags gtk+-2.0 gthread-2.0)" \
-    GTK_LIBS="$(pkg-config --libs gtk+-2.0 gthread-2.0)" \
-    GIO_CFLAGS="$(pkg-config --cflags gio-2.0)" \
-    GIO_LIBS="$(pkg-config --libs gio-2.0)" \
-    CUPS_LIBS="-lcups" \
-    FONTCONFIG_CFLAGS="$(pkg-config --cflags fontconfig)" \
-    FONTCONFIG_LIBS="$(pkg-config --libs fontconfig)" \
-    NO_DOCS="true" \
-    COMPILE_AGAINST_SYSCALLS="true" \
-    OTHER_JAVACFLAGS="-Xmaxwarns 10000" \
-    ${ZERO_SUPPORT} ${AZUL_SUPPORT} \
+    FT2_LIBS=\"$(pkg-config --libs freetype2)\" \
+    FT2_CFLAGS=\"$(pkg-config --cflags freetype2)\" \
+    ZLIB_LIBS=\"$(pkg-config --libs zlib)\" \
+    ZLIB_CFLAGS=\"$(pkg-config --cflags zlib)\" \
+    JPEG_LIBS=\"-ljpeg\" \
+    PNG_CFLAGS=\"$(pkg-config --cflags libpng)\" \
+    PNG_LIBS=\"$(pkg-config --libs libpng)\" \
+    GIF_LIBS=\"-lgif\" \
+    GTK_CFLAGS=\"$(pkg-config --cflags gtk+-2.0 gthread-2.0)\" \
+    GTK_LIBS=\"$(pkg-config --libs gtk+-2.0 gthread-2.0)\" \
+    CUPS_LIBS=\"-lcups\" \
+    FONTCONFIG_CFLAGS=\"$(pkg-config --cflags fontconfig)\" \
+    FONTCONFIG_LIBS=\"$(pkg-config --libs fontconfig)\" \
+    NO_DOCS=true \
+    COMPILE_AGAINST_SYSCALLS=true \
+    OTHER_JAVACFLAGS=\"-Xmaxwarns 10000\" \
+    ${ZERO_SUPPORT} \
     ${WARNINGS} STATIC_CXX=false \
-    STRIP_POLICY=no_strip \
+    STRIP_POLICY=no_strip" && \
+echo ${ARGS} && eval ANT_RESPECT_JAVA_HOME=true LANG=C make ${ARGS}
 ) 2>&1 | tee ${LOG_DIR}/$0-$1.errors
