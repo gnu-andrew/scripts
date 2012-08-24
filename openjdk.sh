@@ -73,17 +73,38 @@ CORBA_ONLY="
     BUILD_HOTSPOT=false \
     ALT_JDK_IMPORT_PATH=${BUILDVM}"
 
+HOTSPOT_ONLY="
+    BUILD_JAXP=false \
+    BUILD_JAXWS=false \
+    BUILD_LANGTOOLS=false \
+    BUILD_JDK=false \
+    BUILD_CORBA=false \
+    ALT_JDK_IMPORT_PATH=${BUILDVM}"
+
 # Warnings?
 if test "x${OPENJDK_WITH_WARNINGS}" = "xyes"; then
-     WARNINGS='JAVAC_MAX_WARNINGS=true JAVAC_WARNINGS_FATAL=true'
+     WARNINGS='JAVAC_MAX_WARNINGS=true'
+fi
+
+if test "x${OPENJDK_WITH_JAVA_WERROR}" = "xyes"; then
+    JAVAC_WERROR="JAVAC_WARNINGS_FATAL=true"
+fi
+
+if test "x${OPENJDK_WITH_GCC_WERROR}" = "xyes"; then
+    GCC_WERROR="COMPILER_WARNINGS_FATAL=true"
+fi
+
+# Docs?
+if test "x${OPENJDK_WITH_DOCS}" = "xno"; then
+    DOCS='NO_DOCS=true'
 fi
 
 # System libraries
-if test "x${ICEDTEA_WITH_SYSTEM_LCMS}" = "xyes"; then
+if test "x${OPENJDK_WITH_SYSTEM_LCMS}" = "xyes"; then
     SYSTEM_LCMS="USE_SYSTEM_LCMS=true LCMS_LIBS=\"$(pkg-config --libs lcms2)\" LCMS_CFLAGS=\"$(pkg-config --cflags lcms2)\""
 fi
 
-if test "x${ICEDTEA_WITH_SYSTEM_GIO}" = "xyes"; then
+if test "x${OPENJDK_WITH_SYSTEM_GIO}" = "xyes"; then
     SYSTEM_GIO="USE_SYSTEM_GIO=true GIO_CFLAGS=\"$(pkg-config --cflags gio-2.0)\" GIO_LIBS=\"$(pkg-config --libs gio-2.0)\""
 fi
 
@@ -136,12 +157,11 @@ ARGS="ALT_BOOTDIR=${BUILDVM} \
     GTK_LIBS=\"$(pkg-config --libs gtk+-2.0 gthread-2.0)\" \
     CUPS_LIBS=\"-lcups\" \
     FONTCONFIG_CFLAGS=\"$(pkg-config --cflags fontconfig)\" \
-    FONTCONFIG_LIBS=\"$(pkg-config --libs fontconfig)\" \
-    NO_DOCS=true \
+    FONTCONFIG_LIBS=\"$(pkg-config --libs fontconfig)\" \    
     COMPILE_AGAINST_SYSCALLS=true \
     OTHER_JAVACFLAGS=\"-Xmaxwarns 10000\" \
-    ${ZERO_SUPPORT} \
-    ${WARNINGS} STATIC_CXX=false \
-    STRIP_POLICY=no_strip" && \
+    ${ZERO_SUPPORT} STATIC_CXX=false \
+    ${WARNINGS} ${JAVAC_WERROR} ${GCC_WERROR} \
+    ${DOCS} STRIP_POLICY=no_strip" && \
 echo ${ARGS} && eval ANT_RESPECT_JAVA_HOME=true LANG=C make ${ARGS}
 ) 2>&1 | tee ${LOG_DIR}/$0-$1.errors

@@ -17,12 +17,12 @@ if test x$1 = "xrelease"; then
 	find ${BUILD_DIR} -type f -exec chmod 640 '{}' ';';
 	find ${BUILD_DIR} -type d -exec chmod 750 '{}' ';';
     fi
-    ERROR_LOG="${LOG_DIR}/$0.release"
+    ERROR_LOG="${LOG_DIR}/$0.errors.release"
 else
     CP_HOME=${CLASSPATH_HOME};
     BUILD_DIR=${WORKING_DIR}/classpath;
     INSTALL_DIR=${CLASSPATH_INSTALL};
-    ERROR_LOG="${LOG_DIR}/$0"
+    ERROR_LOG="${LOG_DIR}/$0.errors"
 fi
 
 if [ -e $CP_HOME ]; then
@@ -66,6 +66,10 @@ if test "x${CLASSPATH_WITH_WERROR}" = "xno"; then
     WERROR_OPTION="--disable-Werror";
 fi
 
+if test "x${CLASSPATH_WITH_XMLJ}" = "xyes"; then
+    XMLJ_OPTION="--enable-xmlj";
+fi
+
 (./autogen.sh &&
 create_working_dir
 rm -rf ${BUILD_DIR} &&
@@ -75,7 +79,7 @@ JAVA="$VM" \
 ${CP_HOME}/configure --prefix=${INSTALL_DIR} --enable-examples \
     ${JAVAH_OPTION} \
     ${WERROR_OPTION} --with-ecj-jar=${ECJ_JAR} ${GSTREAMER_OPTION} \
-    ${QT_OPTION} ${TOOL_OPTION} ${DOCS_OPTION} ${PLUGIN_OPTION} &&
+    ${QT_OPTION} ${TOOL_OPTION} ${DOCS_OPTION} ${PLUGIN_OPTION} ${XMLJ_OPTION} &&
 if test x$1 = "xrelease"; then
     make distcheck && echo DONE;
     #rm -rf $HOME/projects/httpdocs/classpath/doc;
@@ -84,5 +88,5 @@ else
     make ${MAKE_OPTS} all dvi install && \
     ln -sf ${CACAO_INSTALL}/lib/libjvm.so ${INSTALL_DIR}/lib
 fi) 2>&1 | tee ${ERROR_LOG} && echo DONE
-cat ${LOG_DIR}/$0.errors|grep WAR|awk {print }|sort|uniq -c|sort -n 2>&1 | tee ${LOG_DIR}/$0.stats
+cat ${ERROR_LOG}|grep WAR|awk '{print $4}'|sort|uniq -c|sort -n 2>&1 | tee $(echo ${ERROR_LOG}|sed 's#errors#stats#')
 cat ${ERROR_LOG}|grep 'warnings'
