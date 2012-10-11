@@ -108,6 +108,9 @@ if test "x${OPENJDK_WITH_SYSTEM_GIO}" = "xyes"; then
     SYSTEM_GIO="USE_SYSTEM_GIO=true GIO_CFLAGS=\"$(pkg-config --cflags gio-2.0)\" GIO_LIBS=\"$(pkg-config --libs gio-2.0)\""
 fi
 
+if test "x${OPENJDK_WITH_SYSTEM_ZLIB}" = "xyes"; then
+    SYSTEM_ZLIB="USE_SYSTEM_ZLIB=true SYSTEM_ZLIB=true ZLIB_LIBS=\"$(pkg-config --libs zlib)\" ZLIB_CFLAGS=\"$(pkg-config --cflags zlib)\""
+fi
 
 #    GENSRCDIR=/tmp/generated
 #    USE_SYSTEM_GCONF=true \
@@ -135,10 +138,9 @@ ARGS="ALT_BOOTDIR=${BUILDVM} \
     DEBUG_BINARIES=true \
     DEBUG_CLASSFILES=true \
     DISABLE_INTREE_EC=true \
-    SYSTEM_ZLIB=true \
+    ${SYSTEM_ZLIB} \
     ${SYSTEM_LCMS} \
     ${SYSTEM_GIO} \
-    USE_SYSTEM_ZLIB=true \
     USE_SYSTEM_JPEG=true \
     USE_SYSTEM_PNG=true \
     USE_SYSTEM_GIF=true \
@@ -147,8 +149,6 @@ ARGS="ALT_BOOTDIR=${BUILDVM} \
     USE_SYSTEM_FONTCONFIG=true \
     FT2_LIBS=\"$(pkg-config --libs freetype2)\" \
     FT2_CFLAGS=\"$(pkg-config --cflags freetype2)\" \
-    ZLIB_LIBS=\"$(pkg-config --libs zlib)\" \
-    ZLIB_CFLAGS=\"$(pkg-config --cflags zlib)\" \
     JPEG_LIBS=\"-ljpeg\" \
     PNG_CFLAGS=\"$(pkg-config --cflags libpng)\" \
     PNG_LIBS=\"$(pkg-config --libs libpng)\" \
@@ -162,6 +162,6 @@ ARGS="ALT_BOOTDIR=${BUILDVM} \
     OTHER_JAVACFLAGS=\"-Xmaxwarns 10000\" \
     ${ZERO_SUPPORT} STATIC_CXX=false \
     ${WARNINGS} ${JAVAC_WERROR} ${GCC_WERROR} \
-    ${DOCS} STRIP_POLICY=no_strip" && \
+    ${DOCS} STRIP_POLICY=no_strip UNLIMITED_CRYPTO=true" && \
 echo ${ARGS} && eval ANT_RESPECT_JAVA_HOME=true LANG=C make ${ARGS}
 ) 2>&1 | tee ${LOG_DIR}/$0-$1.errors

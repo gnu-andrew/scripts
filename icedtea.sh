@@ -135,6 +135,19 @@ elif [ $(echo $0|grep 'icedtea7-2.2') ]; then
     MAKE_OPTS="";
     CLEAN_TREE=no;
     RELEASE="2.2"
+elif [ $(echo $0|grep 'icedtea7-2.3') ]; then
+    VERSION=icedtea7;
+    BUILD=icedtea7-2.3;
+    OPENJDK_ZIP=$OPENJDK7_23_ZIP;
+    CORBA7_ZIP=$CORBA7_23_ZIP;
+    JAXP7_ZIP=$JAXP7_23_ZIP;
+    JAXWS7_ZIP=$JAXWS7_23_ZIP;
+    JDK7_ZIP=$JDK7_23_ZIP;
+    LANGTOOLS7_ZIP=$LANGTOOLS7_23_ZIP;
+    HOTSPOT7_ZIP=$HOTSPOT7_23_ZIP;
+    MAKE_OPTS="";
+    CLEAN_TREE=no;
+    RELEASE="2.3"
 elif [ $(echo $0|grep 'icedtea7-2.0') ]; then
     VERSION=icedtea7;
     BUILD=icedtea7-2.0;
