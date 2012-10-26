@@ -148,6 +148,8 @@ AZTOOLS_HOME=$HOME/projects/openjdk/mri/aztools
 AZTOOLS_INSTALL=$INSTALL_DIR/aztools
 AZHOTSPOT=${WORKING_DIR}/openjdk.mri/hotspot
 LOG_DIR=${WORKING_DIR}/logs
+REBUILD_ICEDTEA_JAPI=no
+JPEG_JAPI_COMPARISON=no
 
 if test "${ARCH}" == "x86_64"; then
     JDK_ARCH=amd64;

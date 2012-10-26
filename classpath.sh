@@ -87,6 +87,6 @@ if test x$1 = "xrelease"; then
 else
     make ${MAKE_OPTS} all dvi install && \
     ln -sf ${CACAO_INSTALL}/lib/libjvm.so ${INSTALL_DIR}/lib
-fi) 2>&1 | tee ${ERROR_LOG} && echo DONE
+fi) 2>&1 | tee ${ERROR_LOG} && echo DONE &&
 cat ${ERROR_LOG}|grep WAR|awk '{print $4}'|sort|uniq -c|sort -n 2>&1 | tee $(echo ${ERROR_LOG}|sed 's#errors#stats#')
 cat ${ERROR_LOG}|grep 'warnings'

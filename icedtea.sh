@@ -348,6 +348,7 @@ else
 fi
 
 if test x${VERSION} = "xicedtea6"; then
+    OPTS="${OPTS} --with-ecj-jar=${GCJ_ECJ_JAR}"
     if test x${HOTSPOT6_ZIP} != "x"; then
 	HOTSPOT_ZIP_OPTION="--with-hotspot-src-zip=${HOTSPOT6_ZIP}";
     fi
@@ -373,6 +374,7 @@ if test x${VERSION} = "xicedtea6"; then
 	JAMVM_ZIP_OPTION="--with-jamvm-src-zip=${JAMVM6_ZIP}";
     fi
 elif test x${VERSION} = "xicedtea7"; then
+    OPTS="${OPTS} --with-ecj-jar=${GCJ_ECJ_JAR}"
     if test x${CORBA7_ZIP} != "x"; then
 	CORBA_ZIP_OPTION="--with-corba-src-zip=${CORBA7_ZIP}";
     fi
@@ -401,6 +403,7 @@ elif test x${VERSION} = "xicedtea7"; then
 	JAMVM_ZIP_OPTION="--with-jamvm-src-zip=${JAMVM7_ZIP}";
     fi
 else
+    OPTS="${OPTS} --with-jdk-home=${BOOTSTRAP_ICEDTEA7}" 
     if test x${CORBA8_ZIP} != "x"; then
 	CORBA_ZIP_OPTION="--with-corba-src-zip=${CORBA8_ZIP}";
     fi
