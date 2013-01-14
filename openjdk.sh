@@ -32,7 +32,8 @@ ZERO_SUPPORT="
     ARCH_DATA_MODEL=${DATA_MODEL} \
     ZERO_ENDIANNESS=${ENDIAN} \
     ZERO_ARCHFLAG=-m${DATA_MODEL} \
-    LIBFFI_LIBS=-lffi"
+    LIBFFI_CFLAGS=\"$(pkg-config --cflags libffi)\" \
+    LIBFFI_LIBS=\"$(pkg-config --libs libffi)\""
 fi
 
 AZUL_SUPPORT="AVX_INCLUDE_DIR=-I/home/andrew/build/aztools/include AZNIX_API_VERSION=200"
@@ -86,6 +87,11 @@ if test "x${OPENJDK_WITH_WARNINGS}" = "xyes"; then
      WARNINGS='JAVAC_MAX_WARNINGS=true'
 fi
 
+# Hack to get around broken parallel build; overwrite -j option
+if test "x${MAKE_VARIABLE_WARNINGS}" != "x"; then
+    MAKE_OPTS="${MAKE_VARIABLE_WARNINGS}"
+fi
+
 if test "x${OPENJDK_WITH_JAVA_WERROR}" = "xyes"; then
     JAVAC_WERROR="JAVAC_WARNINGS_FATAL=true"
 fi
@@ -101,15 +107,19 @@ fi
 
 # System libraries
 if test "x${OPENJDK_WITH_SYSTEM_LCMS}" = "xyes"; then
-    SYSTEM_LCMS="USE_SYSTEM_LCMS=true LCMS_LIBS=\"$(pkg-config --libs lcms2)\" LCMS_CFLAGS=\"$(pkg-config --cflags lcms2)\""
+    WITH_SYSTEM_LCMS="
+      USE_SYSTEM_LCMS=true LCMS_LIBS=\"$(pkg-config --libs lcms2)\" LCMS_CFLAGS=\"$(pkg-config --cflags lcms2)\""
 fi
 
 if test "x${OPENJDK_WITH_SYSTEM_GIO}" = "xyes"; then
-    SYSTEM_GIO="USE_SYSTEM_GIO=true GIO_CFLAGS=\"$(pkg-config --cflags gio-2.0)\" GIO_LIBS=\"$(pkg-config --libs gio-2.0)\""
+    WITH_SYSTEM_GIO="
+       USE_SYSTEM_GIO=true GIO_CFLAGS=\"$(pkg-config --cflags gio-2.0)\" GIO_LIBS=\"$(pkg-config --libs gio-2.0)\""
 fi
 
 if test "x${OPENJDK_WITH_SYSTEM_ZLIB}" = "xyes"; then
-    SYSTEM_ZLIB="USE_SYSTEM_ZLIB=true SYSTEM_ZLIB=true ZLIB_LIBS=\"$(pkg-config --libs zlib)\" ZLIB_CFLAGS=\"$(pkg-config --cflags zlib)\""
+    WITH_SYSTEM_ZLIB="
+       USE_SYSTEM_ZLIB=true SYSTEM_ZLIB=true \
+       ZLIB_LIBS=\"$(pkg-config --libs zlib)\" ZLIB_CFLAGS=\"$(pkg-config --cflags zlib)\""
 fi
 
 #    GENSRCDIR=/tmp/generated
@@ -127,7 +137,9 @@ if test "x$BUILD_DIR" = "x"; then
     echo "No build directory specified.";
     exit -1;
 fi
-(echo Building in ${WORKING_DIR}/$BUILD_DIR &&
+
+(echo Building in ${WORKING_DIR}/$BUILD_DIR && \
+cd jdk && ALT_BOOTDIR=${BUILDVM} && source make/jdk_generic_profile.sh && cd .. && \
 ARGS="ALT_BOOTDIR=${BUILDVM} \
     ALT_OUTPUTDIR=${WORKING_DIR}/${BUILD_DIR} \
     ALT_PARALLEL_COMPILE_JOBS=$PARALLEL_JOBS \
@@ -138,9 +150,9 @@ ARGS="ALT_BOOTDIR=${BUILDVM} \
     DEBUG_BINARIES=true \
     DEBUG_CLASSFILES=true \
     DISABLE_INTREE_EC=true \
-    ${SYSTEM_ZLIB} \
-    ${SYSTEM_LCMS} \
-    ${SYSTEM_GIO} \
+    ${WITH_SYSTEM_ZLIB} \
+    ${WITH_SYSTEM_LCMS} \
+    ${WITH_SYSTEM_GIO} \
     USE_SYSTEM_JPEG=true \
     USE_SYSTEM_PNG=true \
     USE_SYSTEM_GIF=true \
@@ -163,5 +175,7 @@ ARGS="ALT_BOOTDIR=${BUILDVM} \
     ${ZERO_SUPPORT} STATIC_CXX=false \
     ${WARNINGS} ${JAVAC_WERROR} ${GCC_WERROR} \
     ${DOCS} STRIP_POLICY=no_strip UNLIMITED_CRYPTO=true" && \
-echo ${ARGS} && eval ANT_RESPECT_JAVA_HOME=true LANG=C make ${ARGS}
+echo ${ARGS} && \
+eval ANT_RESPECT_JAVA_HOME=true LANG=C make ${MAKE_OPTS} ${ARGS} \
 ) 2>&1 | tee ${LOG_DIR}/$0-$1.errors
+

@@ -104,6 +104,12 @@ elif [ $(echo $0|grep 'icedtea6-sec') ]; then
     BUILD=icedtea6-sec;
     OPENJDK_ZIP=$OPENJDK6_ZIP;
     RELEASE="sec"
+elif [ $(echo $0|grep 'icedtea6-bootstrap6') ]; then
+    VERSION=icedtea6;
+    BUILD=icedtea6-icedtea6-bootstrap;
+    OPENJDK_ZIP=$OPENJDK6_ZIP;
+    OPTS="--with-jdk-home=${BOOTSTRAP_ICEDTEA6}"
+    MAKE_OPTS="VERBOSE=true"
 elif [ $(echo $0|grep 'icedtea6') ]; then
     VERSION=icedtea6;
     BUILD=icedtea6;
@@ -173,11 +179,14 @@ elif [ $(echo $0|grep 'icedtea7-bootstrap6') ]; then
     OPENJDK_ZIP=$OPENJDK7_ZIP;
     OPENJDK_DIR=$OPENJDK7_DIR;
     OPTS="--with-jdk-home=${BOOTSTRAP_ICEDTEA6}"
-elif [ $(echo $0|grep 'icedtea6-bootstrap6') ]; then
-    VERSION=icedtea6;
-    BUILD=icedtea6-icedtea6-bootstrap;
-    OPENJDK_ZIP=$OPENJDK6_ZIP;
-    OPTS="--with-jdk-home=${BOOTSTRAP_ICEDTEA6}"
+elif [ $(echo $0|grep 'icedtea7-nss') ]; then
+    VERSION=icedtea7;
+    BUILD=icedtea7;
+    OPENJDK_ZIP=$OPENJDK7_ZIP;
+    OPENJDK_DIR=$OPENJDK7_DIR;
+    MAKE_OPTS="";
+    CLEAN_TREE=no;
+    RELEASE="nss";
 elif [ $(echo $0|grep 'icedtea7') ]; then
     VERSION=icedtea7;
     BUILD=icedtea7;
@@ -219,7 +228,6 @@ elif [ $(echo $0|grep 'zero7') ]; then
     BUILD=zero7;
     OPENJDK_ZIP=$OPENJDK7_ZIP;
     OPENJDK_DIR=$OPENJDK7_DIR;
-    HOTSPOT7_ZIP=$ZERO7_ZIP;
     OPTS="--enable-zero";
 elif [ $(echo $0|grep 'zero') ]; then
     VERSION=icedtea8;

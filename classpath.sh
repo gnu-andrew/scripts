@@ -2,8 +2,10 @@
 
 . $HOME/projects/scripts/functions
 
-# Hack to get around broken parallel build
-MAKE_OPTS=
+# Hack to get around broken parallel build; overwrite -j option
+if test "x${MAKE_VARIABLE_WARNINGS}" != "x"; then
+    MAKE_OPTS="${MAKE_VARIABLE_WARNINGS}"
+fi
 
 # Don't use Gentoo's dumb variable
 JAVAC=
