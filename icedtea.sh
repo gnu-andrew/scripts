@@ -88,6 +88,14 @@ elif [ $(echo $0|grep 'icedtea6-1.11') ]; then
     JAXWS6_DROP_ZIP=$JAXWS6_1_11_DROP_ZIP
     JAF6_DROP_ZIP=$JAF6_1_11_DROP_ZIP
     RELEASE="1.11"
+elif [ $(echo $0|grep 'icedtea6-1.12') ]; then
+    VERSION=icedtea6;
+    BUILD=icedtea6-1.12;
+    OPENJDK_ZIP=$OPENJDK6_B27_ZIP;
+    JAXP6_DROP_ZIP=$JAXP6_1_12_DROP_ZIP
+    JAXWS6_DROP_ZIP=$JAXWS6_1_12_DROP_ZIP
+    JAF6_DROP_ZIP=$JAF6_1_12_DROP_ZIP
+    RELEASE="1.12"
 elif [ $(echo $0|grep 'icedtea6-hg') ]; then
     VERSION=icedtea6;
     BUILD=icedtea6-hg;
@@ -115,6 +123,8 @@ elif [ $(echo $0|grep 'icedtea6') ]; then
     BUILD=icedtea6;
     OPENJDK_ZIP=$OPENJDK6_ZIP;
     CLEAN_TREE=no;
+    HOTSPOT6_ZIP=$HOTSPOT7_23_ZIP;
+    HOTSPOT6_BUILD="hs23"
 elif [ $(echo $0|grep 'icedtea7-2.1') ]; then
     VERSION=icedtea7;
     BUILD=icedtea7-2.1;
@@ -151,9 +161,11 @@ elif [ $(echo $0|grep 'icedtea7-2.3') ]; then
     JDK7_ZIP=$JDK7_23_ZIP;
     LANGTOOLS7_ZIP=$LANGTOOLS7_23_ZIP;
     HOTSPOT7_ZIP=$HOTSPOT7_23_ZIP;
+    #HOTSPOT7_ZIP=$HOTSPOT7_21_ZIP;
     MAKE_OPTS="";
     CLEAN_TREE=no;
     RELEASE="2.3"
+    #OPTS="--disable-bootstrap --with-jdk-home=${SYSTEM_ICEDTEA6} --enable-zero"
 elif [ $(echo $0|grep 'icedtea7-2.0') ]; then
     VERSION=icedtea7;
     BUILD=icedtea7-2.0;
@@ -616,11 +628,19 @@ cd ${BUILD_DIR} &&
 echo $ICEDTEA_HOME/configure ${CONFIG_OPTS} &&
 $ICEDTEA_HOME/configure ${CONFIG_OPTS}
 if test "x$1" = "xrelease"; then
-    DISTCHECK_CONFIGURE_FLAGS=${CONFIG_OPTS} make ${MAKE_OPTS} distcheck;
+    DISTCHECK_CONFIGURE_FLAGS="${CONFIG_OPTS} --disable-systemtap" make ${MAKE_OPTS} distcheck;
 elif echo "$BUILD" | grep "zero6"; then
-    make ${MAKE_OPTS} icedtea-ecj && echo DONE
+    make ${MAKE_OPTS} icedtea-against-ecj && echo COMPILED &&
+    rm -rf ${INSTALLATION_DIR} &&
+    mv ${BUILD_DIR}/openjdk.build-ecj/j2sdk-image ${INSTALL_DIR}/${BUILD} &&
+    ln -s ${INSTALL_DIR}/${BUILD} ${BUILD_DIR}/openjdk.build-ecj/j2sdk-image &&
+    echo DONE
 elif echo "$BUILD" | grep "zero"; then
-    make ${MAKE_OPTS} icedtea-boot && echo DONE
+    make ${MAKE_OPTS} icedtea-stage1 && echo COMPILED &&
+    rm -rf ${INSTALLATION_DIR} &&
+    mv ${BUILD_DIR}/openjdk.build-boot/j2sdk-image ${INSTALL_DIR}/${BUILD} &&
+    ln -s ${INSTALL_DIR}/${BUILD} ${BUILD_DIR}/openjdk.build-boot/j2sdk-image &&
+    echo DONE
 else
     CFLAGS=${CFLAGS} make ${MAKE_OPTS} && echo COMPILED &&
     rm -rf ${INSTALLATION_DIR} &&
@@ -631,5 +651,6 @@ else
 	mv ${BUILD_DIR}/openjdk/build/${OS}-${JDK_ARCH}/j2sdk-image ${INSTALL_DIR}/${BUILD} &&
 	ln -s ${INSTALL_DIR}/${BUILD} ${BUILD_DIR}/openjdk/build/${OS}-${JDK_ARCH}/j2sdk-image
     fi) &&
+    cp -f ${SYSTEM_ICEDTEA7}/jre/lib/security/cacerts ${INSTALL_DIR}/${BUILD}/jre/lib/security/ &&
     echo DONE
 fi) 2>&1 | tee ${LOG_DIR}/$0.errors

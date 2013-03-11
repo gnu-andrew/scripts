@@ -1,6 +1,6 @@
 #!/bin/bash
 
-. $HOME/projects/scripts/functions
+. $(dirname $0)/functions
 
 VM=$1
 
@@ -68,8 +68,10 @@ ln -sv ${CLASSPATH_TOOLS} ${JDK_DIR}/lib/tools.jar
 ln -sv ${CLASSPATH_INSTALL}/include ${JDK_DIR}/include
 
 echo "Creating javac script"
-echo "#!/bin/bash" > ${JDK_DIR}/bin/javac
-echo "${VM_BINARY} -classpath ${ECJ_JAR} org.eclipse.jdt.internal.compiler.batch.Main \"\$@\"" \
-    >> ${JDK_DIR}/bin/javac
+cat $(dirname $0)/javac.in | sed -e "s#@JAVA@#${VM_BINARY}#" \
+    -e "s#@ECJ_JAR@#${GCJ_ECJ_JAR}#" \
+    -e "s#@RT_JAR@#${CLASSPATH_INSTALL}/share/classpath/glibj.zip#" \
+    -e "s#@TOOLS_JAR@#${CLASSPATH_INSTALL}/share/classpath/tools.zip#" \
+    > ${JDK_DIR}/bin/javac
 chmod +x ${JDK_DIR}/bin/javac
 
