@@ -137,7 +137,8 @@ elif [ $(echo $0|grep 'icedtea7-2.1') ]; then
     HOTSPOT7_ZIP=$HOTSPOT7_21_ZIP;
     MAKE_OPTS="";
     CLEAN_TREE=no;
-    RELEASE="2.1"
+    RELEASE="2.1";
+    OPTS="--enable-zero";
 elif [ $(echo $0|grep 'icedtea7-2.2') ]; then
     VERSION=icedtea7;
     BUILD=icedtea7-2.2;
@@ -160,12 +161,12 @@ elif [ $(echo $0|grep 'icedtea7-2.3') ]; then
     JAXWS7_ZIP=$JAXWS7_23_ZIP;
     JDK7_ZIP=$JDK7_23_ZIP;
     LANGTOOLS7_ZIP=$LANGTOOLS7_23_ZIP;
-    HOTSPOT7_ZIP=$HOTSPOT7_23_ZIP;
-    #HOTSPOT7_ZIP=$HOTSPOT7_21_ZIP;
+    #HOTSPOT7_ZIP=$HOTSPOT7_23_ZIP;
+    HOTSPOT7_ZIP=$HOTSPOT7_21_ZIP;
     MAKE_OPTS="";
     CLEAN_TREE=no;
     RELEASE="2.3"
-    #OPTS="--disable-bootstrap --with-jdk-home=${SYSTEM_ICEDTEA6} --enable-zero"
+    OPTS="--disable-bootstrap --with-jdk-home=${SYSTEM_ICEDTEA6} --enable-zero"
 elif [ $(echo $0|grep 'icedtea7-2.0') ]; then
     VERSION=icedtea7;
     BUILD=icedtea7-2.0;
@@ -342,17 +343,15 @@ else
     BUILD=icedtea8;
     OPENJDK_ZIP=$OPENJDK8_ZIP;
     OPENJDK_DIR=$OPENJDK8_DIR;
-    MAKE_OPTS="";
     CLEAN_TREE=no;
 fi
 
 BUILD_DIR=${WORKING_DIR}/${BUILD}
 ICEDTEA_ROOT="http://icedtea.classpath.org/hg"
 
-# Dead with b16
-#if test x${VERSION} = "xicedtea6"; then
-#    DIR="/control";
-#fi
+if test x${VERSION} = "xicedtea8"; then
+    DIR="/images";
+fi
 
 if test "x${RELEASE}" = "x"; then
     ICEDTEA_URL=${ICEDTEA_ROOT}/${VERSION};
@@ -632,21 +631,21 @@ if test "x$1" = "xrelease"; then
 elif echo "$BUILD" | grep "zero6"; then
     make ${MAKE_OPTS} icedtea-against-ecj && echo COMPILED &&
     rm -rf ${INSTALLATION_DIR} &&
-    mv ${BUILD_DIR}/openjdk.build-ecj/j2sdk-image ${INSTALL_DIR}/${BUILD} &&
-    ln -s ${INSTALL_DIR}/${BUILD} ${BUILD_DIR}/openjdk.build-ecj/j2sdk-image &&
+    mv ${BUILD_DIR}/openjdk.build-ecj${DIR}/j2sdk-image$ ${INSTALL_DIR}/${BUILD} &&
+    ln -s ${INSTALL_DIR}/${BUILD} ${BUILD_DIR}/openjdk.build-ecj${DIR}/j2sdk-image &&
     echo DONE
 elif echo "$BUILD" | grep "zero"; then
     make ${MAKE_OPTS} icedtea-stage1 && echo COMPILED &&
     rm -rf ${INSTALLATION_DIR} &&
-    mv ${BUILD_DIR}/openjdk.build-boot/j2sdk-image ${INSTALL_DIR}/${BUILD} &&
-    ln -s ${INSTALL_DIR}/${BUILD} ${BUILD_DIR}/openjdk.build-boot/j2sdk-image &&
+    mv ${BUILD_DIR}/openjdk.build-boot${DIR}/j2sdk-image ${INSTALL_DIR}/${BUILD} &&
+    ln -s ${INSTALL_DIR}/${BUILD} ${BUILD_DIR}/openjdk.build-boot${DIR}/j2sdk-image &&
     echo DONE
 else
     CFLAGS=${CFLAGS} make ${MAKE_OPTS} && echo COMPILED &&
     rm -rf ${INSTALLATION_DIR} &&
     (if [ -e ${BUILD_DIR}/openjdk.build ] ; then
-	mv ${BUILD_DIR}/openjdk.build/j2sdk-image ${INSTALL_DIR}/${BUILD} &&
-	ln -s ${INSTALL_DIR}/${BUILD} ${BUILD_DIR}/openjdk.build/j2sdk-image
+	mv ${BUILD_DIR}/openjdk.build${DIR}/j2sdk-image ${INSTALL_DIR}/${BUILD} &&
+	ln -s ${INSTALL_DIR}/${BUILD} ${BUILD_DIR}/openjdk.build${DIR}/j2sdk-image
     else
 	mv ${BUILD_DIR}/openjdk/build/${OS}-${JDK_ARCH}/j2sdk-image ${INSTALL_DIR}/${BUILD} &&
 	ln -s ${INSTALL_DIR}/${BUILD} ${BUILD_DIR}/openjdk/build/${OS}-${JDK_ARCH}/j2sdk-image

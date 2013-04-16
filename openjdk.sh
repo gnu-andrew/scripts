@@ -25,6 +25,7 @@ echo "Building ${VERSION} using ${BUILDVM}"
 
 # Add Zero support
 if test "x${OPENJDK_WITH_ZERO}" = "xyes"; then
+ZERO_CONFIG="--with-jvm-variants=zero";
 ZERO_SUPPORT="
     ZERO_BUILD=true \
     ZERO_LIBARCH=${JDK_ARCH} \
@@ -122,6 +123,10 @@ if test "x${OPENJDK_WITH_SYSTEM_ZLIB}" = "xyes"; then
        ZLIB_LIBS=\"$(pkg-config --libs zlib)\" ZLIB_CFLAGS=\"$(pkg-config --cflags zlib)\""
 fi
 
+if test "x${OPENJDK_ENABLE_DROPS}" = "xyes"; then
+    DROP_ZIPS="ALT_DROPS_DIR=${DROPS_DIR}" ;
+fi
+
 #    GENSRCDIR=/tmp/generated
 #    USE_SYSTEM_GCONF=true \
 #    GCONF_CFLAGS="$(pkg-config --cflags gconf-2.0)" \
@@ -132,18 +137,40 @@ fi
 
 # First argument should be directory
 BUILD_DIR=$1
+SOURCE_DIR=$PWD
 
 if test "x$BUILD_DIR" = "x"; then
     echo "No build directory specified.";
     exit -1;
 fi
 
-(echo Building in ${WORKING_DIR}/$BUILD_DIR && \
-cd jdk && ALT_BOOTDIR=${BUILDVM} && source make/jdk_generic_profile.sh && cd .. && \
-ARGS="ALT_BOOTDIR=${BUILDVM} \
+if test "x${VERSION}" = "xOpenJDK8"; then \
+  (echo Building in ${WORKING_DIR}/$BUILD_DIR && \
+  rm -rf ${WORKING_DIR}/${BUILD_DIR} && \
+  cd ${WORKING_DIR} && \
+  mkdir ${BUILD_DIR} && \
+  cd ${BUILD_DIR} &&
+  ARGS="DISABLE_INTREE_EC=true \
+    OTHER_JAVACFLAGS=\"-Xmaxwarns 10000\" \
+    ${WARNINGS} ${JAVAC_WERROR} ${GCC_WERROR} \
+    ${DOCS} STRIP_POLICY=no_strip POST_STRIP_CMD= LOG=debug \
+    SCTP_WERROR= DEBUG_BINARIES=true" && \
+  echo ${ARGS} && \
+  /bin/bash ${SOURCE_DIR}/configure \
+      --enable-unlimited-crypto \
+      --with-cacerts-file=${SYSTEM_ICEDTEA7}/jre/lib/security/cacerts \
+      --with-zlib=system --with-stdc++lib=dynamic \
+      --with-jobs=${PARALLEL_JOBS} --with-boot-jdk=${BUILDVM} \
+      ${ZERO_CONFIG} && \
+  eval ANT_RESPECT_JAVA_HOME=true LANG=C make ${ARGS} all \
+) 2>&1 | tee ${LOG_DIR}/$0-$1.errors ; \
+else \
+  (echo Building in ${WORKING_DIR}/$BUILD_DIR && \
+  cd jdk && ALT_BOOTDIR=${BUILDVM} && source make/jdk_generic_profile.sh && cd .. && \
+  ARGS="ALT_BOOTDIR=${BUILDVM} \
     ALT_OUTPUTDIR=${WORKING_DIR}/${BUILD_DIR} \
     ALT_PARALLEL_COMPILE_JOBS=$PARALLEL_JOBS \
-    ALT_DROPS_DIR=${DROPS_DIR} \
+    ${DROP_ZIPS} \
     HOTSPOT_BUILD_JOBS=$PARALLEL_JOBS \
     ANT=/usr/bin/ant \
     QUIETLY="" \
@@ -175,7 +202,7 @@ ARGS="ALT_BOOTDIR=${BUILDVM} \
     ${ZERO_SUPPORT} STATIC_CXX=false \
     ${WARNINGS} ${JAVAC_WERROR} ${GCC_WERROR} \
     ${DOCS} STRIP_POLICY=no_strip UNLIMITED_CRYPTO=true" && \
-echo ${ARGS} && \
-eval ANT_RESPECT_JAVA_HOME=true LANG=C make ${MAKE_OPTS} ${ARGS} \
-) 2>&1 | tee ${LOG_DIR}/$0-$1.errors
-
+  echo ${ARGS} && \
+  eval ANT_RESPECT_JAVA_HOME=true LANG=C make ${MAKE_OPTS} ${ARGS} \
+) 2>&1 | tee ${LOG_DIR}/$0-$1.errors ; \
+fi 
