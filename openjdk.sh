@@ -41,7 +41,7 @@ AZUL_SUPPORT="AVX_INCLUDE_DIR=-I/home/andrew/build/aztools/include AZNIX_API_VER
 
 NO_HOTSPOT="
     BUILD_HOTSPOT=false \
-    ALT_JDK_IMPORT_PATH=${BUILDVM}"
+    ALT_JDK_IMPORT_PATH=${SYSTEM_ICEDTEA8}"
 
 JDK_ONLY="
     BUILD_CORBA=false \
@@ -95,10 +95,14 @@ fi
 
 if test "x${OPENJDK_WITH_JAVA_WERROR}" = "xyes"; then
     JAVAC_WERROR="JAVAC_WARNINGS_FATAL=true"
+else
+    JAVAC_WERROR="JAVAC_WARNINGS_FATAL=false"
 fi
 
 if test "x${OPENJDK_WITH_GCC_WERROR}" = "xyes"; then
     GCC_WERROR="COMPILER_WARNINGS_FATAL=true"
+else
+    GCC_WERROR="COMPILER_WARNINGS_FATAL=false"
 fi
 
 # Docs?
@@ -125,6 +129,10 @@ fi
 
 if test "x${OPENJDK_ENABLE_DROPS}" = "xyes"; then
     DROP_ZIPS="ALT_DROPS_DIR=${DROPS_DIR}" ;
+fi
+
+if test "x${OPENJDK_WITHOUT_HOTSPOT}" = "xyes"; then
+    EXTRA_OPTS="${NO_HOTSPOT}" ;
 fi
 
 #    GENSRCDIR=/tmp/generated
@@ -200,7 +208,7 @@ else \
     COMPILE_AGAINST_SYSCALLS=true \
     OTHER_JAVACFLAGS=\"-Xmaxwarns 10000\" \
     ${ZERO_SUPPORT} STATIC_CXX=false \
-    ${WARNINGS} ${JAVAC_WERROR} ${GCC_WERROR} \
+    ${WARNINGS} ${JAVAC_WERROR} ${GCC_WERROR} ${EXTRA_OPTS} \
     ${DOCS} STRIP_POLICY=no_strip UNLIMITED_CRYPTO=true" && \
   echo ${ARGS} && \
   eval ANT_RESPECT_JAVA_HOME=true LANG=C make ${MAKE_OPTS} ${ARGS} \

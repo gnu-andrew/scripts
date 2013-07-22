@@ -84,29 +84,20 @@ elif [ $(echo $0|grep 'icedtea6-1.11') ]; then
     VERSION=icedtea6;
     BUILD=icedtea6-1.11;
     OPENJDK_ZIP=$OPENJDK6_B24_ZIP;
-    JAXP6_DROP_ZIP=$JAXP6_1_11_DROP_ZIP
-    JAXWS6_DROP_ZIP=$JAXWS6_1_11_DROP_ZIP
-    JAF6_DROP_ZIP=$JAF6_1_11_DROP_ZIP
     RELEASE="1.11"
 elif [ $(echo $0|grep 'icedtea6-1.12') ]; then
     VERSION=icedtea6;
     BUILD=icedtea6-1.12;
     OPENJDK_ZIP=$OPENJDK6_B27_ZIP;
-    JAXP6_DROP_ZIP=$JAXP6_1_12_DROP_ZIP
-    JAXWS6_DROP_ZIP=$JAXWS6_1_12_DROP_ZIP
-    JAF6_DROP_ZIP=$JAF6_1_12_DROP_ZIP
     RELEASE="1.12"
 elif [ $(echo $0|grep 'icedtea6-hg') ]; then
     VERSION=icedtea6;
     BUILD=icedtea6-hg;
     OPENJDK_DIR=$OPENJDK6_DIR;
-    JAXP6_DROP_ZIP=$JAXP6_HG_DROP_ZIP
-    JAXWS6_DROP_ZIP=$JAXWS6_HG_DROP_ZIP
-    JAF6_DROP_ZIP=$JAF6_HG_DROP_ZIP
     RELEASE="hg"
     HOTSPOT6_BUILD=$HOTSPOT6_HG_BUILD
     HOTSPOT6_ZIP=$HOTSPOT6_HG_ZIP
-    OPTS=""
+    #OPTS="--with-jdk-home=${CACAO_JDK_INSTALL}"
 elif [ $(echo $0|grep 'icedtea6-sec') ]; then
     VERSION=icedtea6;
     BUILD=icedtea6-sec;
@@ -117,13 +108,13 @@ elif [ $(echo $0|grep 'icedtea6-bootstrap6') ]; then
     BUILD=icedtea6-icedtea6-bootstrap;
     OPENJDK_ZIP=$OPENJDK6_ZIP;
     OPTS="--with-jdk-home=${BOOTSTRAP_ICEDTEA6}"
-    MAKE_OPTS="VERBOSE=true"
+    MAKE_OPTS=""
 elif [ $(echo $0|grep 'icedtea6') ]; then
     VERSION=icedtea6;
     BUILD=icedtea6;
     OPENJDK_ZIP=$OPENJDK6_ZIP;
     CLEAN_TREE=no;
-    HOTSPOT6_ZIP=$HOTSPOT7_23_ZIP;
+    HOTSPOT6_ZIP=$HOTSPOT6_ZIP;
     HOTSPOT6_BUILD="hs23"
 elif [ $(echo $0|grep 'icedtea7-2.1') ]; then
     VERSION=icedtea7;
@@ -138,7 +129,8 @@ elif [ $(echo $0|grep 'icedtea7-2.1') ]; then
     MAKE_OPTS="";
     CLEAN_TREE=no;
     RELEASE="2.1";
-    OPTS="--enable-zero";
+    #OPTS="--disable-bootstrap --enable-zero"
+    OPTS="--with-javac=${OLD_ECJ}"
 elif [ $(echo $0|grep 'icedtea7-2.2') ]; then
     VERSION=icedtea7;
     BUILD=icedtea7-2.2;
@@ -151,7 +143,8 @@ elif [ $(echo $0|grep 'icedtea7-2.2') ]; then
     HOTSPOT7_ZIP=$HOTSPOT7_22_ZIP;
     MAKE_OPTS="";
     CLEAN_TREE=no;
-    RELEASE="2.2"
+    RELEASE="2.2";
+    OPTS="--with-javac=${OLD_ECJ}"
 elif [ $(echo $0|grep 'icedtea7-2.3') ]; then
     VERSION=icedtea7;
     BUILD=icedtea7-2.3;
@@ -161,12 +154,26 @@ elif [ $(echo $0|grep 'icedtea7-2.3') ]; then
     JAXWS7_ZIP=$JAXWS7_23_ZIP;
     JDK7_ZIP=$JDK7_23_ZIP;
     LANGTOOLS7_ZIP=$LANGTOOLS7_23_ZIP;
-    #HOTSPOT7_ZIP=$HOTSPOT7_23_ZIP;
-    HOTSPOT7_ZIP=$HOTSPOT7_21_ZIP;
+    HOTSPOT7_ZIP=$HOTSPOT7_23_ZIP;
     MAKE_OPTS="";
     CLEAN_TREE=no;
     RELEASE="2.3"
     OPTS="--disable-bootstrap --with-jdk-home=${SYSTEM_ICEDTEA6} --enable-zero"
+    #OPTS="--with-javac=${OLD_ECJ}"
+elif [ $(echo $0|grep 'icedtea7-2.4') ]; then
+    VERSION=icedtea7;
+    BUILD=icedtea7-2.4;
+    OPENJDK_ZIP=$OPENJDK7_24_ZIP;
+    CORBA7_ZIP=$CORBA7_24_ZIP;
+    JAXP7_ZIP=$JAXP7_24_ZIP;
+    JAXWS7_ZIP=$JAXWS7_24_ZIP;
+    JDK7_ZIP=$JDK7_24_ZIP;
+    LANGTOOLS7_ZIP=$LANGTOOLS7_24_ZIP;
+    HOTSPOT7_ZIP=$HOTSPOT7_24_ZIP;
+    MAKE_OPTS="";
+    CLEAN_TREE=no;
+    RELEASE="2.4"
+    OPTS="--with-javac=${OLD_ECJ}"
 elif [ $(echo $0|grep 'icedtea7-2.0') ]; then
     VERSION=icedtea7;
     BUILD=icedtea7-2.0;
@@ -207,6 +214,7 @@ elif [ $(echo $0|grep 'icedtea7') ]; then
     OPENJDK_DIR=$OPENJDK7_DIR;
     MAKE_OPTS="";
     CLEAN_TREE=no;
+    OPTS="--with-javac=${OLD_ECJ}"
 elif [ $(echo $0|grep 'cvmi') ]; then
     VERSION=icedtea7;
     BUILD=cvmi;

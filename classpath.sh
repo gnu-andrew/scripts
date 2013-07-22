@@ -66,6 +66,8 @@ fi
 
 if test "x${CLASSPATH_WITH_WERROR}" = "xno"; then
     WERROR_OPTION="--disable-Werror";
+else
+    WERROR_OPTION="--enable-Werror";
 fi
 
 if test "x${CLASSPATH_WITH_XMLJ}" = "xyes"; then
