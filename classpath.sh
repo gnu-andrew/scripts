@@ -74,23 +74,27 @@ if test "x${CLASSPATH_WITH_XMLJ}" = "xyes"; then
     XMLJ_OPTION="--enable-xmlj";
 fi
 
+CONFIG_OPTS="--enable-examples ${JAVAH_OPTION} \
+    ${WERROR_OPTION} --with-ecj-jar=${ECJ_JAR} ${GSTREAMER_OPTION} \
+    ${QT_OPTION} ${TOOL_OPTION} ${DOCS_OPTION} ${PLUGIN_OPTION} ${XMLJ_OPTION}"
+
+echo "Passing ${CONFIG_OPTS} to configure..."
+
 (./autogen.sh &&
 create_working_dir
 rm -rf ${BUILD_DIR} &&
 mkdir ${BUILD_DIR} &&
 cd ${BUILD_DIR} &&
 JAVA="$VM" \
-${CP_HOME}/configure --prefix=${INSTALL_DIR} --enable-examples \
-    ${JAVAH_OPTION} \
-    ${WERROR_OPTION} --with-ecj-jar=${ECJ_JAR} ${GSTREAMER_OPTION} \
-    ${QT_OPTION} ${TOOL_OPTION} ${DOCS_OPTION} ${PLUGIN_OPTION} ${XMLJ_OPTION} &&
+${CP_HOME}/configure --prefix=${INSTALL_DIR} ${CONFIG_OPTS} &&
 if test x$1 = "xrelease"; then
-    make distcheck && echo DONE;
-    #rm -rf $HOME/projects/httpdocs/classpath/doc;
-    #mv ${BUILD_DIR}/doc/api/html $HOME/projects/httpdocs/classpath/doc; 
+    DISTCHECK_CONFIGURE_FLAGS=${CONFIG_OPTS} make ${MAKE_OPTS} distcheck \
+	&& echo DONE;
 else
     make ${MAKE_OPTS} all dvi install && \
-    ln -sf ${CACAO_INSTALL}/lib/libjvm.so ${INSTALL_DIR}/lib
-fi) 2>&1 | tee ${ERROR_LOG} && echo DONE &&
-cat ${ERROR_LOG}|grep WAR|awk '{print $4}'|sort|uniq -c|sort -n 2>&1 | tee $(echo ${ERROR_LOG}|sed 's#errors#stats#')
-cat ${ERROR_LOG}|grep 'warnings'
+    ln -sf ${CACAO_INSTALL}/lib/libjvm.so ${INSTALL_DIR}/lib &&
+    cat ${ERROR_LOG}|grep WAR|awk '{print $4}'|sort|uniq -c|sort -n 2>&1 | tee $(echo ${ERROR_LOG}|sed 's#errors#stats#') &&
+    cat ${ERROR_LOG}|grep 'warnings'
+fi) 2>&1 | tee ${ERROR_LOG}
+#release: rm -rf $HOME/projects/httpdocs/classpath/doc;
+#release: mv ${BUILD_DIR}/doc/api/html $HOME/projects/httpdocs/classpath/doc; 
