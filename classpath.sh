@@ -82,10 +82,13 @@ echo "Passing ${CONFIG_OPTS} to configure..."
 
 (./autogen.sh &&
 create_working_dir
-rm -rf ${BUILD_DIR} &&
+if [ -e ${BUILD_DIR} ] ; then
+    make -C ${BUILD_DIR} distclean ;
+fi ;
+rm -rvf ${BUILD_DIR} &&
 mkdir ${BUILD_DIR} &&
 cd ${BUILD_DIR} &&
-JAVA="$VM" \
+JAVA="$VM" JAVAC="${CLASSPATH_JDK_INSTALL}/bin/javac" \
 ${CP_HOME}/configure --prefix=${INSTALL_DIR} ${CONFIG_OPTS} &&
 if test x$1 = "xrelease"; then
     DISTCHECK_CONFIGURE_FLAGS=${CONFIG_OPTS} make ${MAKE_OPTS} distcheck \

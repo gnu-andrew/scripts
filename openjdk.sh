@@ -26,16 +26,16 @@ echo "Building ${VERSION} using ${BUILDVM}"
 # Add Zero support
 if test "x${OPENJDK_WITH_ZERO}" = "xyes"; then
 ZERO_CONFIG="--with-jvm-variants=zero";
-ZERO_SUPPORT="
-    ZERO_BUILD=true \
-    ZERO_LIBARCH=${JDK_ARCH} \
-    ZERO_ARCHDEF=$(echo ${JDK_ARCH}|tr a-z A-Z) \
-    ARCH_DATA_MODEL=${DATA_MODEL} \
-    ZERO_ENDIANNESS=${ENDIAN} \
-    ZERO_ARCHFLAG=-m${DATA_MODEL} \
-    LIBFFI_CFLAGS=\"$(pkg-config --cflags libffi)\" \
-    LIBFFI_LIBS=\"$(pkg-config --libs libffi)\""
+ZERO_SUPPORT="true";
 fi
+
+#    ZERO_LIBARCH=${JDK_ARCH} \
+#    ZERO_ARCHDEF=$(echo ${JDK_ARCH}|tr a-z A-Z) \
+#    ARCH_DATA_MODEL=${DATA_MODEL} \
+#    ZERO_ENDIANNESS=${ENDIAN} \
+#    ZERO_ARCHFLAG=-m${DATA_MODEL} \
+#    LIBFFI_CFLAGS=\"$(pkg-config --cflags libffi)\" \
+#    LIBFFI_LIBS=\"$(pkg-config --libs libffi)\""
 
 AZUL_SUPPORT="AVX_INCLUDE_DIR=-I/home/andrew/build/aztools/include AZNIX_API_VERSION=200"
 
@@ -174,7 +174,7 @@ if test "x${VERSION}" = "xOpenJDK8"; then \
 ) 2>&1 | tee ${LOG_DIR}/$0-$1.errors ; \
 else \
   (echo Building in ${WORKING_DIR}/$BUILD_DIR && \
-  cd jdk && ALT_BOOTDIR=${BUILDVM} && source make/jdk_generic_profile.sh && cd .. && \
+  cd jdk && ALT_BOOTDIR=${BUILDVM} && ZERO_BUILD=${ZERO_SUPPORT} && source make/jdk_generic_profile.sh && cd .. && \
   ARGS="ALT_BOOTDIR=${BUILDVM} \
     ALT_OUTPUTDIR=${WORKING_DIR}/${BUILD_DIR} \
     ALT_PARALLEL_COMPILE_JOBS=$PARALLEL_JOBS \
@@ -207,7 +207,7 @@ else \
     FONTCONFIG_LIBS=\"$(pkg-config --libs fontconfig)\" \    
     COMPILE_AGAINST_SYSCALLS=true \
     OTHER_JAVACFLAGS=\"-Xmaxwarns 10000\" \
-    ${ZERO_SUPPORT} STATIC_CXX=false \
+    ZERO_BUILD=${ZERO_SUPPORT} STATIC_CXX=false \
     ${WARNINGS} ${JAVAC_WERROR} ${GCC_WERROR} ${EXTRA_OPTS} \
     ${DOCS} STRIP_POLICY=no_strip UNLIMITED_CRYPTO=true" && \
   echo ${ARGS} && \

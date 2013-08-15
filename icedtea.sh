@@ -382,6 +382,11 @@ if test x${VERSION} = "xicedtea6"; then
     if test x${ICEDTEA6_WITH_NIO2} = "xyes"; then
 	NIO2_OPTION="--enable-nio2";
     fi
+    if test x${ICEDTEA6_WITH_LCMS2} = "xyes"; then
+	LCMS2_OPTION="--enable-lcms2";
+    else
+	LCMS2_OPTION="--disable-lcms2";
+    fi
     if test x${JAXP6_DROP_ZIP} != "x"; then
 	JAXP_DROP_ZIP_OPTION="--with-jaxp-drop-zip=${JAXP6_DROP_ZIP}";
     fi
@@ -594,7 +599,9 @@ if test x${ICEDTEA_WITH_HOTSPOT_TESTS} = "xno"; then
 fi
 
 if test x${ICEDTEA_WITH_SYSTEM_LCMS} = "xno"; then
-    LCMS_OPTION="--disable-system-lcms"
+    SYSTEM_LCMS_OPTION="--disable-system-lcms"
+else
+    SYSTEM_LCMS_OPTION="--enable-system-lcms"
 fi
 
 if test x${ICEDTEA_WITH_SYSTEM_GIO} = "xno"; then
@@ -621,8 +628,8 @@ CONFIG_OPTS="--with-parallel-jobs=${PARALLEL_JOBS} \
     ${SYSTEMTAP_OPTION} --with-abs-install-dir=${INSTALLATION_DIR} ${NIMBUS_GEN_OPTION} ${XRENDER_OPTION} \
     ${PLUGIN_OPTION} ${NEW_PLUGIN_OPTION} ${NSS_OPTION} ${NIO2_OPTION} ${OPTS} \
     ${JAXP_DROP_ZIP_OPTION} ${JAF_DROP_ZIP_OPTION} ${JAXWS_DROP_ZIP_OPTION} ${HOTSPOT_BUILD_OPTION} \
-    ${JAMVM_OPTION} ${JAMVM_ZIP_OPTION} ${JAVAH_OPTION} ${LEGACY_OPTS} ${LCMS_OPTION} ${GIO_OPTION} \
-    --disable-downloading"
+    ${JAMVM_OPTION} ${JAMVM_ZIP_OPTION} ${JAVAH_OPTION} ${LEGACY_OPTS} ${SYSTEM_LCMS_OPTION} ${GIO_OPTION} \
+    ${LCMS2_OPTION} --disable-downloading"
 
 if test "${BUILD}" = "azul"; then
     export PKG_CONFIG_PATH=${AZTOOLS_INSTALL}/lib/pkgconfig
