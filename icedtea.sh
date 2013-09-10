@@ -573,7 +573,7 @@ if test x${ICEDTEA_WITH_NETX} = "xno"; then
 fi
 
 if test x${ALTERNATIVE_JAVAH} = "x"; then
-    JAVAH_OPTION="--with-javah=${CLASSPATH_JAVAH}";
+    JAVAH_OPTION="--with-javah=${CLASSPATH_JDK_INSTALL}/bin/javah";
 else
     JAVAH_OPTION="--with-javah=${ALTERNATIVE_JAVAH}";
 fi
