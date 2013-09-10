@@ -22,6 +22,8 @@ if test "x${REBUILD_ICEDTEA_JAPI}" = "xyes"; then
       +com.sun.javadoc +com.sun.tools.doclets -com.sun.tools.doclets.internal -com.sun.tools.doclets.formats -com.sun.tools.doclets.standard ; \
   ${JAPI_HOME}/bin/japize as ${JAPI_INSTALL}/javadoc7 packages ${ICEDTEA7_INSTALL}/jre/lib/rt.jar ${ICEDTEA7_INSTALL}/lib/tools.jar \
       +com.sun.javadoc +com.sun.tools.doclets -com.sun.tools.doclets.internal -com.sun.tools.doclets.formats -com.sun.tools.doclets.standard ; \
+  ${JAPI_HOME}/bin/japicompat -v -j -o ${JAPI_INSTALL}/ignore-5-6.japio \
+      ${JAPI_INSTALL}/ibmjdk15.japi.gz ${JAPI_INSTALL}/icedtea6.japi.gz ; \
   ${JAPI_HOME}/bin/japicompat -v -h -o ${JAPI_INSTALL}/icedtea6-icedtea7.html \
       ${JAPI_INSTALL}/icedtea6.japi.gz ${JAPI_INSTALL}/icedtea7.japi.gz ; \
   ${JAPI_HOME}/bin/japicompat -v -h -o ${JAPI_INSTALL}/icedtea7-icedtea6.html \
@@ -36,12 +38,26 @@ if test "x${REBUILD_ICEDTEA_JAPI}" = "xyes"; then
       ${JAPI_INSTALL}/javadoc6.japi.gz ${JAPI_INSTALL}/javadoc7.japi.gz ) 2>&1 | tee ${LOG_DIR}/japi-icedtea.errors && echo DONE
 fi
 
+if test "x${REBUILD_LIBGCJ_JAPI}" = "xyes"; then
+  (${JAPI_HOME}/bin/japize as ${JAPI_INSTALL}/libgcj-${SYSTEM_GCJ_VERSION} packages ${SYSTEM_GCJ}/jre/lib/rt.jar \
+      +java +javax +org -java.awt.dnd.peer -java.awt.peer -java.text.resources ; \
+  ${JAPI_HOME}/bin/japicompat -v -h -i ${JAPI_INSTALL}/ignore-5-6.japio -o ${JAPI_INSTALL}/ibmjdk15-libgcj-${SYSTEM_GCJ_VERSION}.html ${JAPI_INSTALL}/ibmjdk15.japi.gz ${JAPI_INSTALL}/libgcj-${SYSTEM_GCJ_VERSION}.japi.gz ; \
+  ${JAPI_HOME}/bin/japicompat -v -h -o ${JAPI_INSTALL}/libgcj-${SYSTEM_GCJ_VERSION}-ibmjdk15.html ${JAPI_INSTALL}/libgcj-${SYSTEM_GCJ_VERSION}.japi.gz ${JAPI_INSTALL}/ibmjdk15.japi.gz ; \
+  ${JAPI_HOME}/bin/japicompat -v -h -i ${JAPI_INSTALL}/ignore-6-7.japio -o ${JAPI_INSTALL}/icedtea6-libgcj-${SYSTEM_GCJ_VERSION}.html ${JAPI_INSTALL}/icedtea6.japi.gz ${JAPI_INSTALL}/libgcj-${SYSTEM_GCJ_VERSION}.japi.gz ; \
+  ${JAPI_HOME}/bin/japicompat -v -h -o ${JAPI_INSTALL}/libgcj-${SYSTEM_GCJ_VERSION}-icedtea6.html ${JAPI_INSTALL}/libgcj-${SYSTEM_GCJ_VERSION}.japi.gz ${JAPI_INSTALL}/icedtea6.japi.gz ; \
+  ${JAPI_HOME}/bin/japicompat -v -h -o ${JAPI_INSTALL}/icedtea7-libgcj-${SYSTEM_GCJ_VERSION}.html ${JAPI_INSTALL}/icedtea7.japi.gz ${JAPI_INSTALL}/libgcj-${SYSTEM_GCJ_VERSION}.japi.gz ; \
+  ${JAPI_HOME}/bin/japicompat -v -h -o ${JAPI_INSTALL}/libgcj-${SYSTEM_GCJ_VERSION}-icedtea7.html ${JAPI_INSTALL}/libgcj-${SYSTEM_GCJ_VERSION}.japi.gz ${JAPI_INSTALL}/icedtea7.japi.gz ; \
+  ) 2>&1 | tee ${LOG_DIR}/japi-libgcj.errors && echo DONE ;
+fi
+
 (${JAPI_HOME}/bin/japize as ${JAPI_INSTALL}/classpath packages $HOME/build/classpath/share/classpath/glibj.zip \
     +java +javax +org -java.awt.dnd.peer -java.awt.peer -java.text.resources ; \
 ${JAPI_HOME}/bin/japize as ${JAPI_INSTALL}/gjdoc packages $HOME/build/classpath/share/classpath/glibj.zip $HOME/build/classpath/share/classpath/tools.zip \
     +com.sun.javadoc +com.sun.tools.doclets ) 2>&1 | tee ${LOG_DIR}/japi-classpath.errors && echo DONE
 
-(${JAPI_HOME}/bin/japicompat -v -h -i ${JAPI_INSTALL}/ignore-6-7.japio -o ${JAPI_INSTALL}/icedtea6-classpath.html ${JAPI_INSTALL}/icedtea6.japi.gz \
+(${JAPI_HOME}/bin/japicompat -v -h -i ${JAPI_INSTALL}/ignore-5-6.japio -o ${JAPI_INSTALL}/ibmjdk15-classpath.html ${JAPI_INSTALL}/ibmjdk15.japi.gz ${JAPI_INSTALL}/classpath.japi.gz ; \
+${JAPI_HOME}/bin/japicompat -v -h -o ${JAPI_INSTALL}/classpath-ibmjdk15.html ${JAPI_INSTALL}/classpath.japi.gz ${JAPI_INSTALL}/ibmjdk15.japi.gz ; \
+${JAPI_HOME}/bin/japicompat -v -h -i ${JAPI_INSTALL}/ignore-6-7.japio -o ${JAPI_INSTALL}/icedtea6-classpath.html ${JAPI_INSTALL}/icedtea6.japi.gz \
     ${JAPI_INSTALL}/classpath.japi.gz ; \
 ${JAPI_HOME}/bin/japicompat -v -h -o ${JAPI_INSTALL}/classpath-icedtea6.html ${JAPI_INSTALL}/classpath.japi.gz ${JAPI_INSTALL}/icedtea6.japi.gz ; \
 ${JAPI_HOME}/bin/japicompat -v -h -o ${JAPI_INSTALL}/icedtea7-classpath.html ${JAPI_INSTALL}/icedtea7.japi.gz ${JAPI_INSTALL}/classpath.japi.gz ; \
