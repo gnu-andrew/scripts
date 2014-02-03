@@ -85,11 +85,17 @@ elif [ $(echo $0|grep 'icedtea6-1.11') ]; then
     BUILD=icedtea6-1.11;
     OPENJDK_ZIP=$OPENJDK6_B24_ZIP;
     RELEASE="1.11"
+    #OPTS="--disable-bootstrap --with-jdk-home=${SYSTEM_ICEDTEA6}"
 elif [ $(echo $0|grep 'icedtea6-1.12') ]; then
     VERSION=icedtea6;
     BUILD=icedtea6-1.12;
     OPENJDK_ZIP=$OPENJDK6_B27_ZIP;
     RELEASE="1.12"
+elif [ $(echo $0|grep 'icedtea6-1.13') ]; then
+    VERSION=icedtea6;
+    BUILD=icedtea6-1.13;
+    OPENJDK_ZIP=$OPENJDK6_B30_ZIP;
+    RELEASE="1.13"
 elif [ $(echo $0|grep 'icedtea6-hg') ]; then
     VERSION=icedtea6;
     BUILD=icedtea6-hg;
@@ -158,7 +164,7 @@ elif [ $(echo $0|grep 'icedtea7-2.3') ]; then
     MAKE_OPTS="";
     CLEAN_TREE=no;
     RELEASE="2.3"
-    OPTS="--disable-bootstrap --with-jdk-home=${SYSTEM_ICEDTEA6} --enable-zero"
+    #OPTS="--disable-bootstrap --with-jdk-home=${SYSTEM_ICEDTEA6} --enable-zero"
     #OPTS="--with-javac=${OLD_ECJ}"
 elif [ $(echo $0|grep 'icedtea7-2.4') ]; then
     VERSION=icedtea7;
@@ -174,6 +180,8 @@ elif [ $(echo $0|grep 'icedtea7-2.4') ]; then
     CLEAN_TREE=no;
     RELEASE="2.4"
     OPTS="--with-javac=${OLD_ECJ}"
+    #OPTS="--with-jdk-home=${SYSTEM_ICEDTEA6} --enable-zero"
+    #OPENJDK_DIR=/home/andrew/projects/openjdk/upstream/icedtea7-2.4
 elif [ $(echo $0|grep 'icedtea7-2.0') ]; then
     VERSION=icedtea7;
     BUILD=icedtea7-2.0;
@@ -202,7 +210,13 @@ elif [ $(echo $0|grep 'icedtea7-bootstrap6') ]; then
 elif [ $(echo $0|grep 'icedtea7-nss') ]; then
     VERSION=icedtea7;
     BUILD=icedtea7;
-    OPENJDK_ZIP=$OPENJDK7_ZIP;
+    OPENJDK_ZIP=$OPENJDK7_24_ZIP;
+    CORBA7_ZIP=$CORBA7_24_ZIP;
+    JAXP7_ZIP=$JAXP7_24_ZIP;
+    JAXWS7_ZIP=$JAXWS7_24_ZIP;
+    JDK7_ZIP=$JDK7_24_ZIP;
+    LANGTOOLS7_ZIP=$LANGTOOLS7_24_ZIP;
+    HOTSPOT7_ZIP=$HOTSPOT7_24_ZIP;
     OPENJDK_DIR=$OPENJDK7_DIR;
     MAKE_OPTS="";
     CLEAN_TREE=no;
@@ -346,6 +360,13 @@ elif [ $(echo $0|grep 'azul') ]; then
     OPENJDK_DIR=$AZUL_DIR;
     OPTS="--enable-azul --with-azul-hotspot=${AZHOTSPOT} ${ICEDTEA_BUILD_OPT}";
     RELEASE="mri";
+elif [ $(echo $0|grep 'ppc7') ]; then
+    VERSION=icedtea7;
+    BUILD=ppc-icedtea7;
+    OPENJDK_ZIP=$OPENJDK7_ZIP;
+    OPENJDK_DIR=$OPENJDK7_DIR;
+    HOTSPOT7_ZIP=$PPC7_ZIP;
+    OPTS="--with-hotspot-build=ppc";
 else
     VERSION=icedtea8;
     BUILD=icedtea8;
@@ -604,6 +625,30 @@ else
     SYSTEM_LCMS_OPTION="--enable-system-lcms"
 fi
 
+if test x${ICEDTEA_WITH_SYSTEM_ZLIB} = "xno"; then
+    SYSTEM_ZLIB_OPTION="--disable-system-zlib"
+else
+    SYSTEM_ZLIB_OPTION="--enable-system-zlib"
+fi
+
+if test x${ICEDTEA_WITH_SYSTEM_JPEG} = "xno"; then
+    SYSTEM_JPEG_OPTION="--disable-system-jpeg"
+else
+    SYSTEM_JPEG_OPTION="--enable-system-jpeg"
+fi
+
+if test x${ICEDTEA_WITH_SYSTEM_PNG} = "xno"; then
+    SYSTEM_PNG_OPTION="--disable-system-png"
+else
+    SYSTEM_PNG_OPTION="--enable-system-png"
+fi
+
+if test x${ICEDTEA_WITH_SYSTEM_GIF} = "xno"; then
+    SYSTEM_GIF_OPTION="--disable-system-gif"
+else
+    SYSTEM_GIF_OPTION="--enable-system-gif"
+fi
+
 if test x${ICEDTEA_WITH_SYSTEM_GIO} = "xno"; then
     GIO_OPTION="--disable-system-gio"
 fi
@@ -629,7 +674,8 @@ CONFIG_OPTS="--with-parallel-jobs=${PARALLEL_JOBS} \
     ${PLUGIN_OPTION} ${NEW_PLUGIN_OPTION} ${NSS_OPTION} ${NIO2_OPTION} ${OPTS} \
     ${JAXP_DROP_ZIP_OPTION} ${JAF_DROP_ZIP_OPTION} ${JAXWS_DROP_ZIP_OPTION} ${HOTSPOT_BUILD_OPTION} \
     ${JAMVM_OPTION} ${JAMVM_ZIP_OPTION} ${JAVAH_OPTION} ${LEGACY_OPTS} ${SYSTEM_LCMS_OPTION} ${GIO_OPTION} \
-    ${LCMS2_OPTION} --disable-downloading"
+    ${LCMS2_OPTION} ${SYSTEM_JPEG_OPTION} ${SYSTEM_GIF_OPTION} ${SYSTEM_PNG_OPTION} ${SYSTEM_ZLIB_OPTION} \
+    --disable-downloading"
 
 if test "${BUILD}" = "azul"; then
     export PKG_CONFIG_PATH=${AZTOOLS_INSTALL}/lib/pkgconfig
@@ -667,4 +713,4 @@ else
     fi) &&
     cp -f ${SYSTEM_ICEDTEA7}/jre/lib/security/cacerts ${INSTALL_DIR}/${BUILD}/jre/lib/security/ &&
     echo DONE
-fi) 2>&1 | tee ${LOG_DIR}/$0.errors
+fi) 2>&1 | tee ${LOG_DIR}/$(basename $0).errors

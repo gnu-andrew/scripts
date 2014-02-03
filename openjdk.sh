@@ -89,9 +89,7 @@ if test "x${OPENJDK_WITH_WARNINGS}" = "xyes"; then
 fi
 
 # Hack to get around broken parallel build; overwrite -j option
-if test "x${MAKE_VARIABLE_WARNINGS}" != "x"; then
-    MAKE_OPTS="${MAKE_VARIABLE_WARNINGS}"
-fi
+MAKE_OPTS="${MAKE_OPTS} -j1"
 
 if test "x${OPENJDK_WITH_JAVA_WERROR}" = "xyes"; then
     JAVAC_WERROR="JAVAC_WARNINGS_FATAL=true"
@@ -125,6 +123,12 @@ if test "x${OPENJDK_WITH_SYSTEM_ZLIB}" = "xyes"; then
     WITH_SYSTEM_ZLIB="
        USE_SYSTEM_ZLIB=true SYSTEM_ZLIB=true \
        ZLIB_LIBS=\"$(pkg-config --libs zlib)\" ZLIB_CFLAGS=\"$(pkg-config --cflags zlib)\""
+fi
+
+if test "x${OPENJDK_WITH_SYSTEM_PCSC}" = "xyes"; then
+    WITH_SYSTEM_PCSC="
+       USE_SYSTEM_PCSC=true \
+       PCSC_LIBS=\"$(pkg-config --libs libpcsclite)\" PCSC_CFLAGS=\"$(pkg-config --cflags libpcsclite)\""
 fi
 
 if test "x${OPENJDK_ENABLE_DROPS}" = "xyes"; then
@@ -188,12 +192,13 @@ else \
     ${WITH_SYSTEM_ZLIB} \
     ${WITH_SYSTEM_LCMS} \
     ${WITH_SYSTEM_GIO} \
+    ${WITH_SYSTEM_PCSC} \
     USE_SYSTEM_JPEG=true \
     USE_SYSTEM_PNG=true \
     USE_SYSTEM_GIF=true \
     USE_SYSTEM_GTK=true \
     USE_SYSTEM_CUPS=true \
-    USE_SYSTEM_FONTCONFIG=true \
+    SYSTEM_FONTCONFIG=false \
     FT2_LIBS=\"$(pkg-config --libs freetype2)\" \
     FT2_CFLAGS=\"$(pkg-config --cflags freetype2)\" \
     JPEG_LIBS=\"-ljpeg\" \
