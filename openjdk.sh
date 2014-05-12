@@ -10,7 +10,7 @@ JDK_HOME=
 LD_LIBRARY_PATH=
 CLASSPATH=
 
-if [ -e ${PWD}/common ] ; then
+if [ -e ${PWD}/common/autoconf ] ; then
     VERSION=OpenJDK8;
     BUILDVM=${SYSTEM_ICEDTEA7};
 else
@@ -44,10 +44,8 @@ NO_HOTSPOT="
     ALT_JDK_IMPORT_PATH=${SYSTEM_ICEDTEA8}"
 
 JDK_ONLY="
-    BUILD_CORBA=false \
     BUILD_JAXP=false \
     BUILD_JAXWS=false \
-    BUILD_LANGTOOLS=false \
     BUILD_HOTSPOT=false \
     ALT_JDK_IMPORT_PATH=${BUILDVM}"
 
@@ -111,24 +109,85 @@ fi
 # System libraries
 if test "x${OPENJDK_WITH_SYSTEM_LCMS}" = "xyes"; then
     WITH_SYSTEM_LCMS="
-      USE_SYSTEM_LCMS=true LCMS_LIBS=\"$(pkg-config --libs lcms2)\" LCMS_CFLAGS=\"$(pkg-config --cflags lcms2)\""
+      USE_SYSTEM_LCMS=true SYSTEM_LCMS=true \
+      LCMS_LIBS=\"$(pkg-config --libs lcms2)\" LCMS_CFLAGS=\"$(pkg-config --cflags lcms2)\""
+else
+    WITH_SYSTEM_LCMS="USE_SYSTEM_LCMS=false SYSTEM_LCMS=false"
 fi
 
 if test "x${OPENJDK_WITH_SYSTEM_GIO}" = "xyes"; then
     WITH_SYSTEM_GIO="
-       USE_SYSTEM_GIO=true GIO_CFLAGS=\"$(pkg-config --cflags gio-2.0)\" GIO_LIBS=\"$(pkg-config --libs gio-2.0)\""
+       USE_SYSTEM_GIO=true SYSTEM_GIO=true \
+       GIO_CFLAGS=\"$(pkg-config --cflags gio-2.0)\" GIO_LIBS=\"$(pkg-config --libs gio-2.0)\""
+else
+    WITH_SYSTEM_GIO="USE_SYSTEM_GIO=false SYSTEM_GIO=false"
 fi
 
 if test "x${OPENJDK_WITH_SYSTEM_ZLIB}" = "xyes"; then
     WITH_SYSTEM_ZLIB="
-       USE_SYSTEM_ZLIB=true SYSTEM_ZLIB=true \
-       ZLIB_LIBS=\"$(pkg-config --libs zlib)\" ZLIB_CFLAGS=\"$(pkg-config --cflags zlib)\""
+       SYSTEM_ZLIB=true ZLIB_LIBS=\"$(pkg-config --libs zlib)\" ZLIB_CFLAGS=\"$(pkg-config --cflags zlib)\""
+else
+    WITH_SYSTEM_ZLIB="SYSTEM_ZLIB=false"
 fi
 
 if test "x${OPENJDK_WITH_SYSTEM_PCSC}" = "xyes"; then
     WITH_SYSTEM_PCSC="
-       USE_SYSTEM_PCSC=true \
+       SYSTEM_PCSC=true \
        PCSC_LIBS=\"$(pkg-config --libs libpcsclite)\" PCSC_CFLAGS=\"$(pkg-config --cflags libpcsclite)\""
+else
+    WITH_SYSTEM_PCSC="SYSTEM_PCSC=false"
+fi
+
+if test "x${OPENJDK_WITH_SYSTEM_JPEG}" = "xyes"; then
+    WITH_SYSTEM_JPEG="USE_SYSTEM_JPEG=true JPEG_LIBS=\"-ljpeg\""
+else
+    WITH_SYSTEM_JPEG="USE_SYSTEM_JPEG=false SYSTEM_JPEG=false"
+fi
+
+if test "x${OPENJDK_WITH_SYSTEM_PNG}" = "xyes"; then
+    WITH_SYSTEM_PNG="
+       USE_SYSTEM_PNG=true SYSTEM_PNG=true \
+       PNG_LIBS=\"$(pkg-config --libs libpng)\" PNG_CFLAGS=\"$(pkg-config --cflags libpng)\""
+else
+    WITH_SYSTEM_PNG="USE_SYSTEM_PNG=false SYSTEM_PNG=false"
+fi
+
+if test "x${OPENJDK_WITH_SYSTEM_GIF}" = "xyes"; then
+    WITH_SYSTEM_GIF="USE_SYSTEM_GIF=true GIF_LIBS=\"-lgif\""
+else
+    WITH_SYSTEM_GIF="USE_SYSTEM_GIF=false SYSTEM_GIF=false"
+fi
+
+if test "x${OPENJDK_WITH_SYSTEM_GTK}" = "xyes"; then
+    WITH_SYSTEM_GTK="
+       USE_SYSTEM_GTK=true SYSTEM_GTK=true \
+       GTK_LIBS=\"$(pkg-config --libs gtk+-2.0 gthread-2.0)\" GTK_CFLAGS=\"$(pkg-config --cflags gtk+-2.0 gthread-2.0)\""
+else
+    WITH_SYSTEM_GTK="USE_SYSTEM_GTK=false SYSTEM_GTK=false"
+fi
+
+if test "x${OPENJDK_WITH_SYSTEM_CUPS}" = "xyes"; then
+    WITH_SYSTEM_CUPS="USE_SYSTEM_CUPS=true CUPS_LIBS=\"-lcups\""
+else
+    WITH_SYSTEM_CUPS="USE_SYSTEM_CUPS=false SYSTEM_CUPS=false"
+fi
+
+if test "x${OPENJDK_WITH_SYSTEM_FONTCONFIG}" = "xyes"; then
+    WITH_SYSTEM_FONTCONFIG="
+       USE_SYSTEM_FONTCONFIG=true SYSTEM_FONTCONFIG=true \
+       FONTCONFIG_LIBS=\"$(pkg-config --libs fontconfig)\" FONTCONFIG_CFLAGS=\"$(pkg-config --cflags fontconfig)\""
+else
+    WITH_SYSTEM_FONTCONFIG="USE_SYSTEM_FONTCONFIG=false SYSTEM_FONTCONFIG=false"
+fi
+
+if test "x${OPENJDK_WITH_SUNEC}" = "xyes"; then
+    WITH_SUNEC="
+       SYSTEM_NSS=true \
+       NSS_LIBS=\"$(pkg-config --libs nss-java)\" \
+       NSS_CFLAGS=\"$(pkg-config --cflags nss-java) -DLEGACY_NSS\" \
+       ECC_JUST_SUITE_B=true"
+else
+    WITH_SUNEC="SYSTEM_NSS=false DISABLE_INTREE_EC=true"
 fi
 
 if test "x${OPENJDK_ENABLE_DROPS}" = "xyes"; then
@@ -158,22 +217,26 @@ fi
 
 if test "x${VERSION}" = "xOpenJDK8"; then \
   (echo Building in ${WORKING_DIR}/$BUILD_DIR && \
-  rm -rf ${WORKING_DIR}/${BUILD_DIR} && \
-  cd ${WORKING_DIR} && \
-  mkdir ${BUILD_DIR} && \
-  cd ${BUILD_DIR} &&
-  ARGS="DISABLE_INTREE_EC=true \
-    OTHER_JAVACFLAGS=\"-Xmaxwarns 10000\" \
-    ${WARNINGS} ${JAVAC_WERROR} ${GCC_WERROR} \
-    ${DOCS} STRIP_POLICY=no_strip POST_STRIP_CMD= LOG=debug \
-    SCTP_WERROR= DEBUG_BINARIES=true" && \
-  echo ${ARGS} && \
-  /bin/bash ${SOURCE_DIR}/configure \
+  if test x"$2" != "xrecompile" ; then \
+    rm -rf ${WORKING_DIR}/${BUILD_DIR} && \
+    cd ${WORKING_DIR} && \
+    mkdir ${BUILD_DIR} && \
+    cd ${BUILD_DIR} && \
+    /bin/bash ${SOURCE_DIR}/configure \
       --enable-unlimited-crypto \
       --with-cacerts-file=${SYSTEM_ICEDTEA7}/jre/lib/security/cacerts \
       --with-zlib=system --with-stdc++lib=dynamic \
       --with-jobs=${PARALLEL_JOBS} --with-boot-jdk=${BUILDVM} \
-      ${ZERO_CONFIG} && \
+      ${ZERO_CONFIG} ; \
+  else \
+    cd ${WORKING_DIR}/${BUILD_DIR} ; \
+  fi ;
+  ARGS="DISABLE_INTREE_EC=true \
+      OTHER_JAVACFLAGS=\"-Xmaxwarns 10000\" \
+      ${WARNINGS} ${JAVAC_WERROR} ${GCC_WERROR} \
+      ${DOCS} STRIP_POLICY=no_strip POST_STRIP_CMD= LOG=debug \
+      DEBUG_BINARIES=true" && \
+  echo ${ARGS} && \
   eval ANT_RESPECT_JAVA_HOME=true LANG=C make ${ARGS} all \
 ) 2>&1 | tee ${LOG_DIR}/$0-$1.errors ; \
 else \
@@ -188,32 +251,23 @@ else \
     QUIETLY="" \
     DEBUG_BINARIES=true \
     DEBUG_CLASSFILES=true \
-    DISABLE_INTREE_EC=true \
     ${WITH_SYSTEM_ZLIB} \
     ${WITH_SYSTEM_LCMS} \
     ${WITH_SYSTEM_GIO} \
     ${WITH_SYSTEM_PCSC} \
-    USE_SYSTEM_JPEG=true \
-    USE_SYSTEM_PNG=true \
-    USE_SYSTEM_GIF=true \
-    USE_SYSTEM_GTK=true \
-    USE_SYSTEM_CUPS=true \
-    SYSTEM_FONTCONFIG=false \
+    ${WITH_SYSTEM_JPEG} \
+    ${WITH_SYSTEM_PNG} \
+    ${WITH_SYSTEM_GIF} \
+    ${WITH_SYSTEM_GTK} \
+    ${WITH_SYSTEM_CUPS} \
+    ${WITH_SYSTEM_FONTCONFIG} \
+    ${WITH_SUNEC} \
     FT2_LIBS=\"$(pkg-config --libs freetype2)\" \
     FT2_CFLAGS=\"$(pkg-config --cflags freetype2)\" \
-    JPEG_LIBS=\"-ljpeg\" \
-    PNG_CFLAGS=\"$(pkg-config --cflags libpng)\" \
-    PNG_LIBS=\"$(pkg-config --libs libpng)\" \
-    GIF_LIBS=\"-lgif\" \
-    GTK_CFLAGS=\"$(pkg-config --cflags gtk+-2.0 gthread-2.0)\" \
-    GTK_LIBS=\"$(pkg-config --libs gtk+-2.0 gthread-2.0)\" \
-    CUPS_LIBS=\"-lcups\" \
-    FONTCONFIG_CFLAGS=\"$(pkg-config --cflags fontconfig)\" \
-    FONTCONFIG_LIBS=\"$(pkg-config --libs fontconfig)\" \    
     COMPILE_AGAINST_SYSCALLS=true \
     OTHER_JAVACFLAGS=\"-Xmaxwarns 10000\" \
     ZERO_BUILD=${ZERO_SUPPORT} STATIC_CXX=false \
-    ${WARNINGS} ${JAVAC_WERROR} ${GCC_WERROR} ${EXTRA_OPTS} \
+    ${WARNINGS} ${JAVAC_WERROR} ${GCC_WERROR} ${EXTRA_OPTS} EXTRA_CFLAGS=\"${CFLAGS}\" \
     ${DOCS} STRIP_POLICY=no_strip UNLIMITED_CRYPTO=true" && \
   echo ${ARGS} && \
   eval ANT_RESPECT_JAVA_HOME=true LANG=C make ${MAKE_OPTS} ${ARGS} \

@@ -29,7 +29,7 @@ fi
 
 if [ -e $CP_HOME ]; then
     cd $CP_HOME;
-    #cvs update -dP;
+    git pull -v upstream master;
     make distclean;
 else
     cd `dirname $CP_HOME`;
@@ -94,7 +94,9 @@ if test x$1 = "xrelease"; then
     DISTCHECK_CONFIGURE_FLAGS=${CONFIG_OPTS} make ${MAKE_OPTS} distcheck \
 	&& echo DONE;
 else
-    make ${MAKE_OPTS} all dvi install && \
+    make ${MAKE_OPTS} all && \
+    make ${MAKE_OPTS} dvi && \
+    make ${MAKE_OPTS} install && \
     ln -sf ${CACAO_INSTALL}/lib/libjvm.so ${INSTALL_DIR}/lib &&
     cat ${ERROR_LOG}|grep WAR|awk '{print $4}'|sort|uniq -c|sort -n 2>&1 | tee $(echo ${ERROR_LOG}|sed 's#errors#stats#') &&
     cat ${ERROR_LOG}|grep 'warnings'
