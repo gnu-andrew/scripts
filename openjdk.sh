@@ -111,8 +111,10 @@ if test "x${OPENJDK_WITH_SYSTEM_LCMS}" = "xyes"; then
     WITH_SYSTEM_LCMS="
       USE_SYSTEM_LCMS=true SYSTEM_LCMS=true \
       LCMS_LIBS=\"$(pkg-config --libs lcms2)\" LCMS_CFLAGS=\"$(pkg-config --cflags lcms2)\""
+    LCMS_CONF_OPT="--with-lcms=system"
 else
     WITH_SYSTEM_LCMS="USE_SYSTEM_LCMS=false SYSTEM_LCMS=false"
+    LCMS_CONF_OPT="--with-lcms=bundled"
 fi
 
 if test "x${OPENJDK_WITH_SYSTEM_GIO}" = "xyes"; then
@@ -126,8 +128,10 @@ fi
 if test "x${OPENJDK_WITH_SYSTEM_ZLIB}" = "xyes"; then
     WITH_SYSTEM_ZLIB="
        SYSTEM_ZLIB=true ZLIB_LIBS=\"$(pkg-config --libs zlib)\" ZLIB_CFLAGS=\"$(pkg-config --cflags zlib)\""
+    ZLIB_CONF_OPT="--with-zlib=system"
 else
     WITH_SYSTEM_ZLIB="SYSTEM_ZLIB=false"
+    ZLIB_CONF_OPT="--with-zlib=bundled"
 fi
 
 if test "x${OPENJDK_WITH_SYSTEM_PCSC}" = "xyes"; then
@@ -148,14 +152,18 @@ if test "x${OPENJDK_WITH_SYSTEM_PNG}" = "xyes"; then
     WITH_SYSTEM_PNG="
        USE_SYSTEM_PNG=true SYSTEM_PNG=true \
        PNG_LIBS=\"$(pkg-config --libs libpng)\" PNG_CFLAGS=\"$(pkg-config --cflags libpng)\""
+    PNG_CONF_OPT="--with-libpng=system"
 else
     WITH_SYSTEM_PNG="USE_SYSTEM_PNG=false SYSTEM_PNG=false"
+    PNG_CONF_OPT="--with-libpng=bundled"
 fi
 
 if test "x${OPENJDK_WITH_SYSTEM_GIF}" = "xyes"; then
     WITH_SYSTEM_GIF="USE_SYSTEM_GIF=true GIF_LIBS=\"-lgif\""
+    GIF_CONF_OPT="--with-giflib=system"
 else
     WITH_SYSTEM_GIF="USE_SYSTEM_GIF=false SYSTEM_GIF=false"
+    GIF_CONF_OPT="--with-giflib=bundled"
 fi
 
 if test "x${OPENJDK_WITH_SYSTEM_GTK}" = "xyes"; then
@@ -175,7 +183,8 @@ fi
 if test "x${OPENJDK_WITH_SYSTEM_FONTCONFIG}" = "xyes"; then
     WITH_SYSTEM_FONTCONFIG="
        USE_SYSTEM_FONTCONFIG=true SYSTEM_FONTCONFIG=true \
-       FONTCONFIG_LIBS=\"$(pkg-config --libs fontconfig)\" FONTCONFIG_CFLAGS=\"$(pkg-config --cflags fontconfig)\""
+       FONTCONFIG_LIBS=\"$(pkg-config --libs fontconfig)\" FONTCONFIG_CFLAGS=\"$(pkg-config --cflags fontconfig)\" \
+       INFINALITY_SUPPORT=true"
 else
     WITH_SYSTEM_FONTCONFIG="USE_SYSTEM_FONTCONFIG=false SYSTEM_FONTCONFIG=false"
 fi
@@ -196,6 +205,10 @@ fi
 
 if test "x${OPENJDK_WITHOUT_HOTSPOT}" = "xyes"; then
     EXTRA_OPTS="${NO_HOTSPOT}" ;
+fi
+
+if test "x${OPENJDK_WITH_DEBUG}" = "xyes"; then
+    TARGET="debug_build" ;
 fi
 
 #    GENSRCDIR=/tmp/generated
@@ -225,9 +238,9 @@ if test "x${VERSION}" = "xOpenJDK8"; then \
     /bin/bash ${SOURCE_DIR}/configure \
       --enable-unlimited-crypto \
       --with-cacerts-file=${SYSTEM_ICEDTEA7}/jre/lib/security/cacerts \
-      --with-zlib=system --with-stdc++lib=dynamic \
-      --with-jobs=${PARALLEL_JOBS} --with-boot-jdk=${BUILDVM} \
-      ${ZERO_CONFIG} ; \
+      ${ZLIB_CONF_OPT} ${GIF_CONF_OPT} ${LCMS_CONF_OPT} ${PNG_CONF_OPT} \
+      --with-stdc++lib=dynamic --with-jobs=${PARALLEL_JOBS} \
+      --with-boot-jdk=${BUILDVM} --with-alt-jar=fastjar ${ZERO_CONFIG} ; \
   else \
     cd ${WORKING_DIR}/${BUILD_DIR} ; \
   fi ;
@@ -268,8 +281,12 @@ else \
     OTHER_JAVACFLAGS=\"-Xmaxwarns 10000\" \
     ZERO_BUILD=${ZERO_SUPPORT} STATIC_CXX=false \
     ${WARNINGS} ${JAVAC_WERROR} ${GCC_WERROR} ${EXTRA_OPTS} EXTRA_CFLAGS=\"${CFLAGS}\" \
-    ${DOCS} STRIP_POLICY=no_strip UNLIMITED_CRYPTO=true" && \
+    ${DOCS} STRIP_POLICY=no_strip UNLIMITED_CRYPTO=true CC=\"/usr/bin/gcc\" CXX=\"/usr/bin/g++\" ${TARGET}"
   echo ${ARGS} && \
   eval ANT_RESPECT_JAVA_HOME=true LANG=C make ${MAKE_OPTS} ${ARGS} \
 ) 2>&1 | tee ${LOG_DIR}/$0-$1.errors ; \
 fi 
+
+# Cross compile
+#    BUILD_JAXP=false BUILD_JAXWS=false BUILD_LANGTOOLS=false BUILD_CORBA=false \
+#    ALT_JDK_IMPORT_PATH=${WORKING_DIR}/${BUILD_DIR}/x86_64 CROSS_COMPILE_ARCH=i686" && \

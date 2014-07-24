@@ -94,7 +94,7 @@ elif [ $(echo $0|grep 'icedtea6-1.12') ]; then
 elif [ $(echo $0|grep 'icedtea6-1.13') ]; then
     VERSION=icedtea6;
     BUILD=icedtea6-1.13;
-    OPENJDK_ZIP=$OPENJDK6_B31_ZIP;
+    OPENJDK_ZIP=$OPENJDK6_B32_ZIP;
     RELEASE="1.13"
 elif [ $(echo $0|grep 'icedtea6-hg') ]; then
     VERSION=icedtea6;
@@ -174,13 +174,13 @@ elif [ $(echo $0|grep 'icedtea7-2.4') ]; then
     JDK7_ZIP=$JDK7_24_ZIP;
     LANGTOOLS7_ZIP=$LANGTOOLS7_24_ZIP;
     HOTSPOT7_ZIP=$HOTSPOT7_24_ZIP;
-    #HOTSPOT7_ZIP=$AARCH64_7_ZIP;
+    #HOTSPOT7_ZIP=$AARCH64_24_ZIP;
     MAKE_OPTS="";
     CLEAN_TREE=no;
     RELEASE="2.4"
     #OPTS="--with-jdk-home=${SYSTEM_ICEDTEA6} --enable-zero"
     #OPENJDK_DIR=/home/andrew/projects/openjdk/upstream/icedtea7-2.4
-    #OPTS="--with-javac=${OLD_ECJ} --with-hotspot-build=aarch64"
+    #OPTS="--with-hotspot-build=aarch64 --enable-zero"
 elif [ $(echo $0|grep 'icedtea7-2.5') ]; then
     VERSION=icedtea7;
     BUILD=icedtea7-2.5;
@@ -191,9 +191,11 @@ elif [ $(echo $0|grep 'icedtea7-2.5') ]; then
     JDK7_ZIP=$JDK7_25_ZIP;
     LANGTOOLS7_ZIP=$LANGTOOLS7_25_ZIP;
     HOTSPOT7_ZIP=$HOTSPOT7_25_ZIP;
+    #HOTSPOT7_ZIP=$AARCH64_25_ZIP;
     MAKE_OPTS="";
     CLEAN_TREE=no;
     RELEASE="2.5"
+    #OPTS="--with-hotspot-build=aarch64"
 elif [ $(echo $0|grep 'icedtea7-2.0') ]; then
     VERSION=icedtea7;
     BUILD=icedtea7-2.0;
@@ -207,6 +209,13 @@ elif [ $(echo $0|grep 'icedtea7-2.0') ]; then
     MAKE_OPTS="";
     CLEAN_TREE=no;
     RELEASE="2.0"
+elif [ $(echo $0|grep 'icedtea7-bootstrap7-gcj') ]; then
+    VERSION=icedtea7;
+    BUILD=icedtea7-icedtea7-bootstrap-gcj;
+    OPENJDK_ZIP=$OPENJDK7_ZIP;
+    OPENJDK_DIR=$OPENJDK7_DIR;
+    OPTS="--with-jdk-home=${BOOTSTRAP_ICEDTEA7} --with-gcj --with-ecj-jar=${GCJ_ECJ_JAR}"
+    USE_ECJ="no"
 elif [ $(echo $0|grep 'icedtea7-bootstrap7') ]; then
     VERSION=icedtea7;
     BUILD=icedtea7-icedtea7-bootstrap;
@@ -476,6 +485,7 @@ elif test x${VERSION} = "xicedtea7"; then
     fi
 else
     OPTS="${OPTS} --with-jdk-home=${BOOTSTRAP_ICEDTEA7}" 
+    USE_ECJ="no"
     if test x${CORBA8_ZIP} != "x"; then
 	CORBA_ZIP_OPTION="--with-corba-src-zip=${CORBA8_ZIP}";
     fi
@@ -491,17 +501,11 @@ else
     if test x${LANGTOOLS8_ZIP} != "x"; then
 	LANGTOOLS_ZIP_OPTION="--with-langtools-src-zip=${LANGTOOLS8_ZIP}";
     fi
+    if test x${NASHORN8_ZIP} != "x"; then
+	NASHORN_ZIP_OPTION="--with-nashorn-src-zip=${NASHORN8_ZIP}";
+    fi
     if test x${HOTSPOT8_ZIP} != "x"; then
 	HOTSPOT_ZIP_OPTION="--with-hotspot-src-zip=${HOTSPOT8_ZIP}";
-    fi
-    if test x${JAXP8_DROP_ZIP} != "x"; then
-	JAXP_DROP_ZIP_OPTION="--with-jaxp-drop-zip=${JAXP8_DROP_ZIP}";
-    fi
-    if test x${JAF8_DROP_ZIP} != "x"; then
-	JAF_DROP_ZIP_OPTION="--with-jaf-drop-zip=${JAF8_DROP_ZIP}";
-    fi
-    if test x${JAXWS8_DROP_ZIP} != "x"; then
-	JAXWS_DROP_ZIP_OPTION="--with-jaxws-drop-zip=${JAXWS8_DROP_ZIP}";
     fi
     if test x${HOTSPOT8_BUILD} != "x"; then
 	HOTSPOT_BUILD_OPTION="--with-hotspot-build=${HOTSPOT8_BUILD}";
@@ -684,6 +688,24 @@ else
     SUNEC_OPTION="--disable-sunec"
 fi
 
+if test x${ICEDTEA_WITH_SUNEC} = "xyes"; then
+    SUNEC_OPTION="--enable-sunec"
+else
+    SUNEC_OPTION="--disable-sunec"
+fi
+
+if test x${ICEDTEA_WITH_NATIVE_DEBUGINFO} = "xyes"; then
+    NATIVE_DEBUGINFO_OPTION="--enable-native-debuginfo"
+else
+    NATIVE_DEBUGINFO_OPTION="--disable-native-debuginfo"
+fi
+
+if test x${ICEDTEA_WITH_JAVA_DEBUGINFO} = "xyes"; then
+    JAVA_DEBUGINFO_OPTION="--enable-java-debuginfo"
+else
+    JAVA_DEBUGINFO_OPTION="--disable-java-debuginfo"
+fi
+
 RT_JAR=${CLASSPATH_INSTALL}/share/classpath/glibj.zip
 
 if test x${CHOST} != "x"; then
@@ -696,17 +718,17 @@ INSTALLATION_DIR=${INSTALL_DIR}/${BUILD}
 # --with-java=${GCJ_JDK_INSTALL}/bin/java ${JAVAH_OPTION} \
 # --with-jar=${GCJ_JDK_INSTALL}/bin/jar --with-rmic=${GCJ_JDK_INSTALL}/bin/rmic
 
-CONFIG_OPTS="--with-parallel-jobs=${PARALLEL_JOBS} ${JAVAC_OPTION} \
+CONFIG_OPTS="--prefix=${INSTALLATION_DIR} --with-parallel-jobs=${PARALLEL_JOBS} ${JAVAC_OPTION} \
     --with-jdk-home=${CLASSPATH_JDK_INSTALL} ${ZIP_OPTION} ${DIR_OPTION} ${RHINO_OPTION} ${DOCS_OPTION} \
     ${CACAO_OPTION} ${CACAO_ZIP_OPTION} ${SHARK_OPTION} ${VISUALVM_OPTION} ${PULSEAUDIO_OPTION} \
-    ${GCJ_OPTION} ${HOTSPOT_ZIP_OPTION} ${CORBA_ZIP_OPTION} ${CHOST_OPTION} ${TESTS_OPTION} \
+    ${GCJ_OPTION} ${HOTSPOT_ZIP_OPTION} ${CORBA_ZIP_OPTION} ${NASHORN_ZIP_OPTION} ${CHOST_OPTION} ${TESTS_OPTION} \
     ${JAXP_ZIP_OPTION} ${JAXWS_ZIP_OPTION} ${JDK_ZIP_OPTION} ${LANGTOOLS_ZIP_OPTION} ${NIMBUS_OPTION} \
     ${SYSTEMTAP_OPTION} --with-abs-install-dir=${INSTALLATION_DIR} ${NIMBUS_GEN_OPTION} ${XRENDER_OPTION} \
     ${PLUGIN_OPTION} ${NEW_PLUGIN_OPTION} ${NSS_OPTION} ${NIO2_OPTION} ${OPTS} ${SUNEC_OPTION} \
     ${JAXP_DROP_ZIP_OPTION} ${JAF_DROP_ZIP_OPTION} ${JAXWS_DROP_ZIP_OPTION} ${HOTSPOT_BUILD_OPTION} \
     ${JAMVM_OPTION} ${JAMVM_ZIP_OPTION} ${LEGACY_OPTS} ${SYSTEM_LCMS_OPTION} ${GIO_OPTION} \
     ${LCMS2_OPTION} ${SYSTEM_JPEG_OPTION} ${SYSTEM_GIF_OPTION} ${SYSTEM_PNG_OPTION} ${SYSTEM_ZLIB_OPTION} \
-    --disable-downloading"
+    ${NATIVE_DEBUGINFO_OPTION} ${JAVA_DEBUGINFO_OPTION} --disable-downloading"
 
 if test "${BUILD}" = "azul"; then
     export PKG_CONFIG_PATH=${AZTOOLS_INSTALL}/lib/pkgconfig
