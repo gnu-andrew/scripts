@@ -144,8 +144,10 @@ fi
 
 if test "x${OPENJDK_WITH_SYSTEM_JPEG}" = "xyes"; then
     WITH_SYSTEM_JPEG="USE_SYSTEM_JPEG=true JPEG_LIBS=\"-ljpeg\""
+    JPEG_CONF_OPT="--with-libjpeg=system"
 else
     WITH_SYSTEM_JPEG="USE_SYSTEM_JPEG=false SYSTEM_JPEG=false"
+    JPEG_CONF_OPT="--with-libjpeg=bundled"
 fi
 
 if test "x${OPENJDK_WITH_SYSTEM_PNG}" = "xyes"; then
@@ -192,8 +194,8 @@ fi
 if test "x${OPENJDK_WITH_SUNEC}" = "xyes"; then
     WITH_SUNEC="
        SYSTEM_NSS=true \
-       NSS_LIBS=\"$(pkg-config --libs nss-java)\" \
-       NSS_CFLAGS=\"$(pkg-config --cflags nss-java) -DLEGACY_NSS\" \
+       NSS_LIBS=\"$(pkg-config --libs nss-softokn)\" \
+       NSS_CFLAGS=\"$(pkg-config --cflags nss-softokn)\" \
        ECC_JUST_SUITE_B=true"
 else
     WITH_SUNEC="SYSTEM_NSS=false DISABLE_INTREE_EC=true"
@@ -239,7 +241,7 @@ if test "x${VERSION}" = "xOpenJDK8"; then \
       --enable-unlimited-crypto \
       --with-cacerts-file=${SYSTEM_ICEDTEA7}/jre/lib/security/cacerts \
       ${ZLIB_CONF_OPT} ${GIF_CONF_OPT} ${LCMS_CONF_OPT} ${PNG_CONF_OPT} \
-      --with-stdc++lib=dynamic --with-jobs=${PARALLEL_JOBS} \
+      --with-stdc++lib=dynamic --with-jobs=${PARALLEL_JOBS} ${JPEG_CONF_OPT} \
       --with-boot-jdk=${BUILDVM} --with-alt-jar=fastjar ${ZERO_CONFIG} ; \
   else \
     cd ${WORKING_DIR}/${BUILD_DIR} ; \
@@ -247,10 +249,11 @@ if test "x${VERSION}" = "xOpenJDK8"; then \
   ARGS="DISABLE_INTREE_EC=true \
       OTHER_JAVACFLAGS=\"-Xmaxwarns 10000\" \
       ${WARNINGS} ${JAVAC_WERROR} ${GCC_WERROR} \
-      ${DOCS} STRIP_POLICY=no_strip POST_STRIP_CMD= LOG=debug \
-      DEBUG_BINARIES=true" && \
+      STRIP_POLICY=no_strip POST_STRIP_CMD= LOG=debug \
+      DEBUG_BINARIES=true JDK_DERIVATIVE_NAME=IcedTea \
+      DERIVATIVE_ID=IcedTea" && \
   echo ${ARGS} && \
-  eval ANT_RESPECT_JAVA_HOME=true LANG=C make ${ARGS} all \
+  eval ANT_RESPECT_JAVA_HOME=true LANG=C make ${ARGS} images \
 ) 2>&1 | tee ${LOG_DIR}/$0-$1.errors ; \
 else \
   (echo Building in ${WORKING_DIR}/$BUILD_DIR && \
@@ -281,7 +284,8 @@ else \
     OTHER_JAVACFLAGS=\"-Xmaxwarns 10000\" \
     ZERO_BUILD=${ZERO_SUPPORT} STATIC_CXX=false \
     ${WARNINGS} ${JAVAC_WERROR} ${GCC_WERROR} ${EXTRA_OPTS} EXTRA_CFLAGS=\"${CFLAGS}\" \
-    ${DOCS} STRIP_POLICY=no_strip UNLIMITED_CRYPTO=true CC=\"/usr/bin/gcc\" CXX=\"/usr/bin/g++\" ${TARGET}"
+    ${DOCS} STRIP_POLICY=no_strip UNLIMITED_CRYPTO=true CC=\"/usr/bin/gcc\" CXX=\"/usr/bin/g++\" \
+    ENABLE_FULL_DEBUG_SYMBOLS=0 ${TARGET}"
   echo ${ARGS} && \
   eval ANT_RESPECT_JAVA_HOME=true LANG=C make ${MAKE_OPTS} ${ARGS} \
 ) 2>&1 | tee ${LOG_DIR}/$0-$1.errors ; \

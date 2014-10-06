@@ -682,10 +682,16 @@ else
     GIO_OPTION="--disable-system-gio"
 fi
 
-if test x${ICEDTEA_WITH_SUNEC} = "xyes"; then
-    SUNEC_OPTION="--enable-sunec"
+if test x${ICEDTEA_WITH_SYSTEM_GTK} = "xyes"; then
+    GTK_OPTION="--enable-system-gtk"
 else
-    SUNEC_OPTION="--disable-sunec"
+    GTK_OPTION="--disable-system-gtk"
+fi
+
+if test x${ICEDTEA_WITH_SYSTEM_PCSC} = "xyes"; then
+    SYSTEM_PCSC_OPTION="--enable-system-pcsc"
+else
+    SYSTEM_PCSC_OPTION="--disable-system-pcsc"
 fi
 
 if test x${ICEDTEA_WITH_SUNEC} = "xyes"; then
@@ -726,9 +732,9 @@ CONFIG_OPTS="--prefix=${INSTALLATION_DIR} --with-parallel-jobs=${PARALLEL_JOBS} 
     ${SYSTEMTAP_OPTION} --with-abs-install-dir=${INSTALLATION_DIR} ${NIMBUS_GEN_OPTION} ${XRENDER_OPTION} \
     ${PLUGIN_OPTION} ${NEW_PLUGIN_OPTION} ${NSS_OPTION} ${NIO2_OPTION} ${OPTS} ${SUNEC_OPTION} \
     ${JAXP_DROP_ZIP_OPTION} ${JAF_DROP_ZIP_OPTION} ${JAXWS_DROP_ZIP_OPTION} ${HOTSPOT_BUILD_OPTION} \
-    ${JAMVM_OPTION} ${JAMVM_ZIP_OPTION} ${LEGACY_OPTS} ${SYSTEM_LCMS_OPTION} ${GIO_OPTION} \
+    ${JAMVM_OPTION} ${JAMVM_ZIP_OPTION} ${LEGACY_OPTS} ${SYSTEM_LCMS_OPTION} ${GIO_OPTION} ${GTK_OPTION} \
     ${LCMS2_OPTION} ${SYSTEM_JPEG_OPTION} ${SYSTEM_GIF_OPTION} ${SYSTEM_PNG_OPTION} ${SYSTEM_ZLIB_OPTION} \
-    ${NATIVE_DEBUGINFO_OPTION} ${JAVA_DEBUGINFO_OPTION} --disable-downloading"
+    ${SYSTEM_PCSC_OPTION} ${NATIVE_DEBUGINFO_OPTION} ${JAVA_DEBUGINFO_OPTION} --disable-downloading"
 
 if test "${BUILD}" = "azul"; then
     export PKG_CONFIG_PATH=${AZTOOLS_INSTALL}/lib/pkgconfig
