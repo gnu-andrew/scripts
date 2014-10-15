@@ -94,7 +94,7 @@ elif [ $(echo $0|grep 'icedtea6-1.12') ]; then
 elif [ $(echo $0|grep 'icedtea6-1.13') ]; then
     VERSION=icedtea6;
     BUILD=icedtea6-1.13;
-    OPENJDK_ZIP=$OPENJDK6_B32_ZIP;
+    OPENJDK_ZIP=$OPENJDK6_B33_ZIP;
     RELEASE="1.13"
 elif [ $(echo $0|grep 'icedtea6-hg') ]; then
     VERSION=icedtea6;
@@ -196,6 +196,8 @@ elif [ $(echo $0|grep 'icedtea7-2.5') ]; then
     CLEAN_TREE=no;
     RELEASE="2.5"
     #OPTS="--with-hotspot-build=aarch64"
+    #OPTS="--with-jdk-home=${INSTALL_DIR}/icedtea7-2.4"
+    #USE_ECJ="no"
 elif [ $(echo $0|grep 'icedtea7-2.0') ]; then
     VERSION=icedtea7;
     BUILD=icedtea7-2.0;

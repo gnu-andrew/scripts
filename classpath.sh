@@ -70,12 +70,18 @@ else
     WERROR_OPTION="--enable-Werror";
 fi
 
+if test "x${CLASSPATH_WITH_WARNINGS}" = "xno"; then
+    WARNING_OPTION="--disable-warnings";
+else
+    WARNING_OPTION="--enable-warnings";
+fi
+
 if test "x${CLASSPATH_WITH_XMLJ}" = "xyes"; then
     XMLJ_OPTION="--enable-xmlj";
 fi
 
 CONFIG_OPTS="--enable-examples ${JAVAH_OPTION} \
-    ${WERROR_OPTION} --with-ecj-jar=${ECJ_JAR} ${GSTREAMER_OPTION} \
+    ${WERROR_OPTION} ${WARNING_OPTION} --with-ecj-jar=${ECJ_JAR} ${GSTREAMER_OPTION} \
     ${QT_OPTION} ${TOOL_OPTION} ${DOCS_OPTION} ${PLUGIN_OPTION} ${XMLJ_OPTION}"
 
 echo "Passing ${CONFIG_OPTS} to configure..."
@@ -97,9 +103,10 @@ else
     make ${MAKE_OPTS} all && \
     make ${MAKE_OPTS} dvi && \
     make ${MAKE_OPTS} install && \
-    ln -sf ${CACAO_INSTALL}/lib/libjvm.so ${INSTALL_DIR}/lib &&
-    cat ${ERROR_LOG}|grep WAR|awk '{print $4}'|sort|uniq -c|sort -n 2>&1 | tee $(echo ${ERROR_LOG}|sed 's#errors#stats#') &&
-    cat ${ERROR_LOG}|grep 'warnings'
+    ln -sf ${CACAO_INSTALL}/lib/libjvm.so ${INSTALL_DIR}/lib
 fi) 2>&1 | tee ${ERROR_LOG}
+(cat ${ERROR_LOG}|grep WAR|awk '{print $4}'|sort|uniq -c|sort -n && \
+ cat ${ERROR_LOG}|grep '^[0-9]* problems' \
+) 2>&1 | tee $(echo ${ERROR_LOG}|sed 's#errors#stats#')
 #release: rm -rf $HOME/projects/httpdocs/classpath/doc;
 #release: mv ${BUILD_DIR}/doc/api/html $HOME/projects/httpdocs/classpath/doc; 
