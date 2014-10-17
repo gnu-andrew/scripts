@@ -80,9 +80,15 @@ if test "x${CLASSPATH_WITH_XMLJ}" = "xyes"; then
     XMLJ_OPTION="--enable-xmlj";
 fi
 
+if test "x${CLASSPATH_WITH_GJDOC}" = "xyes"; then
+    GJDOC_OPTION="--enable-gjdoc";
+else
+    GJDOC_OPTION="--disable-gjdoc";
+fi
+
 CONFIG_OPTS="--enable-examples ${JAVAH_OPTION} \
     ${WERROR_OPTION} ${WARNING_OPTION} --with-ecj-jar=${ECJ_JAR} ${GSTREAMER_OPTION} \
-    ${QT_OPTION} ${TOOL_OPTION} ${DOCS_OPTION} ${PLUGIN_OPTION} ${XMLJ_OPTION}"
+    ${QT_OPTION} ${TOOL_OPTION} ${DOCS_OPTION} ${PLUGIN_OPTION} ${XMLJ_OPTION} ${GJDOC_OPTION}"
 
 echo "Passing ${CONFIG_OPTS} to configure..."
 
