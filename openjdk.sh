@@ -10,18 +10,28 @@ JDK_HOME=
 LD_LIBRARY_PATH=
 CLASSPATH=
 
-if [ -e ${PWD}/common/autoconf ] ; then
+if [ -e ${PWD}/jdk/src/java.base ] ; then
+    VERSION=OpenJDK9;
+    BUILDVM=${SYSTEM_ICEDTEA8};
+elif [ -e ${PWD}/common/autoconf ] ; then
     VERSION=OpenJDK8;
     BUILDVM=${SYSTEM_ICEDTEA7};
 else
     VERSION=OpenJDK7;
     BUILDVM=${SYSTEM_ICEDTEA6};
 fi
+
+# Check whether this is IcedTea
+if [-e ${PWD}/hotspot/src/cpu/aarch64 ] ; then
+    ICEDTEA=true;
+fi
+
 if test "x${BUILDVM}" = "x"; then
     echo "No build VM available.  Exiting.";
     exit -1;
 fi
 echo "Building ${VERSION} using ${BUILDVM}"
+echo "IcedTea: ${ICEDTEA}"
 
 # Add Zero support
 if test "x${OPENJDK_WITH_ZERO}" = "xyes"; then
@@ -213,10 +223,11 @@ if test "x${OPENJDK_WITH_DEBUG}" = "xyes"; then
     TARGET="debug_build" ;
 fi
 
+if test "x${ICEDTEA}" = "xtrue"; then
+    ICEDTEA_CONF_OPTS="--with-alt-jar=fastjar";
+fi
+
 #    GENSRCDIR=/tmp/generated
-#    USE_SYSTEM_GCONF=true \
-#    GCONF_CFLAGS="$(pkg-config --cflags gconf-2.0)" \
-#    GCONF_LIBS="$(pkg-config --libs gconf-2.0)" \
 #    GOBJECT_CFLAGS="$(pkg-config --cflags gobject-2.0)" \
 #    GOBJECT_LIBS="$(pkg-config --libs gobject-2.0)" \
 #    ALT_DROPS_DIR=/home/downloads/java/drops \
@@ -230,7 +241,7 @@ if test "x$BUILD_DIR" = "x"; then
     exit -1;
 fi
 
-if test "x${VERSION}" = "xOpenJDK8"; then \
+if test "x${VERSION}" != "xOpenJDK7" ; then \
   (echo Building in ${WORKING_DIR}/$BUILD_DIR && \
   if test x"$2" != "xrecompile" ; then \
     rm -rf ${WORKING_DIR}/${BUILD_DIR} && \
@@ -242,7 +253,7 @@ if test "x${VERSION}" = "xOpenJDK8"; then \
       --with-cacerts-file=${SYSTEM_ICEDTEA7}/jre/lib/security/cacerts \
       ${ZLIB_CONF_OPT} ${GIF_CONF_OPT} ${LCMS_CONF_OPT} ${PNG_CONF_OPT} \
       --with-stdc++lib=dynamic --with-jobs=${PARALLEL_JOBS} ${JPEG_CONF_OPT} \
-      --with-boot-jdk=${BUILDVM} --with-alt-jar=fastjar ${ZERO_CONFIG} ; \
+      --with-boot-jdk=${BUILDVM} ${ICEDTEA_CONF_OPTS} ${ZERO_CONFIG} ; \
   else \
     cd ${WORKING_DIR}/${BUILD_DIR} ; \
   fi ;
@@ -285,7 +296,7 @@ else \
     ZERO_BUILD=${ZERO_SUPPORT} STATIC_CXX=false \
     ${WARNINGS} ${JAVAC_WERROR} ${GCC_WERROR} ${EXTRA_OPTS} EXTRA_CFLAGS=\"${CFLAGS}\" \
     ${DOCS} STRIP_POLICY=no_strip UNLIMITED_CRYPTO=true CC=\"/usr/bin/gcc\" CXX=\"/usr/bin/g++\" \
-    ENABLE_FULL_DEBUG_SYMBOLS=0 ${TARGET}"
+    ENABLE_FULL_DEBUG_SYMBOLS=0 NATIVE_SUPPORT_DEBUG=true ${TARGET}"
   echo ${ARGS} && \
   eval ANT_RESPECT_JAVA_HOME=true LANG=C make ${MAKE_OPTS} ${ARGS} \
 ) 2>&1 | tee ${LOG_DIR}/$0-$1.errors ; \

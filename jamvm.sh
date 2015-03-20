@@ -9,7 +9,7 @@ if [ -e $JAMVM_HOME ]; then
 else
     cd `dirname $JAMVM_HOME`;
     #cvs -z3 -d:pserver:anonymous@cvs.jamvm.berlios.de:/cvsroot/jamvm co jamvm;
-    git clone git://git.berlios.de/jamvm
+    git clone git://git.code.sf.net/p/jamvm/code jamvm
     cd $JAMVM_HOME;
 fi
 ./autogen.sh --help

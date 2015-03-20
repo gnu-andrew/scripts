@@ -94,7 +94,7 @@ elif [ $(echo $0|grep 'icedtea6-1.12') ]; then
 elif [ $(echo $0|grep 'icedtea6-1.13') ]; then
     VERSION=icedtea6;
     BUILD=icedtea6-1.13;
-    OPENJDK_ZIP=$OPENJDK6_B33_ZIP;
+    OPENJDK_ZIP=$OPENJDK6_B34_ZIP;
     RELEASE="1.13"
 elif [ $(echo $0|grep 'icedtea6-hg') ]; then
     VERSION=icedtea6;
@@ -198,6 +198,7 @@ elif [ $(echo $0|grep 'icedtea7-2.5') ]; then
     #OPTS="--with-hotspot-build=aarch64"
     #OPTS="--with-jdk-home=${INSTALL_DIR}/icedtea7-2.4"
     #USE_ECJ="no"
+    #OPTS="--enable-cacao"
 elif [ $(echo $0|grep 'icedtea7-2.0') ]; then
     VERSION=icedtea7;
     BUILD=icedtea7-2.0;
@@ -246,6 +247,15 @@ elif [ $(echo $0|grep 'icedtea7-nss') ]; then
     MAKE_OPTS="";
     CLEAN_TREE=no;
     RELEASE="nss";
+elif [ $(echo $0|grep 'icedtea7-aarch64') ]; then
+    VERSION=icedtea7;
+    BUILD=icedtea7-aarch64;
+    OPENJDK_ZIP=$OPENJDK7_ZIP;
+    OPENJDK_DIR=$OPENJDK7_DIR;
+    HOTSPOT7_ZIP=$AARCH64_ZIP;
+    MAKE_OPTS="";
+    CLEAN_TREE=no;
+    OPTS="--with-hotspot-build=aarch64"
 elif [ $(echo $0|grep 'icedtea7') ]; then
     VERSION=icedtea7;
     BUILD=icedtea7;
