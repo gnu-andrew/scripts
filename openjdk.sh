@@ -22,7 +22,7 @@ else
 fi
 
 # Check whether this is IcedTea
-if [-e ${PWD}/hotspot/src/cpu/aarch64 ] ; then
+if [ -e ${PWD}/hotspot/src/cpu/aarch64 ] ; then
     ICEDTEA=true;
 fi
 
@@ -132,7 +132,23 @@ if test "x${OPENJDK_WITH_SYSTEM_GIO}" = "xyes"; then
        USE_SYSTEM_GIO=true SYSTEM_GIO=true \
        GIO_CFLAGS=\"$(pkg-config --cflags gio-2.0)\" GIO_LIBS=\"$(pkg-config --libs gio-2.0)\""
 else
-    WITH_SYSTEM_GIO="USE_SYSTEM_GIO=false SYSTEM_GIO=false"
+    WITH_SYSTEM_GIO="SYSTEM_GIO=false"
+fi
+if test "x${OPENJDK_WITH_SYSTEM_GSETTINGS}" = "xyes"; then
+    WITH_SYSTEM_GIO="${WITH_SYSTEM_GIO} SYSTEM_GSETTINGS=true";
+else
+    WITH_SYSTEM_GIO="${WITH_SYSTEM_GIO} SYSTEM_GSETTINGS=false";
+fi
+
+if test "x${OPENJDK_WITH_SYSTEM_GCONF}" = "xyes"; then
+    WITH_SYSTEM_GCONF="
+      USE_SYSTEM_GCONF=true SYSTEM_GCONF=true \
+      GCONF_CFLAGS=\"$(pkg-config --cflags gconf-2.0)\" \
+      GCONF_LIBS=\"$(pkg-config --libs gconf-2.0)\" \
+      GOBJECT_CFLAGS=\"$(pkg-config --cflags gobject-2.0)\" \
+      GOBJECT_LIBS=\"$(pkg-config --libs gobject-2.0)\""
+else
+    WITH_SYSTEM_GCONF=""
 fi
 
 if test "x${OPENJDK_WITH_SYSTEM_ZLIB}" = "xyes"; then
@@ -228,8 +244,6 @@ if test "x${ICEDTEA}" = "xtrue"; then
 fi
 
 #    GENSRCDIR=/tmp/generated
-#    GOBJECT_CFLAGS="$(pkg-config --cflags gobject-2.0)" \
-#    GOBJECT_LIBS="$(pkg-config --libs gobject-2.0)" \
 #    ALT_DROPS_DIR=/home/downloads/java/drops \
 
 # First argument should be directory
@@ -281,6 +295,7 @@ else \
     ${WITH_SYSTEM_ZLIB} \
     ${WITH_SYSTEM_LCMS} \
     ${WITH_SYSTEM_GIO} \
+    ${WITH_SYSTEM_GCONF} \
     ${WITH_SYSTEM_PCSC} \
     ${WITH_SYSTEM_JPEG} \
     ${WITH_SYSTEM_PNG} \
