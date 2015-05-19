@@ -94,7 +94,7 @@ elif [ $(echo $0|grep 'icedtea6-1.12') ]; then
 elif [ $(echo $0|grep 'icedtea6-1.13') ]; then
     VERSION=icedtea6;
     BUILD=icedtea6-1.13;
-    OPENJDK_ZIP=$OPENJDK6_B34_ZIP;
+    OPENJDK_ZIP=$OPENJDK6_B35_ZIP;
     RELEASE="1.13"
 elif [ $(echo $0|grep 'icedtea6-hg') ]; then
     VERSION=icedtea6;

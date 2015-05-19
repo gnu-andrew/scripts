@@ -24,6 +24,8 @@ fi
 # Check whether this is IcedTea
 if [ -e ${PWD}/hotspot/src/cpu/aarch64 ] ; then
     ICEDTEA=true;
+else
+    ICEDTEA=false;
 fi
 
 if test "x${BUILDVM}" = "x"; then
@@ -148,7 +150,7 @@ if test "x${OPENJDK_WITH_SYSTEM_GCONF}" = "xyes"; then
       GOBJECT_CFLAGS=\"$(pkg-config --cflags gobject-2.0)\" \
       GOBJECT_LIBS=\"$(pkg-config --libs gobject-2.0)\""
 else
-    WITH_SYSTEM_GCONF=""
+    WITH_SYSTEM_GCONF="SYSTEM_GCONF=false"
 fi
 
 if test "x${OPENJDK_WITH_SYSTEM_ZLIB}" = "xyes"; then
@@ -240,7 +242,17 @@ if test "x${OPENJDK_WITH_DEBUG}" = "xyes"; then
 fi
 
 if test "x${ICEDTEA}" = "xtrue"; then
-    ICEDTEA_CONF_OPTS="--with-alt-jar=fastjar";
+    ICEDTEA_CONF_OPTS="--with-alt-jar=fastjar ";
+    if test "x${VERSION}" = "xOpenJDK8" ; then \
+	ICEDTEA_CONF_OPTS="${ICEDTEA_CONF_OPTS} \
+           ${LCMS_CONF_OPT} ${PNG_CONF_OPT} \
+           ${JPEG_CONF_OPT}"
+    fi
+fi
+
+if test "x${VERSION}" = "xOpenJDK9" ; then \
+    OPENJDK9_CONF_OPTS="${JPEG_CONF_OPT} \
+           ${LCMS_CONF_OPT} ${PNG_CONF_OPT}"
 fi
 
 #    GENSRCDIR=/tmp/generated
@@ -262,12 +274,13 @@ if test "x${VERSION}" != "xOpenJDK7" ; then \
     cd ${WORKING_DIR} && \
     mkdir ${BUILD_DIR} && \
     cd ${BUILD_DIR} && \
-    /bin/bash ${SOURCE_DIR}/configure \
-      --enable-unlimited-crypto \
+    CONFARGS="--enable-unlimited-crypto \
       --with-cacerts-file=${SYSTEM_ICEDTEA7}/jre/lib/security/cacerts \
-      ${ZLIB_CONF_OPT} ${GIF_CONF_OPT} ${LCMS_CONF_OPT} ${PNG_CONF_OPT} \
-      --with-stdc++lib=dynamic --with-jobs=${PARALLEL_JOBS} ${JPEG_CONF_OPT} \
-      --with-boot-jdk=${BUILDVM} ${ICEDTEA_CONF_OPTS} ${ZERO_CONFIG} ; \
+      ${ZLIB_CONF_OPT} ${GIF_CONF_OPT} ${OPENJDK9_CONF_OPTS} \
+      --with-stdc++lib=dynamic --with-jobs=${PARALLEL_JOBS} \
+      --with-boot-jdk=${BUILDVM} ${ICEDTEA_CONF_OPTS} ${ZERO_CONFIG}" && \
+    echo configure ${CONFARGS} && \
+    /bin/bash ${SOURCE_DIR}/configure ${CONFARGS} ; \
   else \
     cd ${WORKING_DIR}/${BUILD_DIR} ; \
   fi ;
