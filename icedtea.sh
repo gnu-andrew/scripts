@@ -776,8 +776,12 @@ else
     CFLAGS=${CFLAGS} make ${MAKE_OPTS} && echo COMPILED &&
     rm -rf ${INSTALLATION_DIR} &&
     (if [ -e ${BUILD_DIR}/openjdk.build ] ; then
-	mv ${BUILD_DIR}/openjdk.build${DIR}/j2sdk-image ${INSTALL_DIR}/${BUILD} &&
-	ln -s ${INSTALL_DIR}/${BUILD} ${BUILD_DIR}/openjdk.build${DIR}/j2sdk-image
+      (if $(cat ${ICEDTEA_HOME}/Makefile.am | grep 'install\:') ; then 
+        mv ${BUILD_DIR}/openjdk.build${DIR}/j2sdk-image ${INSTALL_DIR}/${BUILD} ;
+      else
+	make ${MAKE_OPTS} install ;
+      fi) &&
+      ln -s ${INSTALL_DIR}/${BUILD} ${BUILD_DIR}/openjdk.build${DIR}/j2sdk-image ;
     else
 	mv ${BUILD_DIR}/openjdk/build/${OS}-${JDK_ARCH}/j2sdk-image ${INSTALL_DIR}/${BUILD} &&
 	ln -s ${INSTALL_DIR}/${BUILD} ${BUILD_DIR}/openjdk/build/${OS}-${JDK_ARCH}/j2sdk-image

@@ -22,7 +22,7 @@ else
 fi
 
 # Check whether this is IcedTea
-if [ -e ${PWD}/hotspot/src/cpu/aarch64 ] ; then
+if grep -q 'icedtea' ${PWD}/.hgtags ; then
     ICEDTEA=true;
 else
     ICEDTEA=false;
@@ -274,7 +274,7 @@ if test "x${VERSION}" != "xOpenJDK7" ; then \
     cd ${WORKING_DIR} && \
     mkdir ${BUILD_DIR} && \
     cd ${BUILD_DIR} && \
-    CONFARGS="--enable-unlimited-crypto \
+    CONFARGS="--enable-unlimited-crypto --disable-warnings-as-errors \
       --with-cacerts-file=${SYSTEM_ICEDTEA7}/jre/lib/security/cacerts \
       ${ZLIB_CONF_OPT} ${GIF_CONF_OPT} ${OPENJDK9_CONF_OPTS} \
       --with-stdc++lib=dynamic --with-jobs=${PARALLEL_JOBS} \
