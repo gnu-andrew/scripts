@@ -252,7 +252,8 @@ fi
 
 if test "x${VERSION}" = "xOpenJDK9" ; then \
     OPENJDK9_CONF_OPTS="${JPEG_CONF_OPT} \
-           ${LCMS_CONF_OPT} ${PNG_CONF_OPT}"
+           ${LCMS_CONF_OPT} ${PNG_CONF_OPT} \
+           --disable-warnings-as-errors"
 fi
 
 #    GENSRCDIR=/tmp/generated
@@ -274,7 +275,7 @@ if test "x${VERSION}" != "xOpenJDK7" ; then \
     cd ${WORKING_DIR} && \
     mkdir ${BUILD_DIR} && \
     cd ${BUILD_DIR} && \
-    CONFARGS="--enable-unlimited-crypto --disable-warnings-as-errors \
+    CONFARGS="--enable-unlimited-crypto \
       --with-cacerts-file=${SYSTEM_ICEDTEA7}/jre/lib/security/cacerts \
       ${ZLIB_CONF_OPT} ${GIF_CONF_OPT} ${OPENJDK9_CONF_OPTS} \
       --with-stdc++lib=dynamic --with-jobs=${PARALLEL_JOBS} \
@@ -286,8 +287,7 @@ if test "x${VERSION}" != "xOpenJDK7" ; then \
   fi ;
   ARGS="DISABLE_INTREE_EC=true \
       OTHER_JAVACFLAGS=\"-Xmaxwarns 10000\" \
-      ${WARNINGS} ${JAVAC_WERROR} ${GCC_WERROR} \
-      STRIP_POLICY=no_strip POST_STRIP_CMD= LOG=debug \
+      ${WARNINGS} STRIP_POLICY=no_strip POST_STRIP_CMD= LOG=debug \
       DEBUG_BINARIES=true JDK_DERIVATIVE_NAME=IcedTea \
       DERIVATIVE_ID=IcedTea" && \
   echo ${ARGS} && \
