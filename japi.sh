@@ -22,11 +22,11 @@ if test "x${REBUILD_ICEDTEA_JAPI}" = "xyes"; then
       ${SYSTEM_ICEDTEA8}/jre/lib/jce.jar +javax +org -java.awt.dnd.peer -java.awt.peer -java.text.resources \
       -org.w3c.dom.css  -org.w3c.dom.html -org.w3c.dom.stylesheets -org.w3c.dom.traversal    \
       -org.w3c.dom.ranges -org.w3c.dom.views -org.omg.stub.javax.management.remote.rmi ; \
-  ${JAPI_HOME}/bin/japize as ${JAPI_INSTALL}/javadoc6 packages ${ICEDTEA6_INSTALL}/jre/lib/rt.jar ${ICEDTEA6_INSTALL}/lib/tools.jar \
+  ${JAPI_HOME}/bin/japize as ${JAPI_INSTALL}/javadoc6 packages ${SYSTEM_ICEDTEA6}/jre/lib/rt.jar ${SYSTEM_ICEDTEA6}/lib/tools.jar \
       +com.sun.javadoc +com.sun.tools.doclets -com.sun.tools.doclets.internal -com.sun.tools.doclets.formats -com.sun.tools.doclets.standard ; \
-  ${JAPI_HOME}/bin/japize as ${JAPI_INSTALL}/javadoc7 packages ${ICEDTEA7_INSTALL}/jre/lib/rt.jar ${ICEDTEA7_INSTALL}/lib/tools.jar \
+  ${JAPI_HOME}/bin/japize as ${JAPI_INSTALL}/javadoc7 packages ${SYSTEM_ICEDTEA7}/jre/lib/rt.jar ${SYSTEM_ICEDTEA7}/lib/tools.jar \
       +com.sun.javadoc +com.sun.tools.doclets -com.sun.tools.doclets.internal -com.sun.tools.doclets.formats -com.sun.tools.doclets.standard ; \
-  ${JAPI_HOME}/bin/japize as ${JAPI_INSTALL}/javadoc8 packages ${ICEDTEA8_INSTALL}/jre/lib/rt.jar ${ICEDTEA8_INSTALL}/lib/tools.jar \
+  ${JAPI_HOME}/bin/japize as ${JAPI_INSTALL}/javadoc8 packages ${SYSTEM_ICEDTEA8}/jre/lib/rt.jar ${SYSTEM_ICEDTEA8}/lib/tools.jar \
       +com.sun.javadoc +com.sun.tools.doclets -com.sun.tools.doclets.internal -com.sun.tools.doclets.formats -com.sun.tools.doclets.standard ; \
   ${JAPI_HOME}/bin/japicompat -v -j -o ${JAPI_INSTALL}/ignore-5-6.japio \
       ${JAPI_INSTALL}/ibmjdk15.japi.gz ${JAPI_INSTALL}/icedtea6.japi.gz ; \
