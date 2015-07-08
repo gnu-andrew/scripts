@@ -229,6 +229,12 @@ else
     WITH_SUNEC="SYSTEM_NSS=false DISABLE_INTREE_EC=true"
 fi
 
+if test "x${OPENJDK_WITH_SYSTEM_SCTP}" = "xyes"; then
+    WITH_SYSTEM_SCTP="SYSTEM_SCTP=true SCTP_LIBS=\"-lsctp\""
+else
+    WITH_SYSTEM_SCTP="SYSTEM_SCTP=false"
+fi
+
 if test "x${OPENJDK_ENABLE_DROPS}" = "xyes"; then
     DROP_ZIPS="ALT_DROPS_DIR=${DROPS_DIR}" ;
 fi
@@ -275,13 +281,15 @@ if test "x${VERSION}" != "xOpenJDK7" ; then \
     cd ${WORKING_DIR} && \
     mkdir ${BUILD_DIR} && \
     cd ${BUILD_DIR} && \
-    CONFARGS="--enable-unlimited-crypto \
+    /bin/bash ${SOURCE_DIR}/configure --enable-unlimited-crypto \
       --with-cacerts-file=${SYSTEM_ICEDTEA7}/jre/lib/security/cacerts \
       ${ZLIB_CONF_OPT} ${GIF_CONF_OPT} ${OPENJDK9_CONF_OPTS} \
       --with-stdc++lib=dynamic --with-jobs=${PARALLEL_JOBS} \
-      --with-boot-jdk=${BUILDVM} ${ICEDTEA_CONF_OPTS} ${ZERO_CONFIG}" && \
-    echo configure ${CONFARGS} && \
-    /bin/bash ${SOURCE_DIR}/configure ${CONFARGS} ; \
+      --with-extra-cflags="${CFLAGS}" --with-extra-cxxflags="${CXXFLAGS}" \
+      --with-extra-ldflags="${LDFLAGS}" --with-boot-jdk=${BUILDVM} \
+      ${ICEDTEA_CONF_OPTS} ${ZERO_CONFIG} \
+    #echo configure "${CONFARGS}" && \
+    #`/bin/bash ${SOURCE_DIR}/configure "${CONFARGS}"` ; \
   else \
     cd ${WORKING_DIR}/${BUILD_DIR} ; \
   fi ;
@@ -316,6 +324,7 @@ else \
     ${WITH_SYSTEM_GTK} \
     ${WITH_SYSTEM_CUPS} \
     ${WITH_SYSTEM_FONTCONFIG} \
+    ${WITH_SYSTEM_SCTP} \
     ${WITH_SUNEC} \
     FT2_LIBS=\"$(pkg-config --libs freetype2)\" \
     FT2_CFLAGS=\"$(pkg-config --cflags freetype2)\" \

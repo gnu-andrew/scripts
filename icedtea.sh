@@ -302,6 +302,12 @@ elif [ $(echo $0|grep 'zero7') ]; then
     OPENJDK_ZIP=$OPENJDK7_ZIP;
     OPENJDK_DIR=$OPENJDK7_DIR;
     OPTS="--enable-zero";
+elif [ $(echo $0|grep 'zero8') ]; then
+    VERSION=icedtea8;
+    BUILD=zero8;
+    OPENJDK_ZIP=$OPENJDK8_ZIP;
+    OPENJDK_DIR=$OPENJDK8_DIR;
+    OPTS="--enable-zero";
 elif [ $(echo $0|grep 'zero') ]; then
     VERSION=icedtea8;
     BUILD=zero8;
@@ -694,6 +700,12 @@ else
     GIO_OPTION="--disable-system-gio"
 fi
 
+if test x${ICEDTEA_WITH_SYSTEM_GCONF} = "xyes"; then
+    GCONF_OPTION="--enable-system-gconf"
+else
+    GCONF_OPTION="--disable-system-gconf"
+fi
+
 if test x${ICEDTEA_WITH_SYSTEM_GTK} = "xyes"; then
     GTK_OPTION="--enable-system-gtk"
 else
@@ -704,6 +716,12 @@ if test x${ICEDTEA_WITH_SYSTEM_PCSC} = "xyes"; then
     SYSTEM_PCSC_OPTION="--enable-system-pcsc"
 else
     SYSTEM_PCSC_OPTION="--disable-system-pcsc"
+fi
+
+if test x${ICEDTEA_WITH_SYSTEM_SCTP} = "xyes"; then
+    SYSTEM_SCTP_OPTION="--enable-system-sctp"
+else
+    SYSTEM_SCTP_OPTION="--disable-system-sctp"
 fi
 
 if test x${ICEDTEA_WITH_SUNEC} = "xyes"; then
@@ -745,8 +763,8 @@ CONFIG_OPTS="--prefix=${INSTALLATION_DIR} --mandir=${INSTALLATION_DIR}/man \
     ${SYSTEMTAP_OPTION} ${NIMBUS_GEN_OPTION} ${XRENDER_OPTION} ${PLUGIN_OPTION} ${NEW_PLUGIN_OPTION} \
     ${NSS_OPTION} ${NIO2_OPTION} ${OPTS} ${SUNEC_OPTION} ${JAXP_DROP_ZIP_OPTION} ${JAF_DROP_ZIP_OPTION} \
     ${JAXWS_DROP_ZIP_OPTION} ${HOTSPOT_BUILD_OPTION} ${JAMVM_OPTION} ${JAMVM_ZIP_OPTION} ${LEGACY_OPTS} \
-    ${SYSTEM_LCMS_OPTION} ${GIO_OPTION} ${GTK_OPTION} ${LCMS2_OPTION} ${SYSTEM_JPEG_OPTION} \
-    ${SYSTEM_GIF_OPTION} ${SYSTEM_PNG_OPTION} ${SYSTEM_ZLIB_OPTION} ${SYSTEM_PCSC_OPTION} \
+    ${SYSTEM_LCMS_OPTION} ${GIO_OPTION} ${GCONF_OPTION} ${GTK_OPTION} ${LCMS2_OPTION} ${SYSTEM_JPEG_OPTION} \
+    ${SYSTEM_GIF_OPTION} ${SYSTEM_PNG_OPTION} ${SYSTEM_ZLIB_OPTION} ${SYSTEM_PCSC_OPTION} ${SYSTEM_SCTP_OPTION} \
     ${NATIVE_DEBUGINFO_OPTION} ${JAVA_DEBUGINFO_OPTION} --disable-downloading"
 
 if test "${BUILD}" = "azul"; then
@@ -758,7 +776,7 @@ echo "Passing ${CONFIG_OPTS} to configure..."
 (PATH=/bin:/usr/bin ./autogen.sh &&
 cd ${BUILD_DIR} &&
 echo $ICEDTEA_HOME/configure ${CONFIG_OPTS} &&
-CC=${CC} CXX=${CXX} $ICEDTEA_HOME/configure ${CONFIG_OPTS}
+CC=${CC} CXX=${CXX} CFLAGS=${CFLAGS} CXXFLAGS=${CXXFLAGS} LDFLAGS=${LDFLAGS} $ICEDTEA_HOME/configure ${CONFIG_OPTS}
 if test "x$1" = "xrelease"; then
     DISTCHECK_CONFIGURE_FLAGS="${CONFIG_OPTS} --disable-systemtap" make ${MAKE_OPTS} distcheck;
 elif echo "$BUILD" | grep "zero6"; then
