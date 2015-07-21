@@ -199,6 +199,8 @@ elif [ $(echo $0|grep 'icedtea7-2.5') ]; then
     #OPTS="--with-jdk-home=${INSTALL_DIR}/icedtea7-2.4"
     #USE_ECJ="no"
     #OPTS="--enable-cacao"
+    #USE_ECJ="no"
+    #OPTS="--with-jdk-home=${BOOTSTRAP_ICEDTEA6}"
 elif [ $(echo $0|grep 'icedtea7-2.0') ]; then
     VERSION=icedtea7;
     BUILD=icedtea7-2.0;
@@ -742,6 +744,12 @@ else
     JAVA_DEBUGINFO_OPTION="--disable-java-debuginfo"
 fi
 
+if test x${ICEDTEA_WITH_SPLIT_DEBUGINFO} = "xyes"; then
+    SPLIT_DEBUGINFO_OPTION="--enable-split-debuginfo"
+else
+    SPLIT_DEBUGINFO_OPTION="--disable-split-debuginfo"
+fi
+
 RT_JAR=${CLASSPATH_INSTALL}/share/classpath/glibj.zip
 
 if test x${CHOST} != "x"; then
@@ -765,7 +773,8 @@ CONFIG_OPTS="--prefix=${INSTALLATION_DIR} --mandir=${INSTALLATION_DIR}/man \
     ${JAXWS_DROP_ZIP_OPTION} ${HOTSPOT_BUILD_OPTION} ${JAMVM_OPTION} ${JAMVM_ZIP_OPTION} ${LEGACY_OPTS} \
     ${SYSTEM_LCMS_OPTION} ${GIO_OPTION} ${GCONF_OPTION} ${GTK_OPTION} ${LCMS2_OPTION} ${SYSTEM_JPEG_OPTION} \
     ${SYSTEM_GIF_OPTION} ${SYSTEM_PNG_OPTION} ${SYSTEM_ZLIB_OPTION} ${SYSTEM_PCSC_OPTION} ${SYSTEM_SCTP_OPTION} \
-    ${NATIVE_DEBUGINFO_OPTION} ${JAVA_DEBUGINFO_OPTION} --disable-downloading"
+    ${NATIVE_DEBUGINFO_OPTION} ${JAVA_DEBUGINFO_OPTION} ${SPLIT_DEBUGINFO_OPTION} --disable-downloading \
+    --with-cacerts-file=${SYSTEM_ICEDTEA7}/jre/lib/security/cacerts"
 
 if test "${BUILD}" = "azul"; then
     export PKG_CONFIG_PATH=${AZTOOLS_INSTALL}/lib/pkgconfig
