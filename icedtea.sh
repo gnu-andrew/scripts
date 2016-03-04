@@ -94,7 +94,7 @@ elif [ $(echo $0|grep 'icedtea6-1.12') ]; then
 elif [ $(echo $0|grep 'icedtea6-1.13') ]; then
     VERSION=icedtea6;
     BUILD=icedtea6-1.13;
-    OPENJDK_ZIP=$OPENJDK6_B35_ZIP;
+    OPENJDK_ZIP=$OPENJDK6_B38_ZIP;
     RELEASE="1.13"
 elif [ $(echo $0|grep 'icedtea6-hg') ]; then
     VERSION=icedtea6;
@@ -201,6 +201,20 @@ elif [ $(echo $0|grep 'icedtea7-2.5') ]; then
     #OPTS="--enable-cacao"
     #USE_ECJ="no"
     #OPTS="--with-jdk-home=${BOOTSTRAP_ICEDTEA6}"
+elif [ $(echo $0|grep 'icedtea7-2.6') ]; then
+    VERSION=icedtea7;
+    BUILD=icedtea7-2.6;
+    OPENJDK_ZIP=$OPENJDK7_26_ZIP;
+    CORBA7_ZIP=$CORBA7_26_ZIP;
+    JAXP7_ZIP=$JAXP7_26_ZIP;
+    JAXWS7_ZIP=$JAXWS7_26_ZIP;
+    JDK7_ZIP=$JDK7_26_ZIP;
+    LANGTOOLS7_ZIP=$LANGTOOLS7_26_ZIP;
+    HOTSPOT7_ZIP=$HOTSPOT7_26_ZIP;
+    MAKE_OPTS="";
+    CLEAN_TREE=no;
+    RELEASE="2.6"
+    #OPTS="--enable-cacao"
 elif [ $(echo $0|grep 'icedtea7-2.0') ]; then
     VERSION=icedtea7;
     BUILD=icedtea7-2.0;

@@ -10,6 +10,26 @@ JDK_HOME=
 LD_LIBRARY_PATH=
 CLASSPATH=
 
+# First argument should be directory
+BUILD_DIR=$1
+SOURCE_DIR=$PWD
+
+if test "x$BUILD_DIR" = "x"; then
+    echo "No build directory specified.";
+    exit -1;
+fi
+
+# Second argument; optional forced 'recompile'
+if test x"$2" = "xrecompile" ; then
+    RECOMPILE=yes
+else
+    if [ -d ${WORKING_DIR}/${BUILD_DIR} ] ; then
+	RECOMPILE=yes
+    else
+	RECOMPILE=no
+    fi
+fi
+
 if [ -e ${PWD}/jdk/src/java.base ] ; then
     VERSION=OpenJDK9;
     BUILDVM=${SYSTEM_ICEDTEA8};
@@ -34,6 +54,7 @@ if test "x${BUILDVM}" = "x"; then
 fi
 echo "Building ${VERSION} using ${BUILDVM}"
 echo "IcedTea: ${ICEDTEA}"
+echo "Recompiling: ${RECOMPILE}"
 
 # Add Zero support
 if test "x${OPENJDK_WITH_ZERO}" = "xyes"; then
@@ -225,8 +246,10 @@ if test "x${OPENJDK_WITH_SUNEC}" = "xyes"; then
        NSS_LIBS=\"$(pkg-config --libs nss-softokn)\" \
        NSS_CFLAGS=\"$(pkg-config --cflags nss-softokn)\" \
        ECC_JUST_SUITE_B=true"
+    SUNEC_CONF_OPT="--enable-system-nss"
 else
     WITH_SUNEC="SYSTEM_NSS=false DISABLE_INTREE_EC=true"
+    SUNEC_CONF_OPT="--disable-system-nss"
 fi
 
 if test "x${OPENJDK_WITH_SYSTEM_SCTP}" = "xyes"; then
@@ -252,7 +275,7 @@ if test "x${ICEDTEA}" = "xtrue"; then
     if test "x${VERSION}" = "xOpenJDK8" ; then \
 	ICEDTEA_CONF_OPTS="${ICEDTEA_CONF_OPTS} \
            ${LCMS_CONF_OPT} ${PNG_CONF_OPT} \
-           ${JPEG_CONF_OPT}"
+           ${JPEG_CONF_OPT} ${SUNEC_CONF_OPT}"
     fi
 fi
 
@@ -265,18 +288,9 @@ fi
 #    GENSRCDIR=/tmp/generated
 #    ALT_DROPS_DIR=/home/downloads/java/drops \
 
-# First argument should be directory
-BUILD_DIR=$1
-SOURCE_DIR=$PWD
-
-if test "x$BUILD_DIR" = "x"; then
-    echo "No build directory specified.";
-    exit -1;
-fi
-
 if test "x${VERSION}" != "xOpenJDK7" ; then \
   (echo Building in ${WORKING_DIR}/$BUILD_DIR && \
-  if test x"$2" != "xrecompile" ; then \
+  if test x"${RECOMPILE}" != "xyes" ; then \
     rm -rf ${WORKING_DIR}/${BUILD_DIR} && \
     cd ${WORKING_DIR} && \
     mkdir ${BUILD_DIR} && \
@@ -295,7 +309,7 @@ if test "x${VERSION}" != "xOpenJDK7" ; then \
   fi ;
   ARGS="DISABLE_INTREE_EC=true \
       OTHER_JAVACFLAGS=\"-Xmaxwarns 10000\" \
-      ${WARNINGS} STRIP_POLICY=no_strip POST_STRIP_CMD= LOG=debug \
+      ${WARNINGS} STRIP_POLICY=no_strip LOG=debug \
       DEBUG_BINARIES=true JDK_DERIVATIVE_NAME=IcedTea \
       DERIVATIVE_ID=IcedTea" && \
   echo ${ARGS} && \
