@@ -666,18 +666,32 @@ fi
 
 if test x${ICEDTEA_WITH_TESTS} = "xno"; then
     TESTS_OPTION="--disable-tests"
+else
+    TESTS_OPTION="--enable-tests"
 fi
 
 if test x${ICEDTEA_WITH_JDK_TESTS} = "xno"; then
     TESTS_OPTION="${TESTS_OPTION} --disable-jdk-tests"
+else
+    TESTS_OPTION="${TESTS_OPTION} --enable-jdk-tests"
 fi
 
 if test x${ICEDTEA_WITH_LANGTOOLS_TESTS} = "xno"; then
     TESTS_OPTION="${TESTS_OPTION} --disable-langtools-tests"
+else
+    TESTS_OPTION="${TESTS_OPTION} --enable-langtools-tests"
 fi
 
 if test x${ICEDTEA_WITH_HOTSPOT_TESTS} = "xno"; then
     TESTS_OPTION="${TESTS_OPTION} --disable-hotspot-tests"
+else
+    TESTS_OPTION="${TESTS_OPTION} --enable-hotspot-tests"
+fi
+
+if test x${ICEDTEA_WITH_SYSTEMTAP_TESTS} = "xno"; then
+    TESTS_OPTION="${TESTS_OPTION} --disable-systemtap-tests"
+else
+    TESTS_OPTION="${TESTS_OPTION} --enable-systemtap-tests"
 fi
 
 if test x${ICEDTEA_WITH_SYSTEM_LCMS} = "xno"; then
