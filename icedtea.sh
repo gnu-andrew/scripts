@@ -804,6 +804,8 @@ CONFIG_OPTS="--prefix=${INSTALLATION_DIR} --mandir=${INSTALLATION_DIR}/man \
     ${NATIVE_DEBUGINFO_OPTION} ${JAVA_DEBUGINFO_OPTION} ${SPLIT_DEBUGINFO_OPTION} --disable-downloading \
     --with-cacerts-file=${SYSTEM_ICEDTEA7}/jre/lib/security/cacerts"
 
+DISTCHECK_OPTS="${CONFIG_OPTS} --disable-systemtap --disable-tests --disable-systemtap-tests"
+
 if test "${BUILD}" = "azul"; then
     export PKG_CONFIG_PATH=${AZTOOLS_INSTALL}/lib/pkgconfig
 fi
@@ -815,7 +817,7 @@ cd ${BUILD_DIR} &&
 echo $ICEDTEA_HOME/configure ${CONFIG_OPTS} &&
 CC=${CC} CXX=${CXX} CFLAGS=${CFLAGS} CXXFLAGS=${CXXFLAGS} LDFLAGS=${LDFLAGS} $ICEDTEA_HOME/configure ${CONFIG_OPTS}
 if test "x$1" = "xrelease"; then
-    DISTCHECK_CONFIGURE_FLAGS="${CONFIG_OPTS} --disable-systemtap" make ${MAKE_OPTS} distcheck;
+    DISTCHECK_CONFIGURE_FLAGS="${DISTCHECK_OPTS}" make ${MAKE_OPTS} distcheck;
 elif echo "$BUILD" | grep "zero6"; then
     make ${MAKE_OPTS} icedtea-against-ecj && echo COMPILED &&
     rm -rf ${INSTALLATION_DIR} &&
