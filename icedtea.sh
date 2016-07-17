@@ -94,7 +94,7 @@ elif [ $(echo $0|grep 'icedtea6-1.12') ]; then
 elif [ $(echo $0|grep 'icedtea6-1.13') ]; then
     VERSION=icedtea6;
     BUILD=icedtea6-1.13;
-    OPENJDK_ZIP=$OPENJDK6_B38_ZIP;
+    OPENJDK_ZIP=$OPENJDK6_B39_ZIP;
     RELEASE="1.13"
 elif [ $(echo $0|grep 'icedtea6-hg') ]; then
     VERSION=icedtea6;
@@ -228,6 +228,19 @@ elif [ $(echo $0|grep 'icedtea7-2.0') ]; then
     MAKE_OPTS="";
     CLEAN_TREE=no;
     RELEASE="2.0"
+elif [ $(echo $0|grep 'icedtea8-3.0') ]; then
+    VERSION=icedtea8;
+    BUILD=icedtea8-3.0;
+    OPENJDK_ZIP=$OPENJDK8_30_ZIP;
+    CORBA8_ZIP=$CORBA8_30_ZIP;
+    JAXP8_ZIP=$JAXP8_30_ZIP;
+    JAXWS8_ZIP=$JAXWS8_30_ZIP;
+    JDK8_ZIP=$JDK8_30_ZIP;
+    LANGTOOLS8_ZIP=$LANGTOOLS8_30_ZIP;
+    NASHORN8_ZIP=$NASHORN8_30_ZIP;
+    HOTSPOT8_ZIP=$HOTSPOT8_30_ZIP;
+    CLEAN_TREE=no;
+    RELEASE="3.0"
 elif [ $(echo $0|grep 'icedtea7-bootstrap7-gcj') ]; then
     VERSION=icedtea7;
     BUILD=icedtea7-icedtea7-bootstrap-gcj;
@@ -754,6 +767,12 @@ else
     SYSTEM_SCTP_OPTION="--disable-system-sctp"
 fi
 
+if test x${ICEDTEA_WITH_SYSTEM_CUPS} = "xyes"; then
+    SYSTEM_CUPS_OPTION="--enable-system-cups"
+else
+    SYSTEM_CUPS_OPTION="--disable-system-cups"
+fi
+
 if test x${ICEDTEA_WITH_SUNEC} = "xyes"; then
     SUNEC_OPTION="--enable-sunec"
 else
@@ -776,6 +795,12 @@ if test x${ICEDTEA_WITH_SPLIT_DEBUGINFO} = "xyes"; then
     SPLIT_DEBUGINFO_OPTION="--enable-split-debuginfo"
 else
     SPLIT_DEBUGINFO_OPTION="--disable-split-debuginfo"
+fi
+
+if test x${ICEDTEA_WITH_INFINALITY} = "xno"; then
+    INFINALITY_OPTION="--disable-infinality"
+else
+    INFINALITY_OPTION="--enable-infinality"
 fi
 
 RT_JAR=${CLASSPATH_INSTALL}/share/classpath/glibj.zip
@@ -801,8 +826,8 @@ CONFIG_OPTS="--prefix=${INSTALLATION_DIR} --mandir=${INSTALLATION_DIR}/man \
     ${JAXWS_DROP_ZIP_OPTION} ${HOTSPOT_BUILD_OPTION} ${JAMVM_OPTION} ${JAMVM_ZIP_OPTION} ${LEGACY_OPTS} \
     ${SYSTEM_LCMS_OPTION} ${GIO_OPTION} ${GCONF_OPTION} ${GTK_OPTION} ${LCMS2_OPTION} ${SYSTEM_JPEG_OPTION} \
     ${SYSTEM_GIF_OPTION} ${SYSTEM_PNG_OPTION} ${SYSTEM_ZLIB_OPTION} ${SYSTEM_PCSC_OPTION} ${SYSTEM_SCTP_OPTION} \
-    ${NATIVE_DEBUGINFO_OPTION} ${JAVA_DEBUGINFO_OPTION} ${SPLIT_DEBUGINFO_OPTION} --disable-downloading \
-    --with-cacerts-file=${SYSTEM_ICEDTEA7}/jre/lib/security/cacerts"
+    ${SYSTEM_CUPS_OPTION} ${NATIVE_DEBUGINFO_OPTION} ${JAVA_DEBUGINFO_OPTION} ${SPLIT_DEBUGINFO_OPTION} \
+    ${INFINALITY_OPTION} --disable-downloading --with-cacerts-file=${SYSTEM_ICEDTEA7}/jre/lib/security/cacerts"
 
 DISTCHECK_OPTS="${CONFIG_OPTS} --disable-systemtap --disable-tests --disable-systemtap-tests"
 
@@ -836,14 +861,15 @@ else
     (if [ -e ${BUILD_DIR}/openjdk.build ] ; then
       (if cat ${ICEDTEA_HOME}/Makefile.am | grep 'install\:' &> /dev/null ; then 
         mv ${BUILD_DIR}/openjdk.build${DIR}/j2sdk-image ${INSTALL_DIR}/${BUILD} ;
+	cp -f ${SYSTEM_ICEDTEA7}/jre/lib/security/cacerts ${INSTALL_DIR}/${BUILD}/jre/lib/security/
       else
 	make ${MAKE_OPTS} install ;
       fi) &&
       ln -s ${INSTALL_DIR}/${BUILD} ${BUILD_DIR}/openjdk.build${DIR}/j2sdk-image ;
     else
 	mv ${BUILD_DIR}/openjdk/build/${OS}-${JDK_ARCH}/j2sdk-image ${INSTALL_DIR}/${BUILD} &&
-	ln -s ${INSTALL_DIR}/${BUILD} ${BUILD_DIR}/openjdk/build/${OS}-${JDK_ARCH}/j2sdk-image
+	ln -s ${INSTALL_DIR}/${BUILD} ${BUILD_DIR}/openjdk/build/${OS}-${JDK_ARCH}/j2sdk-image &&
+	cp -f ${SYSTEM_ICEDTEA7}/jre/lib/security/cacerts ${INSTALL_DIR}/${BUILD}/jre/lib/security/
     fi) &&
-    cp -f ${SYSTEM_ICEDTEA7}/jre/lib/security/cacerts ${INSTALL_DIR}/${BUILD}/jre/lib/security/ &&
     echo DONE
 fi) 2>&1 | tee ${LOG_DIR}/$(basename $0).errors

@@ -19,7 +19,7 @@ rm -rf cacao
 (mkdir cacao &&
 cd cacao &&
 $CACAO_HOME/configure --prefix=$CACAO_INSTALL --with-java-runtime-library-prefix=$CLASSPATH_INSTALL \
-    --enable-statistics --disable-test-dependency-checks --with-libatomic-ops=no &&
+    --enable-statistics --disable-test-dependency-checks &&
 make $MAKE_OPTS && make install && \
 rm -vf ${CACAO_INSTALL}/bin/java && \
 /usr/sbin/paxctl-ng -v -m ${CACAO_INSTALL}/bin/cacao && \

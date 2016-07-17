@@ -234,8 +234,11 @@ fi
 if test "x${OPENJDK_WITH_SYSTEM_FONTCONFIG}" = "xyes"; then
     WITH_SYSTEM_FONTCONFIG="
        USE_SYSTEM_FONTCONFIG=true SYSTEM_FONTCONFIG=true \
-       FONTCONFIG_LIBS=\"$(pkg-config --libs fontconfig)\" FONTCONFIG_CFLAGS=\"$(pkg-config --cflags fontconfig)\" \
-       INFINALITY_SUPPORT=true"
+       FONTCONFIG_LIBS=\"$(pkg-config --libs fontconfig)\" FONTCONFIG_CFLAGS=\"$(pkg-config --cflags fontconfig)\""
+    if test "x${OPENJDK_WITH_INFINALITY}" = "xyes"; then
+	WITH_SYSTEM_FONTCONFIG="${WITH_SYSTEM_FONTCONFIG} INFINALITY_SUPPORT=true"
+	INFINALITY_CONF_OPT="--enable-infinality"
+    fi
 else
     WITH_SYSTEM_FONTCONFIG="USE_SYSTEM_FONTCONFIG=false SYSTEM_FONTCONFIG=false"
 fi
@@ -268,14 +271,18 @@ fi
 
 if test "x${OPENJDK_WITH_DEBUG}" = "xyes"; then
     TARGET="debug_build" ;
+    DEBUGLEVEL="slowdebug";
+else
+    DEBUGLEVEL="release";
 fi
 
 if test "x${ICEDTEA}" = "xtrue"; then
-    ICEDTEA_CONF_OPTS="--with-alt-jar=fastjar ";
+    ICEDTEA_CONF_OPTS="--with-alt-jar=fastjar --with-java-debug-symbols=yes";
     if test "x${VERSION}" = "xOpenJDK8" ; then \
 	ICEDTEA_CONF_OPTS="${ICEDTEA_CONF_OPTS} \
            ${LCMS_CONF_OPT} ${PNG_CONF_OPT} \
-           ${JPEG_CONF_OPT} ${SUNEC_CONF_OPT}"
+           ${JPEG_CONF_OPT} ${SUNEC_CONF_OPT} \
+           ${INFINALITY_CONF_OPT}"
     fi
 fi
 
@@ -301,7 +308,7 @@ if test "x${VERSION}" != "xOpenJDK7" ; then \
       --with-stdc++lib=dynamic --with-jobs=${PARALLEL_JOBS} \
       --with-extra-cflags="${CFLAGS}" --with-extra-cxxflags="${CXXFLAGS}" \
       --with-extra-ldflags="${LDFLAGS}" --with-boot-jdk=${BUILDVM} \
-      ${ICEDTEA_CONF_OPTS} ${ZERO_CONFIG} \
+      --with-debug-level="${DEBUGLEVEL}" ${ICEDTEA_CONF_OPTS} ${ZERO_CONFIG} \
     #echo configure "${CONFARGS}" && \
     #`/bin/bash ${SOURCE_DIR}/configure "${CONFARGS}"` ; \
   else \
