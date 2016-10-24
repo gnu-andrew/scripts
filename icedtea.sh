@@ -94,7 +94,7 @@ elif [ $(echo $0|grep 'icedtea6-1.12') ]; then
 elif [ $(echo $0|grep 'icedtea6-1.13') ]; then
     VERSION=icedtea6;
     BUILD=icedtea6-1.13;
-    OPENJDK_ZIP=$OPENJDK6_B39_ZIP;
+    OPENJDK_ZIP=$OPENJDK6_B40_ZIP;
     RELEASE="1.13"
 elif [ $(echo $0|grep 'icedtea6-hg') ]; then
     VERSION=icedtea6;
@@ -391,6 +391,13 @@ elif [ $(echo $0|grep 'jamvm') ]; then
     OPENJDK_ZIP=$OPENJDK8_ZIP;
     OPENJDK_DIR=$OPENJDK8_DIR;
     OPTS="--enable-jamvm";
+elif [ $(echo $0|grep 'icedtea8-shenandoah') ]; then
+    VERSION=icedtea8;
+    BUILD=icedtea8-shenandoah;
+    OPENJDK_ZIP=$OPENJDK8_ZIP;
+    OPENJDK_DIR=$OPENJDK8_DIR;
+    HOTSPOT8_ZIP=$SHENANDOAH_ZIP;
+    OPTS="--with-hotspot-build=shenandoah"
 elif [ $(echo $0|grep 'no-bootstrap6') ]; then
     VERSION=icedtea6;
     BUILD=icedtea6-no-bootstrap;
@@ -803,6 +810,18 @@ else
     INFINALITY_OPTION="--enable-infinality"
 fi
 
+if test x${ICEDTEA_WITH_HEADLESS} = "xno"; then
+    HEADLESS_OPTION="--disable-headless"
+else
+    HEADLESS_OPTION="--enable-headless"
+fi
+
+if test x${ICEDTEA_WITH_CCACHE} = "xno"; then
+    CCACHE_OPTION="--disable-ccache"
+else
+    CCACHE_OPTION="--enable-ccache"
+fi
+
 RT_JAR=${CLASSPATH_INSTALL}/share/classpath/glibj.zip
 
 if test x${CHOST} != "x"; then
@@ -827,7 +846,8 @@ CONFIG_OPTS="--prefix=${INSTALLATION_DIR} --mandir=${INSTALLATION_DIR}/man \
     ${SYSTEM_LCMS_OPTION} ${GIO_OPTION} ${GCONF_OPTION} ${GTK_OPTION} ${LCMS2_OPTION} ${SYSTEM_JPEG_OPTION} \
     ${SYSTEM_GIF_OPTION} ${SYSTEM_PNG_OPTION} ${SYSTEM_ZLIB_OPTION} ${SYSTEM_PCSC_OPTION} ${SYSTEM_SCTP_OPTION} \
     ${SYSTEM_CUPS_OPTION} ${NATIVE_DEBUGINFO_OPTION} ${JAVA_DEBUGINFO_OPTION} ${SPLIT_DEBUGINFO_OPTION} \
-    ${INFINALITY_OPTION} --disable-downloading --with-cacerts-file=${SYSTEM_ICEDTEA7}/jre/lib/security/cacerts"
+    ${INFINALITY_OPTION} ${HEADLESS_OPTION} ${CCACHE_OPTION} --disable-downloading \
+    --with-cacerts-file=${SYSTEM_ICEDTEA7}/jre/lib/security/cacerts"
 
 DISTCHECK_OPTS="${CONFIG_OPTS} --disable-systemtap --disable-tests --disable-systemtap-tests"
 
@@ -837,10 +857,10 @@ fi
 
 echo "Passing ${CONFIG_OPTS} to configure..."
 
-(PATH=/bin:/usr/bin ./autogen.sh &&
+(PATH=/usr/lib/ccache/bin:/bin:/usr/bin ./autogen.sh &&
 cd ${BUILD_DIR} &&
 echo $ICEDTEA_HOME/configure ${CONFIG_OPTS} &&
-CC=${CC} CXX=${CXX} CFLAGS=${CFLAGS} CXXFLAGS=${CXXFLAGS} LDFLAGS=${LDFLAGS} $ICEDTEA_HOME/configure ${CONFIG_OPTS}
+CFLAGS=${CFLAGS} CXXFLAGS=${CXXFLAGS} LDFLAGS=${LDFLAGS} $ICEDTEA_HOME/configure ${CONFIG_OPTS}
 if test "x$1" = "xrelease"; then
     DISTCHECK_CONFIGURE_FLAGS="${DISTCHECK_OPTS}" make ${MAKE_OPTS} distcheck;
 elif echo "$BUILD" | grep "zero6"; then
@@ -859,7 +879,7 @@ else
     CFLAGS=${CFLAGS} make ${MAKE_OPTS} && echo COMPILED &&
     rm -rf ${INSTALLATION_DIR} &&
     (if [ -e ${BUILD_DIR}/openjdk.build ] ; then
-      (if cat ${ICEDTEA_HOME}/Makefile.am | grep 'install\:' &> /dev/null ; then 
+      (if cat ${ICEDTEA_HOME}/Makefile.am | grep '^install\:' &> /dev/null ; then 
         mv ${BUILD_DIR}/openjdk.build${DIR}/j2sdk-image ${INSTALL_DIR}/${BUILD} ;
 	cp -f ${SYSTEM_ICEDTEA7}/jre/lib/security/cacerts ${INSTALL_DIR}/${BUILD}/jre/lib/security/
       else
