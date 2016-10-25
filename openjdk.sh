@@ -291,6 +291,14 @@ if test "x${OPENJDK_WITH_HEADLESS}" = "xyes"; then
     HEADLESS_CONF_OPT="--disable-headful";
 fi
 
+if test "x${OPENJDK_WITH_PRECOMPILED_HEADERS}" = "xyes"; then
+    HEADERS_CONF_OPT="--enable-precompiled-headers";
+    HEADERS="USE_PRECOMPILED_HEADER=1";
+else
+    HEADERS_CONF_OPT="--disable-precompiled-headers";
+    HEADERS="USE_PRECOMPILED_HEADER=0";
+fi
+
 if test "x${ICEDTEA}" = "xtrue"; then
     ICEDTEA_CONF_OPTS="--with-alt-jar=fastjar --with-java-debug-symbols=yes";
     if test "x${VERSION}" = "xOpenJDK8" ; then \
@@ -320,7 +328,7 @@ if test "x${VERSION}" != "xOpenJDK7" ; then \
     /bin/bash ${SOURCE_DIR}/configure --enable-unlimited-crypto \
       --with-cacerts-file=${SYSTEM_ICEDTEA7}/jre/lib/security/cacerts \
       ${ZLIB_CONF_OPT} ${GIF_CONF_OPT} ${OPENJDK9_CONF_OPTS} ${HEADLESS_CONF_OPT} \
-      --with-stdc++lib=dynamic --with-jobs=${PARALLEL_JOBS} \
+      --with-stdc++lib=dynamic --with-jobs=${PARALLEL_JOBS} ${HEADERS_CONF_OPT} \
       --with-extra-cflags="${CFLAGS}" --with-extra-cxxflags="${CXXFLAGS}" \
       --with-extra-ldflags="${LDFLAGS}" --with-boot-jdk=${BUILDVM} \
       --with-debug-level="${DEBUGLEVEL}" ${ICEDTEA_CONF_OPTS} ${ZERO_CONFIG} \
@@ -361,7 +369,7 @@ else \
     ${WITH_SYSTEM_CUPS} \
     ${WITH_SYSTEM_FONTCONFIG} \
     ${WITH_SYSTEM_SCTP} \
-    ${WITH_SUNEC} ${WITH_KRB5} \
+    ${WITH_SUNEC} ${WITH_KRB5} ${HEADERS} \
     FT2_LIBS=\"$(pkg-config --libs freetype2)\" \
     FT2_CFLAGS=\"$(pkg-config --cflags freetype2)\" \
     COMPILE_AGAINST_SYSCALLS=true \
