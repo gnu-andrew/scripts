@@ -780,6 +780,12 @@ else
     SYSTEM_CUPS_OPTION="--disable-system-cups"
 fi
 
+if test x${ICEDTEA_WITH_SYSTEM_KRB5} = "xyes"; then
+    SYSTEM_KRB5_OPTION="--enable-system-kerberos"
+else
+    SYSTEM_KRB5_OPTION="--disable-system-kerberos"
+fi
+
 if test x${ICEDTEA_WITH_SUNEC} = "xyes"; then
     SUNEC_OPTION="--enable-sunec"
 else
@@ -853,7 +859,7 @@ CONFIG_OPTS="--prefix=${INSTALLATION_DIR} --mandir=${INSTALLATION_DIR}/man \
     ${SYSTEM_GIF_OPTION} ${SYSTEM_PNG_OPTION} ${SYSTEM_ZLIB_OPTION} ${SYSTEM_PCSC_OPTION} ${SYSTEM_SCTP_OPTION} \
     ${SYSTEM_CUPS_OPTION} ${NATIVE_DEBUGINFO_OPTION} ${JAVA_DEBUGINFO_OPTION} ${SPLIT_DEBUGINFO_OPTION} \
     ${INFINALITY_OPTION} ${HEADLESS_OPTION} ${CCACHE_OPTION} ${PRECOMPILED_HEADERS_OPTION} --disable-downloading \
-    --with-cacerts-file=${SYSTEM_ICEDTEA7}/jre/lib/security/cacerts"
+    --with-cacerts-file=${SYSTEM_ICEDTEA7}/jre/lib/security/cacerts ${SYSTEM_KRB5_OPTION}"
 
 DISTCHECK_OPTS="${CONFIG_OPTS} --disable-systemtap --disable-tests --disable-systemtap-tests"
 
