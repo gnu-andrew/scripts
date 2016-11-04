@@ -822,6 +822,12 @@ else
     CCACHE_OPTION="--enable-ccache"
 fi
 
+if test x${ICEDTEA_WITH_PRECOMPILED_HEADERS} = "xno"; then
+    PRECOMPILED_HEADERS_OPTION="--disable-precompiled-headers"
+else
+    PRECOMPILED_HEADERS_OPTION="--enable-precompiled-headers"
+fi
+
 RT_JAR=${CLASSPATH_INSTALL}/share/classpath/glibj.zip
 
 if test x${CHOST} != "x"; then
@@ -846,7 +852,7 @@ CONFIG_OPTS="--prefix=${INSTALLATION_DIR} --mandir=${INSTALLATION_DIR}/man \
     ${SYSTEM_LCMS_OPTION} ${GIO_OPTION} ${GCONF_OPTION} ${GTK_OPTION} ${LCMS2_OPTION} ${SYSTEM_JPEG_OPTION} \
     ${SYSTEM_GIF_OPTION} ${SYSTEM_PNG_OPTION} ${SYSTEM_ZLIB_OPTION} ${SYSTEM_PCSC_OPTION} ${SYSTEM_SCTP_OPTION} \
     ${SYSTEM_CUPS_OPTION} ${NATIVE_DEBUGINFO_OPTION} ${JAVA_DEBUGINFO_OPTION} ${SPLIT_DEBUGINFO_OPTION} \
-    ${INFINALITY_OPTION} ${HEADLESS_OPTION} ${CCACHE_OPTION} --disable-downloading \
+    ${INFINALITY_OPTION} ${HEADLESS_OPTION} ${CCACHE_OPTION} ${PRECOMPILED_HEADERS_OPTION} --disable-downloading \
     --with-cacerts-file=${SYSTEM_ICEDTEA7}/jre/lib/security/cacerts"
 
 DISTCHECK_OPTS="${CONFIG_OPTS} --disable-systemtap --disable-tests --disable-systemtap-tests"

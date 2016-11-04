@@ -30,7 +30,7 @@ else
     fi
 fi
 
-if [ -e ${PWD}/jdk/src/java.base ] ; then
+if [ -e ${PWD}/jdk/src/java.base/share/classes/java/lang/Object.java ] ; then
     VERSION=OpenJDK9;
     BUILDVM=${SYSTEM_ICEDTEA8};
 elif [ -e ${PWD}/common/autoconf ] ; then
@@ -187,8 +187,10 @@ if test "x${OPENJDK_WITH_SYSTEM_PCSC}" = "xyes"; then
     WITH_SYSTEM_PCSC="
        SYSTEM_PCSC=true \
        PCSC_LIBS=\"$(pkg-config --libs libpcsclite)\" PCSC_CFLAGS=\"$(pkg-config --cflags libpcsclite)\""
+    PCSC_CONF_OPT="--enable-system-pcsc"
 else
     WITH_SYSTEM_PCSC="SYSTEM_PCSC=false"
+    PCSC_CONF_OPT="--disable-system-pcsc"
 fi
 
 if test "x${OPENJDK_WITH_SYSTEM_JPEG}" = "xyes"; then
@@ -257,8 +259,10 @@ fi
 
 if test "x${OPENJDK_WITH_SYSTEM_SCTP}" = "xyes"; then
     WITH_SYSTEM_SCTP="SYSTEM_SCTP=true SCTP_LIBS=\"-lsctp\""
+    SCTP_CONF_OPT="--enable-system-sctp"
 else
     WITH_SYSTEM_SCTP="SYSTEM_SCTP=false"
+    SCTP_CONF_OPT="--disable-system-sctp"
 fi
 
 if test "x${OPENJDK_WITH_SYSTEM_KRB5}" = "xyes"; then
@@ -305,7 +309,8 @@ if test "x${ICEDTEA}" = "xtrue"; then
 	ICEDTEA_CONF_OPTS="${ICEDTEA_CONF_OPTS} \
            ${LCMS_CONF_OPT} ${PNG_CONF_OPT} \
            ${JPEG_CONF_OPT} ${SUNEC_CONF_OPT} \
-           ${INFINALITY_CONF_OPT} ${KRB5_CONF_OPT}"
+           ${INFINALITY_CONF_OPT} ${KRB5_CONF_OPT} \
+           ${PCSC_CONF_OPT} ${SCTP_CONF_OPT}"
     fi
 fi
 
