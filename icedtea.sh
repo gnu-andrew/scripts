@@ -94,7 +94,7 @@ elif [ $(echo $0|grep 'icedtea6-1.12') ]; then
 elif [ $(echo $0|grep 'icedtea6-1.13') ]; then
     VERSION=icedtea6;
     BUILD=icedtea6-1.13;
-    OPENJDK_ZIP=$OPENJDK6_B40_ZIP;
+    OPENJDK_ZIP=$OPENJDK6_B41_ZIP;
     RELEASE="1.13"
 elif [ $(echo $0|grep 'icedtea6-hg') ]; then
     VERSION=icedtea6;
@@ -361,36 +361,36 @@ elif [ $(echo $0|grep 'cacao6') ]; then
     VERSION=icedtea6;
     BUILD=cacao-icedtea6;
     OPENJDK_ZIP=$OPENJDK6_ZIP;
-    OPTS="--enable-cacao";
+    OPTS="--enable-cacao --enable-docs";
 elif [ $(echo $0|grep 'cacao7') ]; then
     VERSION=icedtea7;
     BUILD=cacao-icedtea7;
     OPENJDK_ZIP=$OPENJDK7_ZIP;
     OPENJDK_DIR=$OPENJDK7_DIR;
-    OPTS="--enable-cacao";
+    OPTS="--enable-cacao --enable-docs";
 elif [ $(echo $0|grep 'jamvm6') ]; then
     VERSION=icedtea6;
     BUILD=jamvm-icedtea6;
     OPENJDK_ZIP=$OPENJDK6_ZIP;
-    OPTS="--enable-jamvm";
+    OPTS="--enable-jamvm --enable-docs";
 elif [ $(echo $0|grep 'jamvm7') ]; then
     VERSION=icedtea7;
     BUILD=jamvm-icedtea7;
     OPENJDK_ZIP=$OPENJDK7_ZIP;
     OPENJDK_DIR=$OPENJDK7_DIR;
-    OPTS="--enable-jamvm";
+    OPTS="--enable-jamvm --enable-docs";
 elif [ $(echo $0|grep 'cacao') ]; then
     VERSION=icedtea8;
     BUILD=cacao-icedtea8;
     OPENJDK_ZIP=$OPENJDK8_ZIP;
     OPENJDK_DIR=$OPENJDK8_DIR;
-    OPTS="--enable-cacao";
+    OPTS="--enable-cacao --enable-docs";
 elif [ $(echo $0|grep 'jamvm') ]; then
     VERSION=icedtea8;
     BUILD=jamvm-icedtea8;
     OPENJDK_ZIP=$OPENJDK8_ZIP;
     OPENJDK_DIR=$OPENJDK8_DIR;
-    OPTS="--enable-jamvm";
+    OPTS="--enable-jamvm --enable-docs";
 elif [ $(echo $0|grep 'icedtea8-shenandoah') ]; then
     VERSION=icedtea8;
     BUILD=icedtea8-shenandoah;
@@ -398,6 +398,13 @@ elif [ $(echo $0|grep 'icedtea8-shenandoah') ]; then
     OPENJDK_DIR=$OPENJDK8_DIR;
     HOTSPOT8_ZIP=$SHENANDOAH_ZIP;
     OPTS="--with-hotspot-build=shenandoah"
+elif [ $(echo $0|grep 'icedtea8-aarch32') ]; then
+    VERSION=icedtea8;
+    BUILD=icedtea8-aarch32;
+    OPENJDK_ZIP=$OPENJDK8_ZIP;
+    OPENJDK_DIR=$OPENJDK8_DIR;
+    HOTSPOT8_ZIP=$AARCH32_ZIP;
+    OPTS="--with-hotspot-build=aarch32"
 elif [ $(echo $0|grep 'no-bootstrap6') ]; then
     VERSION=icedtea6;
     BUILD=icedtea6-no-bootstrap;
@@ -810,10 +817,10 @@ else
     SPLIT_DEBUGINFO_OPTION="--disable-split-debuginfo"
 fi
 
-if test x${ICEDTEA_WITH_INFINALITY} = "xno"; then
-    INFINALITY_OPTION="--disable-infinality"
+if test x${ICEDTEA_WITH_IMPROVED_FONT_RENDERING} = "xno"; then
+    IMPROVED_FONT_RENDERING_OPTION="--disable-improved-font-rendering"
 else
-    INFINALITY_OPTION="--enable-infinality"
+    IMPROVED_FONT_RENDERING_OPTION="--enable-improved-font-rendering"
 fi
 
 if test x${ICEDTEA_WITH_HEADLESS} = "xno"; then
@@ -853,13 +860,16 @@ CONFIG_OPTS="--prefix=${INSTALLATION_DIR} --mandir=${INSTALLATION_DIR}/man \
     ${GCJ_OPTION} ${HOTSPOT_ZIP_OPTION} ${CORBA_ZIP_OPTION} ${NASHORN_ZIP_OPTION} ${CHOST_OPTION} ${TESTS_OPTION} \
     ${JAXP_ZIP_OPTION} ${JAXWS_ZIP_OPTION} ${JDK_ZIP_OPTION} ${LANGTOOLS_ZIP_OPTION} ${NIMBUS_OPTION} \
     ${SYSTEMTAP_OPTION} ${NIMBUS_GEN_OPTION} ${XRENDER_OPTION} ${PLUGIN_OPTION} ${NEW_PLUGIN_OPTION} \
-    ${NSS_OPTION} ${NIO2_OPTION} ${OPTS} ${SUNEC_OPTION} ${JAXP_DROP_ZIP_OPTION} ${JAF_DROP_ZIP_OPTION} \
+    ${NSS_OPTION} ${NIO2_OPTION} ${SUNEC_OPTION} ${JAXP_DROP_ZIP_OPTION} ${JAF_DROP_ZIP_OPTION} \
     ${JAXWS_DROP_ZIP_OPTION} ${HOTSPOT_BUILD_OPTION} ${JAMVM_OPTION} ${JAMVM_ZIP_OPTION} ${LEGACY_OPTS} \
     ${SYSTEM_LCMS_OPTION} ${GIO_OPTION} ${GCONF_OPTION} ${GTK_OPTION} ${LCMS2_OPTION} ${SYSTEM_JPEG_OPTION} \
     ${SYSTEM_GIF_OPTION} ${SYSTEM_PNG_OPTION} ${SYSTEM_ZLIB_OPTION} ${SYSTEM_PCSC_OPTION} ${SYSTEM_SCTP_OPTION} \
     ${SYSTEM_CUPS_OPTION} ${NATIVE_DEBUGINFO_OPTION} ${JAVA_DEBUGINFO_OPTION} ${SPLIT_DEBUGINFO_OPTION} \
-    ${INFINALITY_OPTION} ${HEADLESS_OPTION} ${CCACHE_OPTION} ${PRECOMPILED_HEADERS_OPTION} --disable-downloading \
-    --with-cacerts-file=${SYSTEM_ICEDTEA7}/jre/lib/security/cacerts ${SYSTEM_KRB5_OPTION}"
+    ${IMPROVED_FONT_RENDERING_OPTION} ${HEADLESS_OPTION} ${CCACHE_OPTION} ${PRECOMPILED_HEADERS_OPTION} \
+    --disable-downloading --with-cacerts-file=${SYSTEM_ICEDTEA7}/jre/lib/security/cacerts ${SYSTEM_KRB5_OPTION}"
+
+# Always add the additional options separately so they override anything beforehand
+CONFIG_OPTS="${CONFIG_OPTS} ${OPTS}"
 
 DISTCHECK_OPTS="${CONFIG_OPTS} --disable-systemtap --disable-tests --disable-systemtap-tests"
 
@@ -878,7 +888,7 @@ if test "x$1" = "xrelease"; then
 elif echo "$BUILD" | grep "zero6"; then
     make ${MAKE_OPTS} icedtea-against-ecj && echo COMPILED &&
     rm -rf ${INSTALLATION_DIR} &&
-    mv ${BUILD_DIR}/openjdk.build-ecj${DIR}/j2sdk-image$ ${INSTALL_DIR}/${BUILD} &&
+    mv ${BUILD_DIR}/openjdk.build-ecj${DIR}/j2sdk-image ${INSTALL_DIR}/${BUILD} &&
     ln -s ${INSTALL_DIR}/${BUILD} ${BUILD_DIR}/openjdk.build-ecj${DIR}/j2sdk-image &&
     echo DONE
 elif echo "$BUILD" | grep "zero"; then

@@ -74,7 +74,7 @@ AZUL_SUPPORT="AVX_INCLUDE_DIR=-I/home/andrew/build/aztools/include AZNIX_API_VER
 
 NO_HOTSPOT="
     BUILD_HOTSPOT=false \
-    ALT_JDK_IMPORT_PATH=${SYSTEM_ICEDTEA8}"
+    ALT_JDK_IMPORT_PATH=${SYSTEM_ICEDTEA7}"
 
 JDK_ONLY="
     BUILD_JAXP=false \
@@ -237,9 +237,9 @@ if test "x${OPENJDK_WITH_SYSTEM_FONTCONFIG}" = "xyes"; then
     WITH_SYSTEM_FONTCONFIG="
        USE_SYSTEM_FONTCONFIG=true SYSTEM_FONTCONFIG=true \
        FONTCONFIG_LIBS=\"$(pkg-config --libs fontconfig)\" FONTCONFIG_CFLAGS=\"$(pkg-config --cflags fontconfig)\""
-    if test "x${OPENJDK_WITH_INFINALITY}" = "xyes"; then
-	WITH_SYSTEM_FONTCONFIG="${WITH_SYSTEM_FONTCONFIG} INFINALITY_SUPPORT=true"
-	INFINALITY_CONF_OPT="--enable-infinality"
+    if test "x${OPENJDK_WITH_IMPROVED_FONT_RENDERING}" = "xyes"; then
+	WITH_SYSTEM_FONTCONFIG="${WITH_SYSTEM_FONTCONFIG} IMPROVED_FONT_RENDERING=true"
+	IMPROVED_FONT_RENDERING_CONF_OPT="--enable-improved-font-rendering"
     fi
 else
     WITH_SYSTEM_FONTCONFIG="USE_SYSTEM_FONTCONFIG=false SYSTEM_FONTCONFIG=false"
@@ -309,7 +309,7 @@ if test "x${ICEDTEA}" = "xtrue"; then
 	ICEDTEA_CONF_OPTS="${ICEDTEA_CONF_OPTS} \
            ${LCMS_CONF_OPT} ${PNG_CONF_OPT} \
            ${JPEG_CONF_OPT} ${SUNEC_CONF_OPT} \
-           ${INFINALITY_CONF_OPT} ${KRB5_CONF_OPT} \
+           ${IMPROVED_FONT_RENDERING_CONF_OPT} ${KRB5_CONF_OPT} \
            ${PCSC_CONF_OPT} ${SCTP_CONF_OPT}"
     fi
 fi
@@ -344,7 +344,7 @@ if test "x${VERSION}" != "xOpenJDK7" ; then \
   fi ;
   ARGS="DISABLE_INTREE_EC=true \
       OTHER_JAVACFLAGS=\"-Xmaxwarns 10000\" \
-      ${WARNINGS} STRIP_POLICY=no_strip LOG=debug \
+      ${WARNINGS} STRIP_POLICY=no_strip LOG_LEVEL=debug \
       DEBUG_BINARIES=true JDK_DERIVATIVE_NAME=IcedTea \
       DERIVATIVE_ID=IcedTea" && \
   echo ${ARGS} && \
@@ -380,9 +380,11 @@ else \
     COMPILE_AGAINST_SYSCALLS=true \
     OTHER_JAVACFLAGS=\"-Xmaxwarns 10000\" \
     ZERO_BUILD=${ZERO_SUPPORT} STATIC_CXX=false \
-    ${WARNINGS} ${JAVAC_WERROR} ${GCC_WERROR} ${EXTRA_OPTS} EXTRA_CFLAGS=\"${CFLAGS}\" \
-    ${DOCS} STRIP_POLICY=no_strip UNLIMITED_CRYPTO=true CC=\"/usr/bin/gcc\" CXX=\"/usr/bin/g++\" \
-    ENABLE_FULL_DEBUG_SYMBOLS=0 NATIVE_SUPPORT_DEBUG=true ${TARGET}"
+    ${WARNINGS} ${JAVAC_WERROR} ${GCC_WERROR} ${EXTRA_OPTS} ${DOCS} \
+    STRIP_POLICY=no_strip UNLIMITED_CRYPTO=true ENABLE_FULL_DEBUG_SYMBOLS=0 \
+    NATIVE_SUPPORT_DEBUG=true CC=\"/usr/bin/gcc\" CXX=\"/usr/bin/g++\" \
+    EXTRA_CFLAGS=\"${CFLAGS}\" EXTRA_LDFLAGS=\"${LDFLAGS}\" \
+    ${TARGET}"
   echo ${ARGS} && \
   eval ANT_RESPECT_JAVA_HOME=true LANG=C make ${MAKE_OPTS} ${ARGS} \
 ) 2>&1 | tee ${LOG_DIR}/$0-$1.errors ; \
