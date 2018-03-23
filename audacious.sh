@@ -10,7 +10,11 @@ fi
 rm -rf $AUDACIOUS_INSTALL
 cd $AUDACIOUS_HOME
 ./autogen.sh;
-./configure --prefix=$AUDACIOUS_INSTALL &&
+create_working_dir
+rm -rf audacious
+mkdir audacious
+(cd audacious &&
+${AUDACIOUS_HOME}/configure --prefix=$AUDACIOUS_INSTALL &&
 make ${MAKE_OPTS} && 
 make ${MAKE_OPTS} install &&
 echo DONE) 2>&1 | tee ${LOG_DIR}/$0.errors

@@ -38,7 +38,7 @@ elif [ -e ${PWD}/common/autoconf ] ; then
     BUILDVM=${SYSTEM_ICEDTEA7};
 else
     VERSION=OpenJDK7;
-    BUILDVM=${SYSTEM_ICEDTEA6};
+    BUILDVM=${SYSTEM_ICEDTEA7};
 fi
 
 # Check whether this is IcedTea
