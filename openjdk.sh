@@ -33,12 +33,15 @@ fi
 if [ -e ${PWD}/jdk/src/java.base/share/classes/java/lang/Object.java ] ; then
     VERSION=OpenJDK9;
     BUILDVM=${SYSTEM_ICEDTEA8};
+    IMPORTVM=${SYSTEM_ICEDTEA9};
 elif [ -e ${PWD}/common/autoconf ] ; then
     VERSION=OpenJDK8;
     BUILDVM=${SYSTEM_ICEDTEA7};
+    IMPORTVM=${SYSTEM_ICEDTEA8};
 else
     VERSION=OpenJDK7;
-    BUILDVM=${SYSTEM_ICEDTEA7};
+    BUILDVM=${SYSTEM_ICEDTEA6};
+    IMPORTVM=${SYSTEM_ICEDTEA7};
 fi
 
 # Check whether this is IcedTea
@@ -74,13 +77,13 @@ AZUL_SUPPORT="AVX_INCLUDE_DIR=-I/home/andrew/build/aztools/include AZNIX_API_VER
 
 NO_HOTSPOT="
     BUILD_HOTSPOT=false \
-    ALT_JDK_IMPORT_PATH=${SYSTEM_ICEDTEA7}"
+    ALT_JDK_IMPORT_PATH=${IMPORTVM}"
 
 JDK_ONLY="
     BUILD_JAXP=false \
     BUILD_JAXWS=false \
     BUILD_HOTSPOT=false \
-    ALT_JDK_IMPORT_PATH=${BUILDVM}"
+    ALT_JDK_IMPORT_PATH=${IMPORTVM}"
 
 JAXWS_ONLY="
     BUILD_CORBA=false \
@@ -88,7 +91,7 @@ JAXWS_ONLY="
     BUILD_LANGTOOLS=false \
     BUILD_JDK=false \
     BUILD_HOTSPOT=false \
-    ALT_JDK_IMPORT_PATH=${BUILDVM}"
+    ALT_JDK_IMPORT_PATH=${IMPORTVM}"
 
 JAXP_ONLY="
     BUILD_CORBA=false \
@@ -96,7 +99,7 @@ JAXP_ONLY="
     BUILD_LANGTOOLS=false \
     BUILD_JDK=false \
     BUILD_HOTSPOT=false \
-    ALT_JDK_IMPORT_PATH=${BUILDVM}"
+    ALT_JDK_IMPORT_PATH=${IMPORTVM}"
 
 CORBA_ONLY="
     BUILD_JAXP=false \
@@ -104,7 +107,7 @@ CORBA_ONLY="
     BUILD_LANGTOOLS=false \
     BUILD_JDK=false \
     BUILD_HOTSPOT=false \
-    ALT_JDK_IMPORT_PATH=${BUILDVM}"
+    ALT_JDK_IMPORT_PATH=${IMPORTVM}"
 
 HOTSPOT_ONLY="
     BUILD_JAXP=false \
@@ -112,7 +115,16 @@ HOTSPOT_ONLY="
     BUILD_LANGTOOLS=false \
     BUILD_JDK=false \
     BUILD_CORBA=false \
-    ALT_JDK_IMPORT_PATH=${BUILDVM}"
+    ALT_JDK_IMPORT_PATH=${IMPORTVM}"
+
+CROSS_COMPILE="
+    BUILD_JAXP=false \
+    BUILD_JAXWS=false \
+    BUILD_LANGTOOLS=false \
+    BUILD_CORBA=false \
+    ALT_JDK_IMPORT_PATH=${IMPORTVM} \
+    ARCH_DATA_MODEL=32 \
+    CROSS_COMPILE_ARCH=i686"
 
 # Warnings?
 if test "x${OPENJDK_WITH_WARNINGS}" = "xyes"; then
