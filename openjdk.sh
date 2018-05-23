@@ -142,8 +142,10 @@ fi
 
 if test "x${OPENJDK_WITH_GCC_WERROR}" = "xyes"; then
     GCC_WERROR="COMPILER_WARNINGS_FATAL=true"
+    WERROR="--enable-warnings-as-errors"
 else
     GCC_WERROR="COMPILER_WARNINGS_FATAL=false"
+    WERROR="--disable-warnings-as-errors"
 fi
 
 # Docs?
@@ -315,6 +317,12 @@ else
     HEADERS="USE_PRECOMPILED_HEADER=0";
 fi
 
+if test "x${OPENJDK_WITH_32BIT}" = "xyes"; then
+    BITS="--with-target-bits=32";
+else
+    BITS="--with-target-bits=64";
+fi
+
 if test "x${ICEDTEA}" = "xtrue"; then
     ICEDTEA_CONF_OPTS="--with-alt-jar=fastjar --with-java-debug-symbols=yes";
     if test "x${VERSION}" = "xOpenJDK8" ; then \
@@ -322,7 +330,8 @@ if test "x${ICEDTEA}" = "xtrue"; then
            ${LCMS_CONF_OPT} ${PNG_CONF_OPT} \
            ${JPEG_CONF_OPT} ${SUNEC_CONF_OPT} \
            ${IMPROVED_FONT_RENDERING_CONF_OPT} ${KRB5_CONF_OPT} \
-           ${PCSC_CONF_OPT} ${SCTP_CONF_OPT}"
+           ${PCSC_CONF_OPT} ${SCTP_CONF_OPT} \
+	   ${WERROR}"
     fi
 fi
 
@@ -348,7 +357,7 @@ if test "x${VERSION}" != "xOpenJDK7" ; then \
       --with-stdc++lib=dynamic --with-jobs=${PARALLEL_JOBS} ${HEADERS_CONF_OPT} \
       --with-extra-cflags="${CFLAGS}" --with-extra-cxxflags="${CXXFLAGS}" \
       --with-extra-ldflags="${LDFLAGS}" --with-boot-jdk=${BUILDVM} \
-      --with-debug-level="${DEBUGLEVEL}" ${ICEDTEA_CONF_OPTS} ${ZERO_CONFIG} \
+      --with-debug-level="${DEBUGLEVEL}" ${ICEDTEA_CONF_OPTS} ${ZERO_CONFIG} ${BITS} \
     #echo configure "${CONFARGS}" && \
     #`/bin/bash ${SOURCE_DIR}/configure "${CONFARGS}"` ; \
   else \

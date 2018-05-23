@@ -899,6 +899,7 @@ elif echo "$BUILD" | grep "zero"; then
     echo DONE
 else
     CFLAGS=${CFLAGS} make ${MAKE_OPTS} && echo COMPILED &&
+    make ${MAKE_OPTS} check && echo TESTED && 
     rm -rf ${INSTALLATION_DIR} &&
     (if [ -e ${BUILD_DIR}/openjdk.build ] ; then
       (if cat ${ICEDTEA_HOME}/Makefile.am | grep '^install\:' &> /dev/null ; then 
