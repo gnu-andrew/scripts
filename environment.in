@@ -68,6 +68,7 @@ ICEDTEA_WITH_IMPROVED_FONT_RENDERING=yes
 ICEDTEA_WITH_HEADLESS=yes
 ICEDTEA_WITH_CCACHE=no
 ICEDTEA_WITH_PRECOMPILED_HEADERS=yes
+ICEDTEA_WITH_WERROR=yes
 CLASSPATH_WITH_GSTREAMER="no"
 CLASSPATH_WITH_QT="no"
 CLASSPATH_WITH_TOOL_WRAPPERS="no"
@@ -316,8 +317,16 @@ case "${JDK_ARCH}" in
 esac
 
 if [ -e /etc/make.conf ] ; then
-   CHOST=$(grep CHOST /etc/make.conf|sed -e 's#CHOST="##' -e 's#"$##')
+   CHOST=$(grep '^CHOST=' /etc/portage/make.conf|sed -e 's#CHOST="##' -e 's#"$##')
    echo "CHOST set to ${CHOST}"
-   CFLAGS=$(grep '^CFLAGS=' /etc/make.conf|sed -e 's#CFLAGS="##' -e 's#"$##')
+   CFLAGS=$(grep '^CFLAGS=' /etc/portage/make.conf|sed -e 's#CFLAGS="##' -e 's#"$##')
+   CXXFLAGS=$(grep '^CXXFLAGS=' /etc/portage/make.conf|sed -e 's#CXXFLAGS="##' -e 's#"$##')
+   if test "x${CXXFLAGS}" = 'x${CFLAGS}'; then
+      CXXFLAGS=${CFLAGS};
+   fi
    echo "CFLAGS set to ${CFLAGS}"
+   echo "CXXFLAGS set to ${CXXFLAGS}"
+   LDFLAGS=$(grep '^LDFLAGS=' /etc/portage/make.conf|sed -e 's#LDFLAGS="##' -e 's#"$##')
+   echo "LDFLAGS set to ${LDFLAGS}"
+   CHOST_OPTION="--build=${CHOST}"
 fi
