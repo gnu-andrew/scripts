@@ -580,7 +580,7 @@ else
 fi
 
 if test "x${USE_ECJ}" != "xno"; then
-   JAVAC_OPTION=" --with-javac=${OLD_ECJ}"
+   JAVAC_OPTION=" --with-javac=${ECJ}"
 fi
 
 echo "Building ${ICEDTEA_HOME} in ${BUILD_DIR}..."
