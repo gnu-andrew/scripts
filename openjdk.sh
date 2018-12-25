@@ -14,9 +14,12 @@ CLASSPATH=
 BUILD_DIR=$1
 SOURCE_DIR=$PWD
 
+# OpenJDK >= 10 has its version in the build machinery
+VERSION_FILE=${PWD}/make/autoconf/version-numbers
+
 if test "x$BUILD_DIR" = "x"; then
     echo "No build directory specified.";
-    exit -1;
+    exit 1;
 fi
 
 # Second argument; optional forced 'recompile'
@@ -30,19 +33,38 @@ else
     fi
 fi
 
-if [ -e ${PWD}/jdk/src/java.base/share/classes/java/lang/Object.java ] ; then
-    VERSION=OpenJDK9;
-    BUILDVM=${SYSTEM_ICEDTEA8};
-    IMPORTVM=${SYSTEM_ICEDTEA9};
+if [ -e ${VERSION_FILE} ] ; then
+    openjdk_version=$(grep '^DEFAULT_VERSION_FEATURE' ${VERSION_FILE} | cut -d '=' -f 2)
+    if [ ${openjdk_version} -eq 13 ] ; then
+	BUILDVM=${SYSTEM_JDK12};
+	IMPORTVM=${SYSTEM_JDK13};
+    elif [ ${openjdk_version} -eq 12 ] ; then
+	BUILDVM=${SYSTEM_JDK11};
+	IMPORTVM=${SYSTEM_JDK12};
+    elif [ ${openjdk_version} -eq 11 ] ; then
+	BUILDVM=${SYSTEM_JDK10};
+	IMPORTVM=${SYSTEM_JDK11};
+    elif [ ${openjdk_version} -eq 10 ] ; then
+	BUILDVM=${SYSTEM_JDK9};
+	IMPORTVM=${SYSTEM_JDK10};
+    else
+	echo "Unrecognised OpenJDK version: ${openjdk_version}";
+	exit 2;
+    fi
+elif [ -e ${PWD}/jdk/src/java.base/share/classes/java/lang/Object.java ] ; then
+    openjdk_version=9;
+    BUILDVM=${SYSTEM_JDK8};
+    IMPORTVM=${SYSTEM_JDK9};
 elif [ -e ${PWD}/common/autoconf ] ; then
-    VERSION=OpenJDK8;
-    BUILDVM=${SYSTEM_ICEDTEA7};
-    IMPORTVM=${SYSTEM_ICEDTEA8};
+    openjdk_version=8;
+    BUILDVM=${SYSTEM_JDK7};
+    IMPORTVM=${SYSTEM_JDK8};
 else
-    VERSION=OpenJDK7;
-    BUILDVM=${SYSTEM_ICEDTEA6};
-    IMPORTVM=${SYSTEM_ICEDTEA7};
+    openjdk_version=7;
+    BUILDVM=${SYSTEM_JDK6};
+    IMPORTVM=${SYSTEM_JDK7};
 fi
+VERSION=OpenJDK${version}
 
 # Check whether this is IcedTea
 if grep -q 'icedtea' ${PWD}/.hgtags ; then
@@ -53,7 +75,7 @@ fi
 
 if test "x${BUILDVM}" = "x"; then
     echo "No build VM available.  Exiting.";
-    exit -1;
+    exit 3;
 fi
 echo "Building ${VERSION} using ${BUILDVM}"
 echo "IcedTea: ${ICEDTEA}"
@@ -335,10 +357,18 @@ if test "x${ICEDTEA}" = "xtrue"; then
     fi
 fi
 
-if test "x${VERSION}" = "xOpenJDK9" ; then \
+if test ${openjdk_version} -ge 9 ; then 
     OPENJDK9_CONF_OPTS="${JPEG_CONF_OPT} \
            ${LCMS_CONF_OPT} ${PNG_CONF_OPT} \
-           --disable-warnings-as-errors"
+           ${WERROR}"
+fi
+
+if test ${openjdk_version} -ge 11 ; then 
+    OPENJDK11_CONF_OPTS="--with-log=trace \
+      --with-native-debug-symbols=internal";
+else
+    OPENJDK_MAKE_OPTS="STRIP_POLICY=no_strip LOG_LEVEL=debug \
+      DEBUG_BINARIES=true"
 fi
 
 #    GENSRCDIR=/tmp/generated
@@ -353,11 +383,12 @@ if test "x${VERSION}" != "xOpenJDK7" ; then \
     cd ${BUILD_DIR} && \
     /bin/bash ${SOURCE_DIR}/configure --enable-unlimited-crypto \
       --with-cacerts-file=${SYSTEM_ICEDTEA7}/jre/lib/security/cacerts \
-      ${ZLIB_CONF_OPT} ${GIF_CONF_OPT} ${OPENJDK9_CONF_OPTS} ${HEADLESS_CONF_OPT} \
+      ${ZLIB_CONF_OPT} ${GIF_CONF_OPT} ${HEADLESS_CONF_OPT} \
       --with-stdc++lib=dynamic --with-jobs=${PARALLEL_JOBS} ${HEADERS_CONF_OPT} \
       --with-extra-cflags="${CFLAGS}" --with-extra-cxxflags="${CXXFLAGS}" \
       --with-extra-ldflags="${LDFLAGS}" --with-boot-jdk=${BUILDVM} \
-      --with-debug-level="${DEBUGLEVEL}" ${ICEDTEA_CONF_OPTS} ${ZERO_CONFIG} ${BITS} \
+      --with-debug-level="${DEBUGLEVEL}"  ${ZERO_CONFIG} ${BITS} \
+      ${OPENJDK9_CONF_OPTS} ${OPENJDK11_CONF_OPTS} ${ICEDTEA_CONF_OPTS} \
     #echo configure "${CONFARGS}" && \
     #`/bin/bash ${SOURCE_DIR}/configure "${CONFARGS}"` ; \
   else \
@@ -365,9 +396,8 @@ if test "x${VERSION}" != "xOpenJDK7" ; then \
   fi ;
   ARGS="DISABLE_INTREE_EC=true \
       OTHER_JAVACFLAGS=\"-Xmaxwarns 10000\" \
-      ${WARNINGS} STRIP_POLICY=no_strip LOG_LEVEL=debug \
-      DEBUG_BINARIES=true JDK_DERIVATIVE_NAME=IcedTea \
-      DERIVATIVE_ID=IcedTea" && \
+      ${WARNINGS} ${OPENJDK_MAKE_OPTS} \
+      JDK_DERIVATIVE_NAME=IcedTea DERIVATIVE_ID=IcedTea" && \
   echo ${ARGS} && \
   eval ANT_RESPECT_JAVA_HOME=true LANG=C make ${ARGS} images \
 ) 2>&1 | tee ${LOG_DIR}/$0-$1.errors ; \
