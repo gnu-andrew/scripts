@@ -331,6 +331,20 @@ elif [ $(echo $0|grep 'zero7') ]; then
     OPENJDK_ZIP=$OPENJDK7_ZIP;
     OPENJDK_DIR=$OPENJDK7_DIR;
     OPTS="--enable-zero";
+elif [ $(echo $0|grep 'zero8-shenandoah') ]; then
+    VERSION=icedtea8;
+    BUILD=zero8-shenandoah;
+    OPENJDK_ZIP=$OPENJDK8_ZIP;
+    OPENJDK_DIR=$OPENJDK8_DIR;
+    HOTSPOT8_ZIP=$SHENANDOAH_ZIP;
+    OPTS="--enable-zero --with-hotspot-build=shenandoah"
+elif [ $(echo $0|grep 'zero8-aarch32') ]; then
+    VERSION=icedtea8;
+    BUILD=zero8-aarch32;
+    OPENJDK_ZIP=$OPENJDK8_ZIP;
+    OPENJDK_DIR=$OPENJDK8_DIR;
+    HOTSPOT8_ZIP=$AARCH32_ZIP;
+    OPTS="--enable-zero --with-hotspot-build=aarch32"
 elif [ $(echo $0|grep 'zero8') ]; then
     VERSION=icedtea8;
     BUILD=zero8;

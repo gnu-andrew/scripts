@@ -64,7 +64,7 @@ else
     BUILDVM=${SYSTEM_JDK6};
     IMPORTVM=${SYSTEM_JDK7};
 fi
-VERSION=OpenJDK${version}
+VERSION=OpenJDK${openjdk_version}
 
 # Check whether this is IcedTea
 if grep -q 'icedtea' ${PWD}/.hgtags ; then
