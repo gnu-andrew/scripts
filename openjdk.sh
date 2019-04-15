@@ -287,10 +287,8 @@ if test "x${OPENJDK_WITH_SUNEC}" = "xyes"; then
        NSS_LIBS=\"$(pkg-config --libs nss-softokn)\" \
        NSS_CFLAGS=\"$(pkg-config --cflags nss-softokn)\" \
        ECC_JUST_SUITE_B=true"
-    SUNEC_CONF_OPT="--enable-system-nss"
 else
-    WITH_SUNEC="SYSTEM_NSS=false DISABLE_INTREE_EC=true"
-    SUNEC_CONF_OPT="--disable-system-nss"
+    WITH_SUNEC="SYSTEM_NSS=false"
 fi
 
 if test "x${OPENJDK_WITH_SYSTEM_SCTP}" = "xyes"; then
@@ -345,12 +343,17 @@ else
     BITS="--with-target-bits=64";
 fi
 
+if test "x${OPENJDK_WITH_BRANDING}" = "xyes"; then
+      BRANDING_CONFIG="--with-vendor-name=${OPENJDK_BRAND_NAME} \
+      --with-vendor-url=${OPENJDK_BRAND_URL} \
+      --with-vendor-bug-url=${OPENJDK_BRAND_BUG_URL}"
+fi
+
 if test "x${ICEDTEA}" = "xtrue"; then
     ICEDTEA_CONF_OPTS="--with-alt-jar=fastjar --with-java-debug-symbols=yes";
     if test "x${VERSION}" = "xOpenJDK8" ; then \
 	ICEDTEA_CONF_OPTS="${ICEDTEA_CONF_OPTS} \
-           ${LCMS_CONF_OPT} ${PNG_CONF_OPT} \
-           ${JPEG_CONF_OPT} ${SUNEC_CONF_OPT} \
+           ${LCMS_CONF_OPT} ${PNG_CONF_OPT} ${JPEG_CONF_OPT} \
            ${IMPROVED_FONT_RENDERING_CONF_OPT} ${KRB5_CONF_OPT} \
            ${PCSC_CONF_OPT} ${SCTP_CONF_OPT} \
 	   ${WERROR}"
@@ -387,15 +390,14 @@ if test "x${VERSION}" != "xOpenJDK7" ; then \
       --with-stdc++lib=dynamic --with-jobs=${PARALLEL_JOBS} ${HEADERS_CONF_OPT} \
       --with-extra-cflags="${CFLAGS}" --with-extra-cxxflags="${CXXFLAGS}" \
       --with-extra-ldflags="${LDFLAGS}" --with-boot-jdk=${BUILDVM} \
-      --with-debug-level="${DEBUGLEVEL}"  ${ZERO_CONFIG} ${BITS} \
+      --with-debug-level="${DEBUGLEVEL}" ${ZERO_CONFIG} ${BRANDING_CONFIG} ${BITS} \
       ${OPENJDK9_CONF_OPTS} ${OPENJDK11_CONF_OPTS} ${ICEDTEA_CONF_OPTS} \
     #echo configure "${CONFARGS}" && \
     #`/bin/bash ${SOURCE_DIR}/configure "${CONFARGS}"` ; \
   else \
     cd ${WORKING_DIR}/${BUILD_DIR} ; \
   fi ;
-  ARGS="DISABLE_INTREE_EC=true \
-      OTHER_JAVACFLAGS=\"-Xmaxwarns 10000\" \
+  ARGS="OTHER_JAVACFLAGS=\"-Xmaxwarns 10000\" \
       ${WARNINGS} ${OPENJDK_MAKE_OPTS} \
       JDK_DERIVATIVE_NAME=IcedTea DERIVATIVE_ID=IcedTea" && \
   echo ${ARGS} && \
