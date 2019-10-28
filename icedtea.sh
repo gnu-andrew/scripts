@@ -480,7 +480,7 @@ else
 fi
 
 BUILD_DIR=${WORKING_DIR}/${BUILD}
-ICEDTEA_ROOT="http://icedtea.classpath.org/hg"
+ICEDTEA_ROOT="https://icedtea.classpath.org/hg"
 
 if test x${VERSION} = "xicedtea8"; then
     DIR="/images";

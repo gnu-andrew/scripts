@@ -349,6 +349,11 @@ if test "x${OPENJDK_WITH_BRANDING}" = "xyes"; then
       --with-vendor-bug-url=${OPENJDK_BRAND_BUG_URL}"
 fi
 
+if test "x${OPENJDK_WITH_CACERTS}" = "xyes"; then
+    CACERTS_CONFIG="--with-cacerts-file=${SYSTEM_CACERTS}"
+    CACERTS_OPT="ALT_CACERTS_FILE=${SYSTEM_CACERTS}"
+fi
+
 if test "x${ICEDTEA}" = "xtrue"; then
     ICEDTEA_CONF_OPTS="--with-alt-jar=fastjar --with-java-debug-symbols=yes";
     if test "x${VERSION}" = "xOpenJDK8" ; then \
@@ -389,7 +394,7 @@ if test "x${VERSION}" != "xOpenJDK7" ; then \
       ${ZLIB_CONF_OPT} ${GIF_CONF_OPT} ${HEADLESS_CONF_OPT} \
       --with-stdc++lib=dynamic --with-jobs=${PARALLEL_JOBS} ${HEADERS_CONF_OPT} \
       --with-extra-cflags="${CFLAGS}" --with-extra-cxxflags="${CXXFLAGS}" \
-      --with-extra-ldflags="${LDFLAGS}" --with-boot-jdk=${BUILDVM} \
+      --with-extra-ldflags="${LDFLAGS}" --with-boot-jdk=${BUILDVM} ${CACERTS_CONFIG} \
       --with-debug-level="${DEBUGLEVEL}" ${ZERO_CONFIG} ${BRANDING_CONFIG} ${BITS} \
       ${OPENJDK9_CONF_OPTS} ${OPENJDK11_CONF_OPTS} ${ICEDTEA_CONF_OPTS} \
     #echo configure "${CONFARGS}" && \
@@ -427,7 +432,7 @@ else \
     ${WITH_SYSTEM_CUPS} \
     ${WITH_SYSTEM_FONTCONFIG} \
     ${WITH_SYSTEM_SCTP} \
-    ${WITH_SUNEC} ${WITH_KRB5} ${HEADERS} \
+    ${WITH_SUNEC} ${WITH_KRB5} ${HEADERS} ${CACERTS_OPT} \
     FT2_LIBS=\"$(pkg-config --libs freetype2)\" \
     FT2_CFLAGS=\"$(pkg-config --cflags freetype2)\" \
     COMPILE_AGAINST_SYSCALLS=true \
