@@ -158,14 +158,14 @@ MAKE_OPTS="${MAKE_OPTS} -j1"
 
 if test "x${OPENJDK_WITH_JAVA_WERROR}" = "xyes"; then
     JAVAC_WERROR="JAVAC_WARNINGS_FATAL=true"
-else
+elif test "x${OPENJDK_WITH_JAVA_WERROR}" = "xno"; then
     JAVAC_WERROR="JAVAC_WARNINGS_FATAL=false"
 fi
 
 if test "x${OPENJDK_WITH_GCC_WERROR}" = "xyes"; then
     GCC_WERROR="COMPILER_WARNINGS_FATAL=true"
     WERROR="--enable-warnings-as-errors"
-else
+elif test "x${OPENJDK_WITH_GCC_WERROR}" = "xno"; then
     GCC_WERROR="COMPILER_WARNINGS_FATAL=false"
     WERROR="--disable-warnings-as-errors"
 fi
@@ -390,7 +390,6 @@ if test "x${VERSION}" != "xOpenJDK7" ; then \
     mkdir ${BUILD_DIR} && \
     cd ${BUILD_DIR} && \
     /bin/bash ${SOURCE_DIR}/configure --enable-unlimited-crypto \
-      --with-cacerts-file=${SYSTEM_ICEDTEA7}/jre/lib/security/cacerts \
       ${ZLIB_CONF_OPT} ${GIF_CONF_OPT} ${HEADLESS_CONF_OPT} \
       --with-stdc++lib=dynamic --with-jobs=${PARALLEL_JOBS} ${HEADERS_CONF_OPT} \
       --with-extra-cflags="${CFLAGS}" --with-extra-cxxflags="${CXXFLAGS}" \
