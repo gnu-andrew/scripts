@@ -354,6 +354,12 @@ if test "x${OPENJDK_WITH_CACERTS}" = "xyes"; then
     CACERTS_OPT="ALT_CACERTS_FILE=${SYSTEM_CACERTS}"
 fi
 
+if test "x${OPENJDK_WITH_JFR}" = "xyes"; then
+    JFR_OPT="--enable-jfr";
+else
+    JFR_OPT=""; # temporarily disabled until JFR is in 8u --disable-jfr";
+fi
+
 if test "x${ICEDTEA}" = "xtrue"; then
     ICEDTEA_CONF_OPTS="--with-alt-jar=fastjar --with-java-debug-symbols=yes";
     if test "x${VERSION}" = "xOpenJDK8" ; then \
@@ -390,7 +396,7 @@ if test "x${VERSION}" != "xOpenJDK7" ; then \
     mkdir ${BUILD_DIR} && \
     cd ${BUILD_DIR} && \
     /bin/bash ${SOURCE_DIR}/configure --enable-unlimited-crypto \
-      ${ZLIB_CONF_OPT} ${GIF_CONF_OPT} ${HEADLESS_CONF_OPT} \
+      ${ZLIB_CONF_OPT} ${GIF_CONF_OPT} ${HEADLESS_CONF_OPT} ${JFR_OPT} \
       --with-stdc++lib=dynamic --with-jobs=${PARALLEL_JOBS} ${HEADERS_CONF_OPT} \
       --with-extra-cflags="${CFLAGS}" --with-extra-cxxflags="${CXXFLAGS}" \
       --with-extra-ldflags="${LDFLAGS}" --with-boot-jdk=${BUILDVM} ${CACERTS_CONFIG} \
