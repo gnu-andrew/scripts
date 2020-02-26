@@ -360,6 +360,12 @@ else
     JFR_OPT=""; # temporarily disabled until JFR is in 8u --disable-jfr";
 fi
 
+if test "x${OPENJDK_FOR_GRAAL}" = "xyes"; then
+    NEW_BUILD_TARGET="static-libs-image";
+else
+    NEW_BUILD_TARGET="images";
+fi
+
 if test "x${ICEDTEA}" = "xtrue"; then
     ICEDTEA_CONF_OPTS="--with-alt-jar=fastjar --with-java-debug-symbols=yes";
     if test "x${VERSION}" = "xOpenJDK8" ; then \
@@ -411,7 +417,7 @@ if test "x${VERSION}" != "xOpenJDK7" ; then \
       ${WARNINGS} ${OPENJDK_MAKE_OPTS} \
       JDK_DERIVATIVE_NAME=IcedTea DERIVATIVE_ID=IcedTea" && \
   echo ${ARGS} && \
-  eval ANT_RESPECT_JAVA_HOME=true LANG=C make ${ARGS} images \
+  eval ANT_RESPECT_JAVA_HOME=true LANG=C make ${ARGS} ${NEW_BUILD_TARGET} \
 ) 2>&1 | tee ${LOG_DIR}/$0-$1.errors ; \
 else \
   (echo Building in ${WORKING_DIR}/$BUILD_DIR && \
