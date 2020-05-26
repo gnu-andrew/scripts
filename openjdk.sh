@@ -361,7 +361,7 @@ else
 fi
 
 if test "x${OPENJDK_FOR_GRAAL}" = "xyes"; then
-    NEW_BUILD_TARGET="static-libs-image";
+    NEW_BUILD_TARGET="graal-builder-image";
 else
     NEW_BUILD_TARGET="images";
 fi
