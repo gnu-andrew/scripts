@@ -326,7 +326,11 @@ fi
 
 if test "x${OPENJDK_WITH_DEBUG}" = "xyes"; then
     TARGET="debug_build" ;
-    DEBUGLEVEL="slowdebug";
+    if test "x${OPENJDK_DEBUGLEVEL}" = "x"; then
+	DEBUGLEVEL="slowdebug";
+    else
+	DEBUGLEVEL=${OPENJDK_DEBUGLEVEL}
+    fi
 else
     DEBUGLEVEL="release";
 fi
