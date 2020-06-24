@@ -35,7 +35,10 @@ fi
 
 if [ -e ${VERSION_FILE} ] ; then
     openjdk_version=$(grep '^DEFAULT_VERSION_FEATURE' ${VERSION_FILE} | cut -d '=' -f 2)
-    if [ ${openjdk_version} -eq 15 ] ; then
+    if [ ${openjdk_version} -eq 16 ] ; then
+	BUILDVM=${SYSTEM_JDK15};
+	IMPORTVM=${SYSTEM_JDK16};
+    elif [ ${openjdk_version} -eq 15 ] ; then
 	BUILDVM=${SYSTEM_JDK14};
 	IMPORTVM=${SYSTEM_JDK15};
     elif [ ${openjdk_version} -eq 14 ] ; then
