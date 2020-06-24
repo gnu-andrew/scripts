@@ -335,8 +335,13 @@ else
     DEBUGLEVEL="release";
 fi
 
+# JDK-8163102 renamed --disable-headful to --enable-headless-only
 if test "x${OPENJDK_WITH_HEADLESS}" = "xyes"; then
-    HEADLESS_CONF_OPT="--disable-headful";
+    if [ ${openjdk_version} -ge 9 ] ; then
+	HEADLESS_CONF_OPT="--enable-headless-only";
+    else
+	HEADLESS_CONF_OPT="--disable-headful";
+    fi
 fi
 
 if test "x${OPENJDK_WITH_PRECOMPILED_HEADERS}" = "xyes"; then
