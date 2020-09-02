@@ -865,6 +865,12 @@ if test x${ICEDTEA_WITH_CURVES} != "x"; then
     CURVE_OPTION="--with-curves=${ICEDTEA_WITH_CURVES}";
 fi
 
+if test x${ICEDTEA_WITH_JFR} = "xyes"; then
+    JFR_OPTION="--enable-jfr"
+else
+    JFR_OPTION="--disable-jfr"
+fi
+
 RT_JAR=${CLASSPATH_INSTALL}/share/classpath/glibj.zip
 
 if test x${CHOST} != "x"; then
@@ -890,7 +896,7 @@ CONFIG_OPTS="--prefix=${INSTALLATION_DIR} --mandir=${INSTALLATION_DIR}/man \
     ${SYSTEM_GIF_OPTION} ${SYSTEM_PNG_OPTION} ${SYSTEM_ZLIB_OPTION} ${SYSTEM_PCSC_OPTION} ${SYSTEM_SCTP_OPTION} \
     ${SYSTEM_CUPS_OPTION} ${NATIVE_DEBUGINFO_OPTION} ${JAVA_DEBUGINFO_OPTION} ${SPLIT_DEBUGINFO_OPTION} \
     ${IMPROVED_FONT_RENDERING_OPTION} ${HEADLESS_OPTION} ${CCACHE_OPTION} ${PRECOMPILED_HEADERS_OPTION} ${CURVE_OPTION} \
-    --disable-downloading --with-cacerts-file=${SYSTEM_ICEDTEA7}/jre/lib/security/cacerts ${SYSTEM_KRB5_OPTION}"
+    ${JFR_OPTION} --disable-downloading --with-cacerts-file=${SYSTEM_ICEDTEA7}/jre/lib/security/cacerts ${SYSTEM_KRB5_OPTION}"
 
 # Always add the additional options separately so they override anything beforehand
 CONFIG_OPTS="${CONFIG_OPTS} ${OPTS}"
