@@ -15,7 +15,15 @@ BUILD_DIR=$1
 SOURCE_DIR=$PWD
 
 # OpenJDK >= 10 has its version in the build machinery
-VERSION_FILE=${PWD}/make/autoconf/version-numbers
+# OpenJDK >= 17 stores it in a new location (JDK-8258246)
+VERSION_FILE=${PWD}/make/conf/version-numbers.conf
+echo -n "Checking for ${VERSION_FILE}...";
+if [ ! -f ${VERSION_FILE} ] ; then
+    VERSION_FILE=${PWD}/make/autoconf/version-numbers
+    echo "Not found; using old version file ${VERSION_FILE}";
+else
+    echo "found.";
+fi
 
 if test "x$BUILD_DIR" = "x"; then
     echo "No build directory specified.";
@@ -35,7 +43,10 @@ fi
 
 if [ -e ${VERSION_FILE} ] ; then
     openjdk_version=$(grep '^DEFAULT_VERSION_FEATURE' ${VERSION_FILE} | cut -d '=' -f 2)
-    if [ ${openjdk_version} -eq 16 ] ; then
+    if [ ${openjdk_version} -eq 17 ] ; then
+	BUILDVM=${SYSTEM_JDK16};
+	IMPORTVM=${SYSTEM_JDK17};
+    elif [ ${openjdk_version} -eq 16 ] ; then
 	BUILDVM=${SYSTEM_JDK15};
 	IMPORTVM=${SYSTEM_JDK16};
     elif [ ${openjdk_version} -eq 15 ] ; then
