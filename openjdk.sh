@@ -396,9 +396,12 @@ else
 fi
 
 if test "x${ICEDTEA}" = "xtrue"; then
-    ICEDTEA_CONF_OPTS="--with-alt-jar=fastjar --with-java-debug-symbols=yes";
+    ICEDTEA_CONF_OPTS="--with-java-debug-symbols=yes";
+    if test "x${OPENJDK_WITH_FASTJAR}" = "xyes"; then \
+	FASTJAR_CONF_OPT="--with-alt-jar=fastjar";
+    fi
     if test "x${VERSION}" = "xOpenJDK8" ; then \
-	ICEDTEA_CONF_OPTS="${ICEDTEA_CONF_OPTS} \
+	ICEDTEA_CONF_OPTS="${ICEDTEA_CONF_OPTS} ${FASTJAR_CONF_OPT} \
            ${LCMS_CONF_OPT} ${PNG_CONF_OPT} ${JPEG_CONF_OPT} \
            ${IMPROVED_FONT_RENDERING_CONF_OPT} ${KRB5_CONF_OPT} \
            ${PCSC_CONF_OPT} ${SCTP_CONF_OPT} \
