@@ -93,12 +93,22 @@ else
     ICEDTEA=false;
 fi
 
+# Check whether this is our patched FIPS tree
+if [ -f ${PWD}/src/java.base/linux/native/libsystemconf/systemconf.c ] ; then
+    RHEL_FIPS=true;
+elif [ -f ${PWD}/jdk/src/solaris/native/java/security/systemconf.c ] ; then
+    RHEL_FIPS=true;
+else
+    RHEL_FIPS=false;
+fi
+
 if test "x${BUILDVM}" = "x"; then
     echo "No build VM available.  Exiting.";
     exit 3;
 fi
 echo "Building ${VERSION} using ${BUILDVM}"
 echo "IcedTea: ${ICEDTEA}"
+echo "RHEL FIPS: ${RHEL_FIPS}"
 echo "Recompiling: ${RECOMPILE}"
 
 # Add Zero support
@@ -330,6 +340,12 @@ else
     KRB5_CONF_OPT="--disable-system-kerberos"
 fi
 
+if test "x${OPENJDK_WITH_FIPS_NSS}" = "xyes"; then
+    WITH_FIPS_NSS="--enable-sysconf-nss";
+else
+    WITH_FIPS_NSS="--disable-sysconf-nss";
+fi
+
 if test "x${OPENJDK_ENABLE_DROPS}" = "xyes"; then
     DROP_ZIPS="ALT_DROPS_DIR=${DROPS_DIR}" ;
 fi
@@ -409,6 +425,10 @@ if test "x${ICEDTEA}" = "xtrue"; then
     fi
 fi
 
+if test "x${RHEL_FIPS}" = "xtrue"; then
+    RH_FIPS_OPTS="${WITH_FIPS_NSS}"
+fi
+
 if test ${openjdk_version} -ge 9 ; then 
     OPENJDK9_CONF_OPTS="${JPEG_CONF_OPT} \
            ${LCMS_CONF_OPT} ${PNG_CONF_OPT} \
@@ -439,7 +459,7 @@ if test "x${VERSION}" != "xOpenJDK7" ; then \
       --with-extra-cflags="${CFLAGS}" --with-extra-cxxflags="${CXXFLAGS}" \
       --with-extra-ldflags="${LDFLAGS}" --with-boot-jdk=${BUILDVM} ${CACERTS_CONFIG} \
       --with-debug-level="${DEBUGLEVEL}" ${ZERO_CONFIG} ${BRANDING_CONFIG} ${BITS} \
-      ${OPENJDK9_CONF_OPTS} ${OPENJDK11_CONF_OPTS} ${ICEDTEA_CONF_OPTS} \
+      ${OPENJDK9_CONF_OPTS} ${OPENJDK11_CONF_OPTS} ${ICEDTEA_CONF_OPTS} ${RH_FIPS_OPTS} \
     #echo configure "${CONFARGS}" && \
     #`/bin/bash ${SOURCE_DIR}/configure "${CONFARGS}"` ; \
   else \
