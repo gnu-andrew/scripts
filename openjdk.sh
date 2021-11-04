@@ -429,6 +429,12 @@ if test "x${RHEL_FIPS}" = "xtrue"; then
     RH_FIPS_OPTS="${WITH_FIPS_NSS}"
 fi
 
+if test "x${OPENJDK_WITH_SYSTEM_HARFBUZZ}" = "xyes"; then
+    HB_CONF_OPT="--with-harfbuzz=system"
+else
+    HB_CONF_OPT="--with-harfbuzz=bundled"
+fi
+
 if test ${openjdk_version} -ge 9 ; then 
     OPENJDK9_CONF_OPTS="${JPEG_CONF_OPT} \
            ${LCMS_CONF_OPT} ${PNG_CONF_OPT} \
@@ -437,7 +443,8 @@ fi
 
 if test ${openjdk_version} -ge 11 ; then 
     OPENJDK11_CONF_OPTS="--with-log=trace \
-      --with-native-debug-symbols=internal";
+      --with-native-debug-symbols=internal \
+      ${HB_CONF_OPT}";
 else
     OPENJDK_MAKE_OPTS="STRIP_POLICY=no_strip LOG_LEVEL=debug \
       DEBUG_BINARIES=true"
