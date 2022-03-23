@@ -471,6 +471,29 @@ elif [ $(echo $0|grep 'ppc7') ]; then
     OPENJDK_DIR=$OPENJDK7_DIR;
     HOTSPOT7_ZIP=$PPC7_ZIP;
     OPTS="--with-hotspot-build=ppc";
+elif [ $(echo $0|grep 'icedtea8-git-shenandoah') ]; then
+    VERSION=icedtea;
+    GIT_VERSION=3.0;
+    BUILD=icedtea8-shenandoah;
+    OPENJDK_ZIP=$OPENJDK8_ZIP;
+    OPENJDK_DIR=$OPENJDK8_DIR;
+    HOTSPOT8_ZIP=$SHENANDOAH_GIT_ZIP;
+    OPTS="--with-hotspot-build=shenandoah"
+elif [ $(echo $0|grep 'icedtea8-git-aarch32') ]; then
+    VERSION=icedtea;
+    GIT_VERSION=3.0;
+    BUILD=icedtea8-aarch32;
+    OPENJDK_ZIP=$OPENJDK8_ZIP;
+    OPENJDK_DIR=$OPENJDK8_DIR;
+    HOTSPOT8_ZIP=$AARCH32_GIT_ZIP;
+    OPTS="--with-hotspot-build=aarch32"
+elif [ $(echo $0|grep 'icedtea8-git') ]; then
+    VERSION=icedtea;
+    GIT_VERSION=3.0;
+    BUILD=icedtea8;
+    OPENJDK_ZIP=$OPENJDK8_GIT_ZIP;
+    OPENJDK_DIR=$OPENJDK8_GIT_DIR;
+    CLEAN_TREE=no;
 else
     VERSION=icedtea8;
     BUILD=icedtea8;
@@ -561,23 +584,25 @@ elif test x${VERSION} = "xicedtea7"; then
 else
     OPTS="${OPTS} --with-jdk-home=${BOOTSTRAP_ICEDTEA7}" 
     USE_ECJ="no"
-    if test x${CORBA8_ZIP} != "x"; then
-	CORBA_ZIP_OPTION="--with-corba-src-zip=${CORBA8_ZIP}";
-    fi
-    if test x${JAXP8_ZIP} != "x"; then
-	JAXP_ZIP_OPTION="--with-jaxp-src-zip=${JAXP8_ZIP}";
-    fi
-    if test x${JAXWS8_ZIP} != "x"; then
-	JAXWS_ZIP_OPTION="--with-jaxws-src-zip=${JAXWS8_ZIP}";
-    fi
-    if test x${JDK8_ZIP} != "x"; then
-	JDK_ZIP_OPTION="--with-jdk-src-zip=${JDK8_ZIP}";
-    fi
-    if test x${LANGTOOLS8_ZIP} != "x"; then
-	LANGTOOLS_ZIP_OPTION="--with-langtools-src-zip=${LANGTOOLS8_ZIP}";
-    fi
-    if test x${NASHORN8_ZIP} != "x"; then
-	NASHORN_ZIP_OPTION="--with-nashorn-src-zip=${NASHORN8_ZIP}";
+    if [ ! -d ${ICEDTEA_HOME}/.git ] ; then
+	if test x${CORBA8_ZIP} != "x"; then
+	    CORBA_ZIP_OPTION="--with-corba-src-zip=${CORBA8_ZIP}";
+	fi
+	if test x${JAXP8_ZIP} != "x"; then
+	    JAXP_ZIP_OPTION="--with-jaxp-src-zip=${JAXP8_ZIP}";
+	fi
+	if test x${JAXWS8_ZIP} != "x"; then
+	    JAXWS_ZIP_OPTION="--with-jaxws-src-zip=${JAXWS8_ZIP}";
+	fi
+	if test x${JDK8_ZIP} != "x"; then
+	    JDK_ZIP_OPTION="--with-jdk-src-zip=${JDK8_ZIP}";
+	fi
+	if test x${LANGTOOLS8_ZIP} != "x"; then
+	    LANGTOOLS_ZIP_OPTION="--with-langtools-src-zip=${LANGTOOLS8_ZIP}";
+	fi
+	if test x${NASHORN8_ZIP} != "x"; then
+	    NASHORN_ZIP_OPTION="--with-nashorn-src-zip=${NASHORN8_ZIP}";
+	fi
     fi
     if test x${HOTSPOT8_ZIP} != "x"; then
 	HOTSPOT_ZIP_OPTION="--with-hotspot-src-zip=${HOTSPOT8_ZIP}";
@@ -596,9 +621,6 @@ fi
 if test "x${USE_ECJ}" != "xno"; then
    JAVAC_OPTION=" --with-javac=${ECJ}"
 fi
-
-echo "Building ${ICEDTEA_HOME} in ${BUILD_DIR}..."
-echo "Additional options: ${OPTS}"
 
 if test x$1 != "xquick"; then
     echo "Building from scratch"
@@ -907,9 +929,10 @@ if test "${BUILD}" = "azul"; then
     export PKG_CONFIG_PATH=${AZTOOLS_INSTALL}/lib/pkgconfig
 fi
 
-echo "Passing ${CONFIG_OPTS} to configure..."
-
 (PATH=/usr/lib/ccache/bin:/bin:/usr/bin ./autogen.sh &&
+echo "Building ${ICEDTEA_HOME} in ${BUILD_DIR}..." &&
+echo "Additional options: ${OPTS}" &&
+echo "Passing ${CONFIG_OPTS} to configure..." &&
 cd ${BUILD_DIR} &&
 echo $ICEDTEA_HOME/configure ${CONFIG_OPTS} &&
 CFLAGS=${CFLAGS} CXXFLAGS=${CXXFLAGS} LDFLAGS=${LDFLAGS} $ICEDTEA_HOME/configure ${CONFIG_OPTS}
