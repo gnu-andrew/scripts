@@ -43,6 +43,7 @@ fi
 
 if [ -e ${VERSION_FILE} ] ; then
     openjdk_version=$(grep '^DEFAULT_VERSION_FEATURE' ${VERSION_FILE} | cut -d '=' -f 2)
+    echo "OpenJDK version: ${openjdk_version}";
     if [ ${openjdk_version} -eq 18 ] ; then
 	BUILDVM=${SYSTEM_JDK17};
 	IMPORTVM=${SYSTEM_JDK18};
@@ -439,22 +440,37 @@ else
 fi
 
 if test ${openjdk_version} -ge 9 ; then 
-    OPENJDK9_CONF_OPTS="${JPEG_CONF_OPT} \
+    OPENJDK_CONF_OPTS="${JPEG_CONF_OPT} \
            ${LCMS_CONF_OPT} ${PNG_CONF_OPT} \
            ${WERROR}"
 fi
 
-if test ${openjdk_version} -ge 11 ; then 
-    OPENJDK11_CONF_OPTS="--with-log=trace \
-      --with-native-debug-symbols=internal \
-      ${HB_CONF_OPT}";
+# System HarfBuzz support was added by JDK-8250894 in JDK 16
+# and then backported to 11, 13 & 15.
+if test ${openjdk_version} -ge 15 || test ${openjdk_version} -eq 13 || test ${openjdk_version} -eq 11; then
+    echo "Building OpenJDK ${openjdk_version} so system HarfBuzz is supported"
+    OPENJDK_CONF_OPTS="${OPENJDK_CONF_OPTS} ${HB_CONF_OPT}"
 else
-    OPENJDK_MAKE_OPTS="STRIP_POLICY=no_strip LOG_LEVEL=debug \
+    echo "Building OpenJDK ${openjdk_version} so system HarfBuzz is not supported"
+fi
+
+if test ${openjdk_version} -ge 11 ; then
+    OPENJDK_CONF_DEBUG_OPTS="--with-log=trace \
+      --with-native-debug-symbols=internal";
+else
+    OPENJDK_MAKE_DEBUG_OPTS="STRIP_POLICY=no_strip LOG_LEVEL=debug \
       DEBUG_BINARIES=true"
 fi
 
 #    GENSRCDIR=/tmp/generated
 #    ALT_DROPS_DIR=/home/downloads/java/drops \
+
+CONFARGS="--enable-unlimited-crypto \
+      ${ZLIB_CONF_OPT} ${GIF_CONF_OPT} ${HEADLESS_CONF_OPT} ${JFR_OPT} \
+      --with-stdc++lib=dynamic --with-jobs=${PARALLEL_JOBS} ${HEADERS_CONF_OPT} \
+      --with-boot-jdk=${BUILDVM} ${CACERTS_CONFIG} --with-debug-level=${DEBUGLEVEL} \
+      ${ZERO_CONFIG} ${BRANDING_CONFIG} ${BITS} ${OPENJDK_CONF_OPTS} \
+      ${OPENJDK_CONF_DEBUG_OPTS} ${ICEDTEA_CONF_OPTS} ${RH_FIPS_OPTS}"
 
 if test "x${VERSION}" != "xOpenJDK7" ; then \
   (echo Building in ${WORKING_DIR}/$BUILD_DIR && \
@@ -463,20 +479,19 @@ if test "x${VERSION}" != "xOpenJDK7" ; then \
     cd ${WORKING_DIR} && \
     mkdir ${BUILD_DIR} && \
     cd ${BUILD_DIR} && \
-    /bin/bash ${SOURCE_DIR}/configure --enable-unlimited-crypto \
-      ${ZLIB_CONF_OPT} ${GIF_CONF_OPT} ${HEADLESS_CONF_OPT} ${JFR_OPT} \
-      --with-stdc++lib=dynamic --with-jobs=${PARALLEL_JOBS} ${HEADERS_CONF_OPT} \
-      --with-extra-cflags="${CFLAGS}" --with-extra-cxxflags="${CXXFLAGS}" \
-      --with-extra-ldflags="${LDFLAGS}" --with-boot-jdk=${BUILDVM} ${CACERTS_CONFIG} \
-      --with-debug-level="${DEBUGLEVEL}" ${ZERO_CONFIG} ${BRANDING_CONFIG} ${BITS} \
-      ${OPENJDK9_CONF_OPTS} ${OPENJDK11_CONF_OPTS} ${ICEDTEA_CONF_OPTS} ${RH_FIPS_OPTS} \
-    #echo configure "${CONFARGS}" && \
-    #`/bin/bash ${SOURCE_DIR}/configure "${CONFARGS}"` ; \
+    echo "${SOURCE_DIR}/configure ${CONFARGS} --with-extra-cflags=\"${CFLAGS}\" \
+	      --with-extra-cxxflags=\"${CXXFLAGS}\" \
+	      --with-extra-ldflags=\"${LDFLAGS}\"" \
+    && \
+    /bin/bash ${SOURCE_DIR}/configure ${CONFARGS} \
+	      --with-extra-cflags="${CFLAGS}" \
+	      --with-extra-cxxflags="${CXXFLAGS}" \
+	      --with-extra-ldflags="${LDFLAGS}" ; \
   else \
     cd ${WORKING_DIR}/${BUILD_DIR} ; \
   fi ;
   ARGS="OTHER_JAVACFLAGS=\"-Xmaxwarns 10000\" \
-      ${WARNINGS} ${OPENJDK_MAKE_OPTS} \
+      ${WARNINGS} ${OPENJDK_MAKE_DEBUG_OPTS} \
       JDK_DERIVATIVE_NAME=IcedTea DERIVATIVE_ID=IcedTea" && \
   echo ${ARGS} && \
   eval ANT_RESPECT_JAVA_HOME=true LANG=C make ${ARGS} ${NEW_BUILD_TARGET} \
