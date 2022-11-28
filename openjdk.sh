@@ -44,7 +44,13 @@ fi
 if [ -e ${VERSION_FILE} ] ; then
     openjdk_version=$(grep '^DEFAULT_VERSION_FEATURE' ${VERSION_FILE} | cut -d '=' -f 2)
     echo "OpenJDK version: ${openjdk_version}";
-    if [ ${openjdk_version} -eq 18 ] ; then
+    if [ ${openjdk_version} -eq 20 ] ; then
+	BUILDVM=${SYSTEM_JDK19};
+	IMPORTVM=${SYSTEM_JDK20};
+    elif [ ${openjdk_version} -eq 19 ] ; then
+	BUILDVM=${SYSTEM_JDK18};
+	IMPORTVM=${SYSTEM_JDK19};
+    elif [ ${openjdk_version} -eq 18 ] ; then
 	BUILDVM=${SYSTEM_JDK17};
 	IMPORTVM=${SYSTEM_JDK18};
     elif [ ${openjdk_version} -eq 17 ] ; then
