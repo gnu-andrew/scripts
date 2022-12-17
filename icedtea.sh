@@ -351,12 +351,6 @@ elif [ $(echo $0|grep 'zero8') ]; then
     OPENJDK_ZIP=$OPENJDK8_ZIP;
     OPENJDK_DIR=$OPENJDK8_DIR;
     OPTS="--enable-zero";
-elif [ $(echo $0|grep 'zero') ]; then
-    VERSION=icedtea8;
-    BUILD=zero8;
-    OPENJDK_ZIP=$OPENJDK8_ZIP;
-    OPENJDK_DIR=$OPENJDK8_DIR;
-    OPTS="--enable-zero";
 elif [ $(echo $0|grep 'shark6') ]; then
     VERSION=icedtea6;
     BUILD=shark6;
@@ -471,6 +465,13 @@ elif [ $(echo $0|grep 'ppc7') ]; then
     OPENJDK_DIR=$OPENJDK7_DIR;
     HOTSPOT7_ZIP=$PPC7_ZIP;
     OPTS="--with-hotspot-build=ppc";
+elif [ $(echo $0|grep 'icedtea8-git-zero') ]; then
+    VERSION=icedtea;
+    GIT_VERSION=3.0;
+    BUILD=icedtea8-zero;
+    OPENJDK_ZIP=$OPENJDK8_ZIP;
+    OPENJDK_DIR=$OPENJDK8_DIR;
+    OPTS="--enable-zero";
 elif [ $(echo $0|grep 'icedtea8-git-shenandoah') ]; then
     VERSION=icedtea;
     GIT_VERSION=3.0;
@@ -502,8 +503,20 @@ else
     CLEAN_TREE=no;
 fi
 
+if echo $0 | grep -q '\-git' ; then
+    ICEDTEA_ROOT="https://github.com/icedtea-git/";
+    echo "GIT_VERSION: ${GIT_VERSION}";
+else
+    ICEDTEA_ROOT="https://icedtea.classpath.org/hg"
+fi
+
 BUILD_DIR=${WORKING_DIR}/${BUILD}
-ICEDTEA_ROOT="https://icedtea.classpath.org/hg"
+
+echo "VERSION: ${VERSION}";
+echo "BUILD: ${BUILD}";
+echo "OPENJDK ZIP: ${OPENJDK_ZIP}";
+echo "OPENJDK DIR: ${OPENJDK_DIR}";
+echo "OPTS: ${OPTS}";
 
 if test x${VERSION} = "xicedtea8"; then
     DIR="/images";
