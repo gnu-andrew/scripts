@@ -469,23 +469,23 @@ elif [ $(echo $0|grep 'icedtea8-git-zero') ]; then
     VERSION=icedtea;
     GIT_VERSION=3.0;
     BUILD=icedtea8-zero;
-    OPENJDK_ZIP=$OPENJDK8_ZIP;
-    OPENJDK_DIR=$OPENJDK8_DIR;
+    OPENJDK_ZIP=$OPENJDK8_GIT_ZIP;
+    OPENJDK_DIR=$OPENJDK8_GIT_DIR;
     OPTS="--enable-zero";
 elif [ $(echo $0|grep 'icedtea8-git-shenandoah') ]; then
     VERSION=icedtea;
     GIT_VERSION=3.0;
     BUILD=icedtea8-shenandoah;
-    OPENJDK_ZIP=$OPENJDK8_ZIP;
-    OPENJDK_DIR=$OPENJDK8_DIR;
+    OPENJDK_ZIP=$OPENJDK8_GIT_ZIP;
+    OPENJDK_DIR=$OPENJDK8_GIT_DIR;
     HOTSPOT8_ZIP=$SHENANDOAH_GIT_ZIP;
     OPTS="--with-hotspot-build=shenandoah"
 elif [ $(echo $0|grep 'icedtea8-git-aarch32') ]; then
     VERSION=icedtea;
     GIT_VERSION=3.0;
     BUILD=icedtea8-aarch32;
-    OPENJDK_ZIP=$OPENJDK8_ZIP;
-    OPENJDK_DIR=$OPENJDK8_DIR;
+    OPENJDK_ZIP=$OPENJDK8_GIT_ZIP;
+    OPENJDK_DIR=$OPENJDK8_GIT_DIR;
     HOTSPOT8_ZIP=$AARCH32_GIT_ZIP;
     OPTS="--with-hotspot-build=aarch32"
 elif [ $(echo $0|grep 'icedtea8-git') ]; then
@@ -494,6 +494,7 @@ elif [ $(echo $0|grep 'icedtea8-git') ]; then
     BUILD=icedtea8;
     OPENJDK_ZIP=$OPENJDK8_GIT_ZIP;
     OPENJDK_DIR=$OPENJDK8_GIT_DIR;
+    HOTSPOT8_ZIP=;
     CLEAN_TREE=no;
 else
     VERSION=icedtea8;
@@ -642,7 +643,7 @@ if test x$1 != "xquick"; then
 	if test "x${CLEAN_TREE}" = "xyes" && test -e ${BUILD_DIR}/Makefile; then
 	    if ! (make -C ${BUILD_DIR} distclean && rmdir ${BUILD_DIR}) ; then
 		echo "Cleaning tree failed.";
-		exit -1;
+		exit 1;
 	    fi
 	else
 	    rm -rf ${BUILD_DIR};
@@ -657,12 +658,29 @@ fi
 if [ -e $ICEDTEA_HOME ]; then
     cd $ICEDTEA_HOME;
     if ! [ $(echo $BUILD|grep 'hg$') ]; then
-	hg pull -u;
+	if [ -d .hg ] ; then
+	    echo "Found Mercurial .hg directory; updating";
+	    hg pull -u;
+	elif [ -d .git ] ; then
+	    echo "Found Git .git directory; updating";
+	    git pull -v;
+	else
+	    echo "No version control system found; not updating";
+	fi
     fi
     make distclean;
 else
     cd `dirname $ICEDTEA_HOME`;
-    hg clone ${ICEDTEA_URL};
+    if echo $ICEDTEA_ROOT | grep -q '/hg' ; then
+	echo "$ICEDTEA_ROOT is a Mercurial repository; cloning";
+	hg clone ${ICEDTEA_URL};
+    elif echo $ICEDTEA_ROOT | grep -q 'github' ; then
+	echo "ICEDTEA_ROOT is a GitHub repository; cloning";
+	git clone -b ${GIT_VERSION} ${ICEDTEA_URL}
+    else
+	echo "Could not determine how to checkout sources from $ICEDTEA_ROOT";
+	exit 2;
+    fi
     cd $ICEDTEA_HOME;
 fi
 

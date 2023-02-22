@@ -97,7 +97,21 @@ fi
 VERSION=OpenJDK${openjdk_version}
 
 # Check whether this is IcedTea
-if grep -q 'icedtea' ${PWD}/.hgtags ; then
+if [ -f ${PWD}/.hgtags ] ; then
+    echo "Mercurial repository detected; checking for IcedTea...";
+    grep -q 'icedtea' ${PWD}/.hgtags;
+    ICEDTEA_HG=$?;
+    echo "IcedTea Mercurial: ${ICEDTEA_HG}";
+fi
+
+if [ -d ${PWD}/.git ] ; then
+    echo "Git repository detected; checking for IcedTea...";
+    git tag -l | grep -q 'icedtea';
+    ICEDTEA_GIT=$?;
+    echo "IcedTea Git: ${ICEDTEA_GIT}";
+fi
+
+if [ "x${ICEDTEA_HG}" = "x0" -o "x${ICEDTEA_GIT}" = "x0" ] ; then
     ICEDTEA=true;
 else
     ICEDTEA=false;
@@ -116,6 +130,7 @@ if test "x${BUILDVM}" = "x"; then
     echo "No build VM available.  Exiting.";
     exit 3;
 fi
+
 echo "Building ${VERSION} using ${BUILDVM}"
 echo "IcedTea: ${ICEDTEA}"
 echo "RHEL FIPS: ${RHEL_FIPS}"
