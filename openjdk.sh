@@ -44,7 +44,10 @@ fi
 if [ -e ${VERSION_FILE} ] ; then
     openjdk_version=$(grep '^DEFAULT_VERSION_FEATURE' ${VERSION_FILE} | cut -d '=' -f 2)
     echo "OpenJDK version: ${openjdk_version}";
-    if [ ${openjdk_version} -eq 20 ] ; then
+    if [ ${openjdk_version} -eq 21 ] ; then
+	BUILDVM=${SYSTEM_JDK20};
+	IMPORTVM=${SYSTEM_JDK21};
+    elif [ ${openjdk_version} -eq 20 ] ; then
 	BUILDVM=${SYSTEM_JDK19};
 	IMPORTVM=${SYSTEM_JDK20};
     elif [ ${openjdk_version} -eq 19 ] ; then
@@ -127,7 +130,7 @@ else
 fi
 
 if test "x${BUILDVM}" = "x"; then
-    echo "No build VM available.  Exiting.";
+    echo "No build VM available (BUILDVM=${BUILDVM}).  Exiting.";
     exit 3;
 fi
 
