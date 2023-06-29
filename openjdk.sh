@@ -486,6 +486,12 @@ else
       DEBUG_BINARIES=true"
 fi
 
+if test ${openjdk_version} -ge 19 ; then
+    if test "x${OPENJDK_WITH_HSDIS}" != "x" -a "x${OPENJDK_WITH_HSDIS}" != "xnone"; then
+	OPENJDK_HSDIS_OPTS="--with-hsdis=${OPENJDK_WITH_HSDIS}";
+    fi
+fi
+
 #    GENSRCDIR=/tmp/generated
 #    ALT_DROPS_DIR=/home/downloads/java/drops \
 
@@ -494,7 +500,7 @@ CONFARGS="--enable-unlimited-crypto \
       --with-stdc++lib=dynamic --with-jobs=${PARALLEL_JOBS} ${HEADERS_CONF_OPT} \
       --with-boot-jdk=${BUILDVM} ${CACERTS_CONFIG} --with-debug-level=${DEBUGLEVEL} \
       ${ZERO_CONFIG} ${BRANDING_CONFIG} ${BITS} ${OPENJDK_CONF_OPTS} \
-      ${OPENJDK_CONF_DEBUG_OPTS} ${ICEDTEA_CONF_OPTS} ${RH_FIPS_OPTS}"
+      ${OPENJDK_CONF_DEBUG_OPTS} ${ICEDTEA_CONF_OPTS} ${RH_FIPS_OPTS} ${OPENJDK_HSDIS_OPTS}"
 
 if test "x${VERSION}" != "xOpenJDK7" ; then \
   (echo Building in ${WORKING_DIR}/$BUILD_DIR && \
