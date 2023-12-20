@@ -495,6 +495,10 @@ if test ${openjdk_version} -ge 19 ; then
     fi
 fi
 
+if test "x${OPENJDK_WITH_DEVKIT}" != "x"; then
+    OPENJDK_DEVKIT_OPTS="--with-devkit=${OPENJDK_WITH_DEVKIT}";
+fi
+
 #    GENSRCDIR=/tmp/generated
 #    ALT_DROPS_DIR=/home/downloads/java/drops \
 
@@ -503,7 +507,8 @@ CONFARGS="--enable-unlimited-crypto \
       --with-stdc++lib=dynamic --with-jobs=${PARALLEL_JOBS} ${HEADERS_CONF_OPT} \
       --with-boot-jdk=${BUILDVM} ${CACERTS_CONFIG} --with-debug-level=${DEBUGLEVEL} \
       ${ZERO_CONFIG} ${BRANDING_CONFIG} ${BITS} ${OPENJDK_CONF_OPTS} \
-      ${OPENJDK_CONF_DEBUG_OPTS} ${ICEDTEA_CONF_OPTS} ${RH_FIPS_OPTS} ${OPENJDK_HSDIS_OPTS}"
+      ${OPENJDK_CONF_DEBUG_OPTS} ${ICEDTEA_CONF_OPTS} ${RH_FIPS_OPTS} ${OPENJDK_HSDIS_OPTS} \
+      ${OPENJDK_DEVKIT_OPTS}"
 
 if test "x${VERSION}" != "xOpenJDK7" ; then \
   (echo Building in ${WORKING_DIR}/$BUILD_DIR && \
