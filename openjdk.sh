@@ -499,6 +499,12 @@ if test "x${OPENJDK_WITH_DEVKIT}" != "x"; then
     OPENJDK_DEVKIT_OPTS="--with-devkit=${OPENJDK_WITH_DEVKIT}";
 fi
 
+if test "x${OPENJDK_WITH_ANT}" != "x"; then
+    OPENJDK_ANT_HOME="${OPENJDK_WITH_ANT}";
+else
+    OPENJDK_ANT_HOME="/usr";
+fi
+
 #    GENSRCDIR=/tmp/generated
 #    ALT_DROPS_DIR=/home/downloads/java/drops \
 
@@ -542,7 +548,7 @@ else \
     ALT_PARALLEL_COMPILE_JOBS=$PARALLEL_JOBS \
     ${DROP_ZIPS} \
     HOTSPOT_BUILD_JOBS=$PARALLEL_JOBS \
-    ANT=/usr/bin/ant \
+    ANT_HOME=${OPENJDK_ANT_HOME} \
     QUIETLY="" \
     DEBUG_BINARIES=true \
     DEBUG_CLASSFILES=true \
