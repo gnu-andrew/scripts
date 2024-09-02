@@ -41,6 +41,10 @@ else
     fi
 fi
 
+JDK_CFLAGS="${CFLAGS}"
+JDK_CXXFLAGS="${CXXFLAGS}"
+JDK_LDFLAGS="${LDFLAGS}"
+
 if [ -e ${VERSION_FILE} ] ; then
     openjdk_version=$(grep '^DEFAULT_VERSION_FEATURE' ${VERSION_FILE} | cut -d '=' -f 2)
     echo "OpenJDK version: ${openjdk_version}";
@@ -99,6 +103,7 @@ else
     openjdk_version=7;
     BUILDVM=${SYSTEM_JDK6};
     IMPORTVM=${SYSTEM_JDK7};
+    JDK_CFLAGS="${JDK_CFLAGS} -Wno-error=stringop-overflow -Wno-error=implicit-fallthrough -Wno-error=maybe-uninitialized"
 fi
 VERSION=OpenJDK${openjdk_version}
 
@@ -523,14 +528,14 @@ if test "x${VERSION}" != "xOpenJDK7" ; then \
     cd ${WORKING_DIR} && \
     mkdir ${BUILD_DIR} && \
     cd ${BUILD_DIR} && \
-    echo "${SOURCE_DIR}/configure ${CONFARGS} --with-extra-cflags=\"${CFLAGS}\" \
-	      --with-extra-cxxflags=\"${CXXFLAGS}\" \
-	      --with-extra-ldflags=\"${LDFLAGS}\"" \
+    echo "${SOURCE_DIR}/configure ${CONFARGS} --with-extra-cflags=\"${JDK_CFLAGS}\" \
+	      --with-extra-cxxflags=\"${JDK_CXXFLAGS}\" \
+	      --with-extra-ldflags=\"${JDK_LDFLAGS}\"" \
     && \
     /bin/bash ${SOURCE_DIR}/configure ${CONFARGS} \
-	      --with-extra-cflags="${CFLAGS}" \
-	      --with-extra-cxxflags="${CXXFLAGS}" \
-	      --with-extra-ldflags="${LDFLAGS}" ; \
+	      --with-extra-cflags="${JDK_CFLAGS}" \
+	      --with-extra-cxxflags="${JDK_CXXFLAGS}" \
+	      --with-extra-ldflags="${JDK_LDFLAGS}" ; \
   else \
     cd ${WORKING_DIR}/${BUILD_DIR} ; \
   fi ;
@@ -573,7 +578,7 @@ else \
     ${WARNINGS} ${JAVAC_WERROR} ${GCC_WERROR} ${EXTRA_OPTS} ${DOCS} \
     STRIP_POLICY=no_strip UNLIMITED_CRYPTO=true ENABLE_FULL_DEBUG_SYMBOLS=0 \
     NATIVE_SUPPORT_DEBUG=true CC=\"/usr/bin/gcc\" CXX=\"/usr/bin/g++\" \
-    EXTRA_CFLAGS=\"${CFLAGS}\" EXTRA_LDFLAGS=\"${LDFLAGS}\" \
+    EXTRA_CFLAGS=\"${JDK_CFLAGS}\" EXTRA_LDFLAGS=\"${JDK_LDFLAGS}\" \
     ${TARGET}"
   echo ${ARGS} && \
   eval ANT_RESPECT_JAVA_HOME=true LANG=C make ${MAKE_OPTS} ${ARGS} \
