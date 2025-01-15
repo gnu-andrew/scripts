@@ -516,6 +516,41 @@ else
     OPENJDK_ANT_HOME="/usr";
 fi
 
+if test "${OPENJDK_TOOLCHAIN}" = ""; then
+    OPENJDK_TOOLCHAIN=gcc;
+    echo "No toolchain selected; defaulting to gcc"
+fi
+
+if test "${OPENJDK_TOOLCHAIN}" = "gcc"; then
+    if test "${SYSTEM_GCC}" = ""; then
+	OPENJDK_CC=$(which gcc);
+	OPENJDK_CXX=$(which g++);
+	echo "gcc selected but no gcc installation configured; \
+              using CC=${OPENJDK_CC} and CXX=${OPENJDK_CXX}";
+    else
+	OPENJDK_CC=${SYSTEM_GCC}/gcc;
+	OPENJDK_CXX=${SYSTEM_GCC}/g++;
+    fi
+    if test "${SYSTEM_LD}" = ""; then
+	OPENJDK_LD=$(which ld.bfd);
+	echo "ld selected but no binary configured; using ${OPENJDK_LD}";
+    else
+	OPENJDK_LD=${SYSTEM_LD};
+    fi
+elif test "${OPENJDK_TOOLCHAIN}" = "clang"; then
+    if test "${SYSTEM_LLVM}" = ""; then
+	OPENJDK_CC=$(which clang);
+	OPENJDK_CXX=$(which clang++);
+	OPENJDK_LD=$(which ld.lld);
+	echo "clang selected but no llvm installation configured; \
+              using CC=${OPENJDK_CC}, CXX=${OPENJDK_CXX} and LD=${OPENJDK_LD}";
+    else
+	OPENJDK_CC=${SYSTEM_LLVM}/bin/clang;
+	OPENJDK_CXX=${SYSTEM_LLVM}/bin/clang++;
+	OPENJDK_LD=${SYSTEM_LLVM}/bin/ld;
+    fi
+fi
+
 #    GENSRCDIR=/tmp/generated
 #    ALT_DROPS_DIR=/home/downloads/java/drops \
 
@@ -525,7 +560,7 @@ CONFARGS="--enable-unlimited-crypto \
       --with-boot-jdk=${BUILDVM} ${CACERTS_CONFIG} --with-debug-level=${DEBUGLEVEL} \
       ${ZERO_CONFIG} ${BRANDING_CONFIG} ${BITS} ${OPENJDK_CONF_OPTS} \
       ${OPENJDK_CONF_DEBUG_OPTS} ${ICEDTEA_CONF_OPTS} ${RH_FIPS_OPTS} ${OPENJDK_HSDIS_OPTS} \
-      ${OPENJDK_DEVKIT_OPTS}"
+      ${OPENJDK_DEVKIT_OPTS} --with-toolchain-type=${OPENJDK_TOOLCHAIN}"
 
 if test "x${VERSION}" != "xOpenJDK7" ; then \
   (echo Building in ${WORKING_DIR}/$BUILD_DIR && \
@@ -534,11 +569,13 @@ if test "x${VERSION}" != "xOpenJDK7" ; then \
     cd ${WORKING_DIR} && \
     mkdir ${BUILD_DIR} && \
     cd ${BUILD_DIR} && \
-    echo "${SOURCE_DIR}/configure ${CONFARGS} --with-extra-cflags=\"${JDK_CFLAGS}\" \
+    echo "CC=${OPENJDK_CC} CXX=${OPENJDK_CXX} LD=${OPENJDK_LD} \
+              ${SOURCE_DIR}/configure ${CONFARGS} --with-extra-cflags=\"${JDK_CFLAGS}\" \
 	      --with-extra-cxxflags=\"${JDK_CXXFLAGS}\" \
 	      --with-extra-ldflags=\"${JDK_LDFLAGS}\"" \
     && \
-    /bin/bash ${SOURCE_DIR}/configure ${CONFARGS} \
+    CC=${OPENJDK_CC} CXX=${OPENJDK_CXX} LD=${OPENJDK_LD} /bin/bash \
+              ${SOURCE_DIR}/configure ${CONFARGS} \
 	      --with-extra-cflags="${JDK_CFLAGS}" \
 	      --with-extra-cxxflags="${JDK_CXXFLAGS}" \
 	      --with-extra-ldflags="${JDK_LDFLAGS}" ; \
@@ -583,8 +620,8 @@ else \
     ZERO_BUILD=${ZERO_SUPPORT} STATIC_CXX=false \
     ${WARNINGS} ${JAVAC_WERROR} ${GCC_WERROR} ${EXTRA_OPTS} ${DOCS} \
     STRIP_POLICY=no_strip UNLIMITED_CRYPTO=true ENABLE_FULL_DEBUG_SYMBOLS=0 \
-    NATIVE_SUPPORT_DEBUG=true CC=\"/usr/bin/gcc\" CXX=\"/usr/bin/g++\" \
-    EXTRA_CFLAGS=\"${JDK_CFLAGS}\" EXTRA_LDFLAGS=\"${JDK_LDFLAGS}\" \
+    NATIVE_SUPPORT_DEBUG=true CC=\"${OPENJDK_CC}\" CXX=\"${OPENJDK_CXX}\" \
+    LD=\"${OPENJDK_LD}\" EXTRA_CFLAGS=\"${JDK_CFLAGS}\" EXTRA_LDFLAGS=\"${JDK_LDFLAGS}\" \
     ${TARGET}"
   echo ${ARGS} && \
   eval ANT_RESPECT_JAVA_HOME=true LANG=C make ${MAKE_OPTS} ${ARGS} \
