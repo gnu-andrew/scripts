@@ -235,10 +235,10 @@ elif test "x${OPENJDK_WITH_JAVA_WERROR}" = "xno"; then
 fi
 
 if test "x${OPENJDK_WITH_GCC_WERROR}" = "xyes"; then
-    GCC_WERROR="COMPILER_WARNINGS_FATAL=true"
+    GCC_WERROR="WARNINGS_ARE_ERRORS=-Werror"
     WERROR="--enable-warnings-as-errors"
 elif test "x${OPENJDK_WITH_GCC_WERROR}" = "xno"; then
-    GCC_WERROR="COMPILER_WARNINGS_FATAL=false"
+    GCC_WERROR="WARNINGS_ARE_ERRORS="
     WERROR="--disable-warnings-as-errors"
 fi
 
@@ -481,6 +481,8 @@ if test ${openjdk_version} -ge 9 ; then
     OPENJDK_CONF_OPTS="${JPEG_CONF_OPT} \
            ${LCMS_CONF_OPT} ${PNG_CONF_OPT} \
            ${WERROR}"
+else
+    WARNINGS="${WARNINGS} ${JAVAC_WERROR} ${GCC_WERROR}"
 fi
 
 # System HarfBuzz support was added by JDK-8250894 in JDK 16
@@ -584,10 +586,9 @@ if test "x${VERSION}" != "xOpenJDK7" ; then \
   fi ;
   ARGS="OTHER_JAVACFLAGS=\"-Xmaxwarns 10000\" \
       ${WARNINGS} ${OPENJDK_MAKE_DEBUG_OPTS} \
-      JDK_DERIVATIVE_NAME=IcedTea DERIVATIVE_ID=IcedTea" && \
-  echo ${ARGS} && \
-  eval ANT_RESPECT_JAVA_HOME=true LANG=C make ${ARGS} ${NEW_BUILD_TARGET} \
-) 2>&1 | tee ${LOG_DIR}/$0-$1.errors ; \
+      JDK_DERIVATIVE_NAME=IcedTea DERIVATIVE_ID=IcedTea"
+  COMMAND="ANT_RESPECT_JAVA_HOME=true LANG=C make ${ARGS} ${NEW_BUILD_TARGET}"
+  echo ${COMMAND} && eval ${COMMAND} ) 2>&1 | tee ${LOG_DIR}/$0-$1.errors ; \
 else \
   (echo Building in ${WORKING_DIR}/$BUILD_DIR && \
   cd jdk && ALT_BOOTDIR=${BUILDVM} && ZERO_BUILD=${ZERO_SUPPORT} && source make/jdk_generic_profile.sh && cd .. && \
@@ -618,7 +619,7 @@ else \
     COMPILE_AGAINST_SYSCALLS=true \
     OTHER_JAVACFLAGS=\"-Xmaxwarns 10000\" \
     ZERO_BUILD=${ZERO_SUPPORT} STATIC_CXX=false \
-    ${WARNINGS} ${JAVAC_WERROR} ${GCC_WERROR} ${EXTRA_OPTS} ${DOCS} \
+    ${WARNINGS} ${EXTRA_OPTS} ${DOCS} \
     STRIP_POLICY=no_strip UNLIMITED_CRYPTO=true ENABLE_FULL_DEBUG_SYMBOLS=0 \
     NATIVE_SUPPORT_DEBUG=true CC=\"${OPENJDK_CC}\" CXX=\"${OPENJDK_CXX}\" \
     LD=\"${OPENJDK_LD}\" EXTRA_CFLAGS=\"${JDK_CFLAGS}\" EXTRA_LDFLAGS=\"${JDK_LDFLAGS}\" \
