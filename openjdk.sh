@@ -155,8 +155,11 @@ echo "Recompiling: ${RECOMPILE}"
 
 # Add Zero support
 if test "x${OPENJDK_WITH_ZERO}" = "xyes"; then
-ZERO_CONFIG="--with-jvm-variants=zero";
-ZERO_SUPPORT="true";
+  ZERO_CONFIG="--with-jvm-variants=zero";
+  ZERO_SUPPORT="true";
+  if test "${OPENJDK_WITH_LIBFFI_BUNDLING}" = "yes"; then
+      ZERO_CONFIG="${ZERO_CONFIG} --enable-libffi-bundling"
+  fi
 fi
 
 #    ZERO_LIBARCH=${JDK_ARCH} \
