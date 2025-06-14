@@ -337,6 +337,7 @@ OPENJDK_BRAND_NAME=AnDiiVille
 OPENJDK_BRAND_URL=http://icedtea.classpath.org
 OPENJDK_BRAND_BUG_URL=http://icedtea.classpath.org/bugzilla
 OPENJDK_TOOLCHAIN=gcc
+OPENJDK_JTREG_INSTALL_DIR=/home/andrew/projects/openjdk/tests
 XMMS_DEBUG=yes
 TRIM_DEBUG=yes
 AZTOOLS_HOME=$HOME/projects/openjdk/mri/aztools

@@ -559,6 +559,26 @@ elif test "${OPENJDK_TOOLCHAIN}" = "clang"; then
     fi
 fi
 
+if test "x${OPENJDK_JTREG_INSTALL_DIR}" != "x"; then
+    for jtreg_conf_file in make/conf/github-actions.conf make/conf/test-dependencies ; do
+	if [ -f ${jtreg_conf_file} ] ; then
+	    OPENJDK_JTREG_VERSION=$(grep '^JTREG_VERSION' ${jtreg_conf_file}|cut -d '=' -f 2)
+	    echo "Minimum JTreg version found: ${OPENJDK_JTREG_VERSION}";
+	    break;
+	fi
+    done
+    if test "${OPENJDK_JTREG_VERSION}" != ""; then
+	OPENJDK_JTREG_DIR=$(echo ${OPENJDK_JTREG_INSTALL_DIR}/jtreg-${OPENJDK_JTREG_VERSION});
+	if [ -d ${OPENJDK_JTREG_DIR} ] ; then
+	    echo "JTreg directory found: ${OPENJDK_JTREG_DIR}";
+	    OPENJDK_JTREG_OPTS="--with-jtreg=${OPENJDK_JTREG_DIR}";
+	else
+	    echo "No JTreg directory ${OPENJDK_JTREG_DIR} found.";
+	    exit 4;
+	fi
+    fi
+fi
+
 #    GENSRCDIR=/tmp/generated
 #    ALT_DROPS_DIR=/home/downloads/java/drops \
 
@@ -568,7 +588,7 @@ CONFARGS="--enable-unlimited-crypto \
       --with-boot-jdk=${BUILDVM} ${CACERTS_CONFIG} --with-debug-level=${DEBUGLEVEL} \
       ${ZERO_CONFIG} ${BRANDING_CONFIG} ${BITS} ${OPENJDK_CONF_OPTS} \
       ${OPENJDK_CONF_DEBUG_OPTS} ${ICEDTEA_CONF_OPTS} ${RH_FIPS_OPTS} ${OPENJDK_HSDIS_OPTS} \
-      ${OPENJDK_DEVKIT_OPTS} --with-toolchain-type=${OPENJDK_TOOLCHAIN}"
+      ${OPENJDK_DEVKIT_OPTS} --with-toolchain-type=${OPENJDK_TOOLCHAIN} ${OPENJDK_JTREG_OPTS}"
 
 if test "x${VERSION}" != "xOpenJDK7" ; then \
   (echo Building in ${WORKING_DIR}/$BUILD_DIR && \
