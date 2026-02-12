@@ -531,33 +531,73 @@ fi
 
 if test "${OPENJDK_TOOLCHAIN}" = "gcc"; then
     if test "${SYSTEM_GCC}" = ""; then
+	echo "gcc selected but no gcc installation configured"
 	OPENJDK_CC=$(which gcc);
 	OPENJDK_CXX=$(which g++);
-	echo "gcc selected but no gcc installation configured; \
-              using CC=${OPENJDK_CC} and CXX=${OPENJDK_CXX}";
     else
+        echo "Compilers specifed as ${SYSTEM_GCC}";
 	OPENJDK_CC=${SYSTEM_GCC}/gcc;
 	OPENJDK_CXX=${SYSTEM_GCC}/g++;
     fi
-    if test "${SYSTEM_LD}" = ""; then
+    if test "${SYSTEM_BINUTILS}" = ""; then
+	echo "Binutils not specified";
 	OPENJDK_LD=$(which ld.bfd);
-	echo "ld selected but no binary configured; using ${OPENJDK_LD}";
+	OPENJDK_AR=$(which ar);
+	OPENJDK_AS=$(which as);
+	OPENJDK_NM=$(which nm);
+	OPENJDK_OBJCOPY=$(which objcopy);
+	OPENJDK_OBJDUMP=$(which objdump);
+	OPENJDK_READELF=$(which readelf);
+	OPENJDK_STRIP=$(which strip);
     else
-	OPENJDK_LD=${SYSTEM_LD};
+        echo "Binutils specified as ${SYSTEM_BINUTILS}";
+	OPENJDK_LD=${SYSTEM_BINUTILS}/ld;
+	OPENJDK_AR=${SYSTEM_BINUTILS}/ar;
+	OPENJDK_AS=${SYSTEM_BINUTILS}/as;
+	OPENJDK_NM=${SYSTEM_BINUTILS}/nm;
+	OPENJDK_OBJCOPY=${SYSTEM_BINUTILS}/objcopy;
+	OPENJDK_OBJDUMP=${SYSTEM_BINUTILS}/objdump;
+	OPENJDK_READELF=${SYSTEM_BINUTILS}/readelf;
+	OPENJDK_STRIP=${SYSTEM_BINUTILS}/strip;
     fi
 elif test "${OPENJDK_TOOLCHAIN}" = "clang"; then
     if test "${SYSTEM_LLVM}" = ""; then
+	echo "clang selected but no llvm installation configured"
 	OPENJDK_CC=$(which clang);
 	OPENJDK_CXX=$(which clang++);
 	OPENJDK_LD=$(which ld.lld);
-	echo "clang selected but no llvm installation configured; \
-              using CC=${OPENJDK_CC}, CXX=${OPENJDK_CXX} and LD=${OPENJDK_LD}";
+	OPENJDK_AR=$(which ar);
+	OPENJDK_AS=$(which as);
+	OPENJDK_NM=$(which nm);
+	OPENJDK_OBJCOPY=$(which objcopy);
+	OPENJDK_OBJDUMP=$(which objdump);
+	OPENJDK_READELF=$(which readelf);
+	OPENJDK_STRIP=$(which strip);
     else
+        echo "clang selected and configured as ${SYSTEM_LLVM}";
 	OPENJDK_CC=${SYSTEM_LLVM}/bin/clang;
 	OPENJDK_CXX=${SYSTEM_LLVM}/bin/clang++;
 	OPENJDK_LD=${SYSTEM_LLVM}/bin/ld;
+	OPENJDK_AR=${SYSTEM_LLVM}/ar;
+	OPENJDK_AS=${SYSTEM_LLVM}/as;
+	OPENJDK_NM=${SYSTEM_LLVM}/nm;
+	OPENJDK_OBJCOPY=${SYSTEM_LLVM}/objcopy;
+	OPENJDK_OBJDUMP=${SYSTEM_LLVM}/objdump;
+	OPENJDK_READELF=${SYSTEM_LLVM}/readelf;
+	OPENJDK_STRIP=${SYSTEM_LLVM}/strip;
     fi
 fi
+echo "Compiler and tools configuration:";
+echo -e "\tCC=${OPENJDK_CC}";
+echo -e "\tCXX=${OPENJDK_CXX}";
+echo -e "\tLD=${OPENJDK_LD}";
+echo -e "\tAR=${OPENJDK_AR}";
+echo -e "\tAS=${OPENJDK_AS}";
+echo -e "\tNM=${OPENJDK_NM}";
+echo -e "\tOBJCOPY=${OPENJDK_OBJCOPY}";
+echo -e "\tOBJDUMP=${OPENJDK_OBJDUMP}";
+echo -e "\tREADELF=${OPENJDK_READELF}";
+echo -e "\tSTRIP=${OPENJDK_STRIP}";
 
 if test "x${OPENJDK_JTREG_INSTALL_DIR}" != "x"; then
     for jtreg_conf_file in make/conf/github-actions.conf make/conf/test-dependencies ; do
@@ -588,7 +628,10 @@ CONFARGS="--enable-unlimited-crypto \
       --with-boot-jdk=${BUILDVM} ${CACERTS_CONFIG} --with-debug-level=${DEBUGLEVEL} \
       ${ZERO_CONFIG} ${BRANDING_CONFIG} ${BITS} ${OPENJDK_CONF_OPTS} \
       ${OPENJDK_CONF_DEBUG_OPTS} ${ICEDTEA_CONF_OPTS} ${RH_FIPS_OPTS} ${OPENJDK_HSDIS_OPTS} \
-      ${OPENJDK_DEVKIT_OPTS} --with-toolchain-type=${OPENJDK_TOOLCHAIN} ${OPENJDK_JTREG_OPTS}"
+      ${OPENJDK_DEVKIT_OPTS} --with-toolchain-type=${OPENJDK_TOOLCHAIN} ${OPENJDK_JTREG_OPTS} \
+      CC=${OPENJDK_CC} CXX=${OPENJDK_CXX} LD=${OPENJDK_LD} AR=${OPENJDK_AR} AS=${OPENJDK_AS} \
+      NM=${OPENJDK_NM} OBJCOPY=${OPENJDK_OBJCOPY} OBJDUMP=${OPENJDK_OBJDUMP} READELF=${OPENJDK_READELF} \
+      STRIP=${OPENJDK_STRIP}"
 
 if test "x${VERSION}" != "xOpenJDK7" ; then \
   (echo Building in ${WORKING_DIR}/$BUILD_DIR && \
@@ -597,12 +640,10 @@ if test "x${VERSION}" != "xOpenJDK7" ; then \
     cd ${WORKING_DIR} && \
     mkdir ${BUILD_DIR} && \
     cd ${BUILD_DIR} && \
-    echo "CC=${OPENJDK_CC} CXX=${OPENJDK_CXX} LD=${OPENJDK_LD} \
-              ${SOURCE_DIR}/configure ${CONFARGS} --with-extra-cflags=\"${JDK_CFLAGS}\" \
+    echo "${SOURCE_DIR}/configure ${CONFARGS} --with-extra-cflags=\"${JDK_CFLAGS}\" \
 	      --with-extra-cxxflags=\"${JDK_CXXFLAGS}\" \
 	      --with-extra-ldflags=\"${JDK_LDFLAGS}\"" \
-    && \
-    CC=${OPENJDK_CC} CXX=${OPENJDK_CXX} LD=${OPENJDK_LD} /bin/bash \
+    && /bin/bash \
               ${SOURCE_DIR}/configure ${CONFARGS} \
 	      --with-extra-cflags="${JDK_CFLAGS}" \
 	      --with-extra-cxxflags="${JDK_CXXFLAGS}" \
