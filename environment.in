@@ -112,7 +112,11 @@ SYSTEM_ICEDTEA24=/usr/lib/jvm/icedtea-24
 SYSTEM_ICEDTEA25=/usr/lib/jvm/icedtea-25
 SYSTEM_ICEDTEA26=/usr/lib/jvm/icedtea-26
 SYSTEM_ICEDTEA27=/usr/lib/jvm/icedtea-27
-SYSTEM_GCC=/usr/bin
+if [ -f /etc/gentoo-release ] ; then
+   SYSTEM_GCC_BINDIR=$(gcc-config -B)
+else
+   SYSTEM_GCC_BINDIR=/usr/bin
+fi
 SYSTEM_LD=/usr/bin/ld
 SYSTEM_LLVM=/usr/lib/llvm/15
 SYSTEM_GCJ=/usr/lib/jvm/gcj-jdk

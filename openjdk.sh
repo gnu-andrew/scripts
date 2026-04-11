@@ -536,14 +536,14 @@ if test "${OPENJDK_TOOLCHAIN}" = ""; then
 fi
 
 if test "${OPENJDK_TOOLCHAIN}" = "gcc"; then
-    if test "${SYSTEM_GCC}" = ""; then
+    if test "${SYSTEM_GCC_BINDIR}" = ""; then
 	echo "gcc selected but no gcc installation configured"
 	OPENJDK_CC=$(which gcc);
 	OPENJDK_CXX=$(which g++);
     else
         echo "Compilers specifed as ${SYSTEM_GCC}";
-	OPENJDK_CC=${SYSTEM_GCC}/gcc;
-	OPENJDK_CXX=${SYSTEM_GCC}/g++;
+	OPENJDK_CC=${SYSTEM_GCC_BINDIR}/gcc;
+	OPENJDK_CXX=${SYSTEM_GCC_BINDIR}/g++;
     fi
     if test "${SYSTEM_BINUTILS}" = ""; then
 	echo "Binutils not specified";
