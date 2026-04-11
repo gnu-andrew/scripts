@@ -48,7 +48,13 @@ JDK_LDFLAGS="${LDFLAGS}"
 if [ -e ${VERSION_FILE} ] ; then
     openjdk_version=$(grep '^DEFAULT_VERSION_FEATURE' ${VERSION_FILE} | cut -d '=' -f 2)
     echo "OpenJDK version: ${openjdk_version}";
-    if [ ${openjdk_version} -eq 25 ] ; then
+    if [ ${openjdk_version} -eq 27 ] ; then
+	BUILDVM=${SYSTEM_JDK26};
+	IMPORTVM=${SYSTEM_JDK27};
+    elif [ ${openjdk_version} -eq 26 ] ; then
+	BUILDVM=${SYSTEM_JDK25};
+	IMPORTVM=${SYSTEM_JDK26};
+    elif [ ${openjdk_version} -eq 25 ] ; then
 	BUILDVM=${SYSTEM_JDK24};
 	IMPORTVM=${SYSTEM_JDK25};
     elif [ ${openjdk_version} -eq 24 ] ; then
