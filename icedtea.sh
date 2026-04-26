@@ -960,13 +960,23 @@ if test "${BUILD}" = "azul"; then
     export PKG_CONFIG_PATH=${AZTOOLS_INSTALL}/lib/pkgconfig
 fi
 
+ICEDTEA_CFLAGS="$(eval echo ${CFLAGS})"
+ICEDTEA_CXXFLAGS="$(eval echo ${CXXFLAGS})"
+ICEDTEA_LDFLAGS="$(eval echo ${LDFLAGS})"
+if [ "${LTO_FLAGS}" != "" ] ; then
+    echo "LTO flags set as ${LTO_FLAGS}";
+    echo "Removing LTO flags from build";
+    ICEDTEA_CFLAGS=$(echo ${ICEDTEA_CFLAGS}|sed "s#${LTO_FLAGS}##")
+    ICEDTEA_CXXFLAGS=$(echo ${ICEDTEA_CXXFLAGS}|sed "s#${LTO_FLAGS}##")
+fi
+
 (PATH=/usr/lib/ccache/bin:/bin:/usr/bin ./autogen.sh &&
 echo "Building ${ICEDTEA_HOME} in ${BUILD_DIR}..." &&
 echo "Additional options: ${OPTS}" &&
 echo "Passing ${CONFIG_OPTS} to configure..." &&
 cd ${BUILD_DIR} &&
 echo $ICEDTEA_HOME/configure ${CONFIG_OPTS} &&
-CFLAGS=${CFLAGS} CXXFLAGS=${CXXFLAGS} LDFLAGS=${LDFLAGS} $ICEDTEA_HOME/configure ${CONFIG_OPTS}
+CFLAGS=${ICEDTEA_CFLAGS} CXXFLAGS=${ICEDTEA_CXXFLAGS} LDFLAGS=${ICEDTEA_LDFLAGS} $ICEDTEA_HOME/configure ${CONFIG_OPTS}
 if test "x$1" = "xrelease"; then
     DISTCHECK_CONFIGURE_FLAGS="${DISTCHECK_OPTS}" make ${MAKE_OPTS} distcheck;
 elif echo "$BUILD" | grep "zero6"; then

@@ -14,17 +14,6 @@ CLASSPATH=
 BUILD_DIR=$1
 SOURCE_DIR=$PWD
 
-# OpenJDK >= 10 has its version in the build machinery
-# OpenJDK >= 17 stores it in a new location (JDK-8258246)
-VERSION_FILE=${PWD}/make/conf/version-numbers.conf
-echo -n "Checking for ${VERSION_FILE}...";
-if [ ! -f ${VERSION_FILE} ] ; then
-    VERSION_FILE=${PWD}/make/autoconf/version-numbers
-    echo "Not found; using old version file ${VERSION_FILE}";
-else
-    echo "found.";
-fi
-
 if test "x$BUILD_DIR" = "x"; then
     echo "No build directory specified.";
     exit 1;
@@ -41,9 +30,24 @@ else
     fi
 fi
 
-JDK_CFLAGS="${CFLAGS}"
-JDK_CXXFLAGS="${CXXFLAGS}"
-JDK_LDFLAGS="${LDFLAGS}"
+# OpenJDK >= 10 has its version in the build machinery
+# OpenJDK >= 17 stores it in a new location (JDK-8258246)
+VERSION_FILE=${PWD}/make/conf/version-numbers.conf
+printf "Checking for %s..." "${VERSION_FILE}";
+if [ ! -f ${VERSION_FILE} ] ; then
+    VERSION_FILE=${PWD}/make/autoconf/version-numbers
+    echo "Not found"
+    printf "Using old version file %s\n" "${VERSION_FILE}";
+else
+    echo "found.";
+fi
+
+if [ "${LTO_FLAGS}" != "" ] ; then
+    echo "LTO flags set as ${LTO_FLAGS}";
+fi
+JDK_CFLAGS="$(eval echo ${CFLAGS})"
+JDK_CXXFLAGS="$(eval echo ${CXXFLAGS})"
+JDK_LDFLAGS="$(eval echo ${LDFLAGS})"
 
 if [ -e ${VERSION_FILE} ] ; then
     openjdk_version=$(grep '^DEFAULT_VERSION_FEATURE' ${VERSION_FILE} | cut -d '=' -f 2)
@@ -157,10 +161,19 @@ if test "x${BUILDVM}" = "x"; then
     exit 3;
 fi
 
+if [ ${openjdk_version} -ne 17 ] && [ "${LTO_FLAGS}" != "" ]; then
+    echo "Removing LTO flags from build of OpenJDK ${openjdk_version}";
+    JDK_CFLAGS=$(echo ${JDK_CFLAGS}|sed "s#${LTO_FLAGS}##")
+    JDK_CXXFLAGS=$(echo ${JDK_CXXFLAGS}|sed "s#${LTO_FLAGS}##")
+fi
+
 echo "Building ${VERSION} using ${BUILDVM}"
 echo "IcedTea: ${ICEDTEA}"
 echo "RHEL FIPS: ${RHEL_FIPS}"
 echo "Recompiling: ${RECOMPILE}"
+echo "JDK_CFLAGS: ${JDK_CFLAGS}"
+echo "JDK_CXXFLAGS: ${JDK_CXXFLAGS}"
+echo "JDK_LDFLAGS: ${JDK_LDFLAGS}"
 
 # Add Zero support
 if test "x${OPENJDK_WITH_ZERO}" = "xyes"; then
