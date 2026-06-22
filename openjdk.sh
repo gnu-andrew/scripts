@@ -51,6 +51,7 @@ JDK_LDFLAGS="$(eval echo ${LDFLAGS})"
 
 if [ -e ${VERSION_FILE} ] ; then
     openjdk_version=$(grep '^DEFAULT_VERSION_FEATURE' ${VERSION_FILE} | cut -d '=' -f 2)
+    openjdk_update_version=$(grep '^DEFAULT_VERSION_UPDATE' ${VERSION_FILE} | cut -d '=' -f 2)
     echo "OpenJDK version: ${openjdk_version}";
     if [ ${openjdk_version} -eq 27 ] ; then
 	BUILDVM=${SYSTEM_JDK26};
@@ -118,13 +119,23 @@ elif [ -e ${PWD}/common/autoconf ] ; then
     openjdk_version=8;
     BUILDVM=${SYSTEM_JDK7};
     IMPORTVM=${SYSTEM_JDK8};
+    VERSION_FILE="${PWD}/common/autoconf/version-numbers";
+    if [ -e ${VERSION_FILE} ] ; then
+	openjdk_update_version=$(grep '^JDK_UPDATE_VERSION' ${VERSION_FILE} | cut -d '=' -f 2)
+	echo "OpenJDK ${openjdk_version}u${openjdk_update_version} found".
+    fi
 else
     openjdk_version=7;
     BUILDVM=${SYSTEM_JDK6};
     IMPORTVM=${SYSTEM_JDK7};
-    JDK_CFLAGS="${JDK_CFLAGS} -Wno-error=stringop-overflow -Wno-error=implicit-fallthrough -Wno-error=maybe-uninitialized"
 fi
 VERSION=OpenJDK${openjdk_version}
+
+if [ ${openjdk_version} -eq 8 ] && [ -n "${openjdk_update_version}" ] && [ ${openjdk_update_version} -lt 502 ] ; then
+    VERSION_SPECIFIC_FLAGS="-Wno-error=incompatible-pointer-types";
+elif [ "${openjdk_version}" -eq 7 ] ; then
+    VERSION_SPECIFIC_FLAGS="-Wno-error=stringop-overflow -Wno-error=implicit-fallthrough -Wno-error=maybe-uninitialized";
+fi
 
 # Check whether this is IcedTea
 if [ -f ${PWD}/.hgtags ] ; then
@@ -159,6 +170,11 @@ fi
 if test "x${BUILDVM}" = "x"; then
     echo "No build VM available (BUILDVM=${BUILDVM}).  Exiting.";
     exit 3;
+fi
+
+if test "${VERSION_SPECIFIC_FLAGS}" != ""; then
+    echo "This version needs additional compiler flags: ${VERSION_SPECIFIC_FLAGS}";
+    JDK_CFLAGS="${JDK_CFLAGS} ${VERSION_SPECIFIC_FLAGS}";
 fi
 
 if [ ${openjdk_version} -ne 17 ] && [ "${LTO_FLAGS}" != "" ]; then
