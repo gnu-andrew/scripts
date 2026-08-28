@@ -131,7 +131,7 @@ else
 fi
 VERSION=OpenJDK${openjdk_version}
 
-if [ ${openjdk_version} -eq 8 ] && [ -n "${openjdk_update_version}" ] && [ ${openjdk_update_version} -lt 502 ] ; then
+if [ ${openjdk_version} -eq 8 ] && [ -n "${openjdk_update_version}" ] && [ ${openjdk_update_version} -lt 512 ] ; then
     VERSION_SPECIFIC_FLAGS="-Wno-error=incompatible-pointer-types";
 elif [ "${openjdk_version}" -eq 7 ] ; then
     VERSION_SPECIFIC_FLAGS="-Wno-error=stringop-overflow -Wno-error=implicit-fallthrough -Wno-error=maybe-uninitialized";
@@ -561,7 +561,7 @@ fi
 
 if test "${OPENJDK_TOOLCHAIN}" = ""; then
     OPENJDK_TOOLCHAIN=gcc;
-    echo "No toolchain selected; defaulting to gcc"
+    echo "No toolchain selected; defaulting to ${OPENJDK_TOOLCHAIN}"
 fi
 
 if test "${OPENJDK_TOOLCHAIN}" = "gcc"; then
@@ -570,7 +570,7 @@ if test "${OPENJDK_TOOLCHAIN}" = "gcc"; then
 	OPENJDK_CC=$(which gcc);
 	OPENJDK_CXX=$(which g++);
     else
-        echo "Compilers specifed as ${SYSTEM_GCC}";
+        echo "Compilers specifed as ${SYSTEM_GCC_BINDIR}";
 	OPENJDK_CC=${SYSTEM_GCC_BINDIR}/gcc;
 	OPENJDK_CXX=${SYSTEM_GCC_BINDIR}/g++;
     fi
