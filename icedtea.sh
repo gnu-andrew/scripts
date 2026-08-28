@@ -519,6 +519,81 @@ echo "OPENJDK ZIP: ${OPENJDK_ZIP}";
 echo "OPENJDK DIR: ${OPENJDK_DIR}";
 echo "OPTS: ${OPTS}";
 
+if test "${ICEDTEA_TOOLCHAIN}" = ""; then
+    ICEDTEA_TOOLCHAIN=gcc;
+    echo "No toolchain selected; defaulting to ${ICEDTEA_TOOLCHAIN}"
+fi
+
+if test "${ICEDTEA_TOOLCHAIN}" = "gcc"; then
+    if test "${SYSTEM_GCC_BINDIR}" = ""; then
+	echo "gcc selected but no gcc installation configured"
+	ICEDTEA_CC=$(which gcc);
+	ICEDTEA_CXX=$(which g++);
+    else
+        echo "Compilers specifed as ${SYSTEM_GCC_BINDIR}";
+	ICEDTEA_CC=${SYSTEM_GCC_BINDIR}/gcc;
+	ICEDTEA_CXX=${SYSTEM_GCC_BINDIR}/g++;
+    fi
+    if test "${SYSTEM_BINUTILS}" = ""; then
+	echo "Binutils not specified";
+	ICEDTEA_LD=$(which ld.bfd);
+	ICEDTEA_AR=$(which ar);
+	ICEDTEA_AS=$(which as);
+	ICEDTEA_NM=$(which nm);
+	ICEDTEA_OBJCOPY=$(which objcopy);
+	ICEDTEA_OBJDUMP=$(which objdump);
+	ICEDTEA_READELF=$(which readelf);
+	ICEDTEA_STRIP=$(which strip);
+    else
+        echo "Binutils specified as ${SYSTEM_BINUTILS}";
+	ICEDTEA_LD=${SYSTEM_BINUTILS}/ld;
+	ICEDTEA_AR=${SYSTEM_BINUTILS}/ar;
+	ICEDTEA_AS=${SYSTEM_BINUTILS}/as;
+	ICEDTEA_NM=${SYSTEM_BINUTILS}/nm;
+	ICEDTEA_OBJCOPY=${SYSTEM_BINUTILS}/objcopy;
+	ICEDTEA_OBJDUMP=${SYSTEM_BINUTILS}/objdump;
+	ICEDTEA_READELF=${SYSTEM_BINUTILS}/readelf;
+	ICEDTEA_STRIP=${SYSTEM_BINUTILS}/strip;
+    fi
+elif test "${ICEDTEA_TOOLCHAIN}" = "clang"; then
+    if test "${SYSTEM_LLVM}" = ""; then
+	echo "clang selected but no llvm installation configured"
+	ICEDTEA_CC=$(which clang);
+	ICEDTEA_CXX=$(which clang++);
+	ICEDTEA_LD=$(which ld.lld);
+	ICEDTEA_AR=$(which ar);
+	ICEDTEA_AS=$(which as);
+	ICEDTEA_NM=$(which nm);
+	ICEDTEA_OBJCOPY=$(which objcopy);
+	ICEDTEA_OBJDUMP=$(which objdump);
+	ICEDTEA_READELF=$(which readelf);
+	ICEDTEA_STRIP=$(which strip);
+    else
+        echo "clang selected and configured as ${SYSTEM_LLVM}";
+	ICEDTEA_CC=${SYSTEM_LLVM}/bin/clang;
+	ICEDTEA_CXX=${SYSTEM_LLVM}/bin/clang++;
+	ICEDTEA_LD=${SYSTEM_LLVM}/bin/ld;
+	ICEDTEA_AR=${SYSTEM_LLVM}/ar;
+	ICEDTEA_AS=${SYSTEM_LLVM}/as;
+	ICEDTEA_NM=${SYSTEM_LLVM}/nm;
+	ICEDTEA_OBJCOPY=${SYSTEM_LLVM}/objcopy;
+	ICEDTEA_OBJDUMP=${SYSTEM_LLVM}/objdump;
+	ICEDTEA_READELF=${SYSTEM_LLVM}/readelf;
+	ICEDTEA_STRIP=${SYSTEM_LLVM}/strip;
+    fi
+fi
+echo "Compiler and tools configuration:";
+echo -e "\tCC=${ICEDTEA_CC}";
+echo -e "\tCXX=${ICEDTEA_CXX}";
+echo -e "\tLD=${ICEDTEA_LD}";
+echo -e "\tAR=${ICEDTEA_AR}";
+echo -e "\tAS=${ICEDTEA_AS}";
+echo -e "\tNM=${ICEDTEA_NM}";
+echo -e "\tOBJCOPY=${ICEDTEA_OBJCOPY}";
+echo -e "\tOBJDUMP=${ICEDTEA_OBJDUMP}";
+echo -e "\tREADELF=${ICEDTEA_READELF}";
+echo -e "\tSTRIP=${ICEDTEA_STRIP}";
+
 if test x${VERSION} = "xicedtea8"; then
     DIR="/images";
 fi
@@ -949,7 +1024,10 @@ CONFIG_OPTS="--prefix=${INSTALLATION_DIR} --mandir=${INSTALLATION_DIR}/man \
     ${SYSTEM_GIF_OPTION} ${SYSTEM_PNG_OPTION} ${SYSTEM_ZLIB_OPTION} ${SYSTEM_PCSC_OPTION} ${SYSTEM_SCTP_OPTION} \
     ${SYSTEM_CUPS_OPTION} ${NATIVE_DEBUGINFO_OPTION} ${JAVA_DEBUGINFO_OPTION} ${SPLIT_DEBUGINFO_OPTION} \
     ${IMPROVED_FONT_RENDERING_OPTION} ${HEADLESS_OPTION} ${CCACHE_OPTION} ${PRECOMPILED_HEADERS_OPTION} ${CURVE_OPTION} \
-    ${JFR_OPTION} --disable-downloading --with-cacerts-file=${SYSTEM_ICEDTEA7}/jre/lib/security/cacerts ${SYSTEM_KRB5_OPTION}"
+    ${JFR_OPTION} --disable-downloading --with-cacerts-file=${SYSTEM_ICEDTEA7}/jre/lib/security/cacerts ${SYSTEM_KRB5_OPTION} \
+    CC=${ICEDTEA_CC} CXX=${ICEDTEA_CXX} LD=${ICEDTEA_LD} AR=${ICEDTEA_AR} AS=${ICEDTEA_AS} \
+    NM=${ICEDTEA_NM} OBJCOPY=${ICEDTEA_OBJCOPY} OBJDUMP=${ICEDTEA_OBJDUMP} READELF=${ICEDTEA_READELF} \
+    STRIP=${ICEDTEA_STRIP}"
 
 # Always add the additional options separately so they override anything beforehand
 CONFIG_OPTS="${CONFIG_OPTS} ${OPTS}"
