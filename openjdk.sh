@@ -522,11 +522,15 @@ else
 fi
 
 if test ${openjdk_version} -ge 9 ; then 
-    OPENJDK_CONF_OPTS="${JPEG_CONF_OPT} \
+    OPENJDK_CONF_OPTS="${OPENJDK_CONF_OPTS} ${JPEG_CONF_OPT} \
            ${LCMS_CONF_OPT} ${PNG_CONF_OPT} \
            ${WERROR}"
 else
     WARNINGS="${WARNINGS} ${JAVAC_WERROR} ${GCC_WERROR}"
+fi
+
+if test ${openjdk_version} -ge 10 ; then
+    OPENJDK_CONF_OPTS="${OPENJDK_CONF_OPTS} ${BRANDING_CONFIG}"
 fi
 
 # System HarfBuzz support was added by JDK-8250894 in JDK 16
@@ -550,6 +554,11 @@ if test ${openjdk_version} -ge 19 ; then
     if test "x${OPENJDK_WITH_HSDIS}" != "x" -a "x${OPENJDK_WITH_HSDIS}" != "xnone"; then
 	OPENJDK_HSDIS_OPTS="--with-hsdis=${OPENJDK_WITH_HSDIS}";
     fi
+fi
+
+if test ${openjdk_version} -lt 17 ; then
+    PARALLEL_JOBS=$(( ${PARALLEL_JOBS} / 4 ));
+    echo "Reducing parallel jobs to ${PARALLEL_JOBS}"
 fi
 
 if test "x${OPENJDK_WITH_DEVKIT}" != "x"; then
@@ -649,7 +658,10 @@ if test "x${OPENJDK_JTREG_INSTALL_DIR}" != "x"; then
 	OPENJDK_JTREG_DIR=$(echo ${OPENJDK_JTREG_INSTALL_DIR}/jtreg-${OPENJDK_JTREG_VERSION});
 	if [ -d ${OPENJDK_JTREG_DIR} ] ; then
 	    echo "JTreg directory found: ${OPENJDK_JTREG_DIR}";
-	    OPENJDK_JTREG_OPTS="--with-jtreg=${OPENJDK_JTREG_DIR}";
+	    # jtreg for 11 has too new bytecode for bootstrap JDK 10
+	    if test ${openjdk_version} -ne 11 ; then
+	        OPENJDK_JTREG_OPTS="--with-jtreg=${OPENJDK_JTREG_DIR}";
+	    fi;
 	else
 	    echo "No JTreg directory ${OPENJDK_JTREG_DIR} found.";
 	    exit 4;
@@ -664,7 +676,7 @@ CONFARGS="--enable-unlimited-crypto \
       ${ZLIB_CONF_OPT} ${GIF_CONF_OPT} ${HEADLESS_CONF_OPT} ${JFR_OPT} \
       --with-stdc++lib=dynamic --with-jobs=${PARALLEL_JOBS} ${HEADERS_CONF_OPT} \
       --with-boot-jdk=${BUILDVM} ${CACERTS_CONFIG} --with-debug-level=${DEBUGLEVEL} \
-      ${ZERO_CONFIG} ${BRANDING_CONFIG} ${BITS} ${OPENJDK_CONF_OPTS} \
+      ${ZERO_CONFIG} ${BITS} ${OPENJDK_CONF_OPTS} \
       ${OPENJDK_CONF_DEBUG_OPTS} ${ICEDTEA_CONF_OPTS} ${RH_FIPS_OPTS} ${OPENJDK_HSDIS_OPTS} \
       ${OPENJDK_DEVKIT_OPTS} --with-toolchain-type=${OPENJDK_TOOLCHAIN} ${OPENJDK_JTREG_OPTS} \
       CC=${OPENJDK_CC} CXX=${OPENJDK_CXX} LD=${OPENJDK_LD} AR=${OPENJDK_AR} AS=${OPENJDK_AS} \
