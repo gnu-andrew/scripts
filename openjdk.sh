@@ -140,6 +140,11 @@ elif [ "${openjdk_version}" -eq 7 ] ; then
     VERSION_SPECIFIC_FLAGS="-Wno-error=stringop-overflow -Wno-error=implicit-fallthrough -Wno-error=maybe-uninitialized";
 fi
 
+if [ "${BUILDVM}" = "${SYSTEM_JDK10}" ] ; then
+    echo "Disabling javac server on bootstrap JDK 10";
+    OPENJDK_CONF_OPTS="${OPENJDK_CONF_OPTS} --disable-javac-server"
+fi
+
 # Check whether this is IcedTea
 if [ -f ${PWD}/.hgtags ] ; then
     echo "Mercurial repository detected; checking for IcedTea...";
