@@ -490,10 +490,27 @@ if test "x${OPENJDK_WITH_CACERTS}" = "xyes"; then
     CACERTS_OPT="ALT_CACERTS_FILE=${SYSTEM_CACERTS}"
 fi
 
+if test "${OPENJDK_WITH_JVM_FEATURES}" != ""; then
+    declare -a JVM_FEATURES;
+    JVM_FEATURES=( ${OPENJDK_WITH_JVM_FEATURES} );
+fi
+
 if test "x${OPENJDK_WITH_JFR}" = "xyes"; then
-    JFR_OPT="--enable-jfr";
+    # JFR was integrated in 11 under JDK-8199712
+    # and is enabled using --with-jvm-features
+    if test ${openjdk_version} -ge 11 ; then
+	JVM_FEATURES+=( jfr );
+    elif test ${openjdk_version} -eq 8 ; then
+	JFR_OPT="--enable-jfr";
+    else
+	echo "JFR enabled but not supported by OpenJDK ${openjdk_version}";
+    fi
 else
-    JFR_OPT=""; # temporarily disabled until JFR is in 8u --disable-jfr";
+    if test ${openjdk_version} -ge 11 ; then
+	JVM_FEATURES+=( -jfr );
+    elif test ${openjdk_version} -eq 8 ; then
+	JFR_OPT="--disable-jfr";
+    fi
 fi
 
 if test "x${OPENJDK_FOR_GRAAL}" = "xyes"; then
@@ -549,7 +566,8 @@ fi
 
 if test ${openjdk_version} -ge 11 ; then
     OPENJDK_CONF_DEBUG_OPTS="--with-log=trace \
-      --with-native-debug-symbols=internal";
+      --with-native-debug-symbols=internal \
+      --with-jvm-features=${JVM_FEATURES[@]}";
 else
     OPENJDK_MAKE_DEBUG_OPTS="STRIP_POLICY=no_strip LOG_LEVEL=debug \
       DEBUG_BINARIES=true"
