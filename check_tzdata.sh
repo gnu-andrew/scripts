@@ -4,6 +4,8 @@ DIR_8U=${1}
 DIR_TZDATA=${2}
 COPYRIGHT_HEADER=${3}
 
+WORKING_DIR=$(dirname "${0}")
+
 LOC_8U="jdk/make/data/tzdata";
 
 if test "x${DIR_8U}" = "x"; then
@@ -22,6 +24,7 @@ else
     if [ -f ${DIR_8U}/africa ] ; then
 	echo "Found ${DIR_8U}/africa";
     else
+	echo "Could not find tzdata there either.";
 	exit 2;
     fi
 fi
@@ -44,8 +47,8 @@ echo;
 
 if test "x${COPYRIGHT_HEADER}" = "x"; then
     echo "No copyright header found.";
-    echo "${0} <DIR_8U> <DIR_TZDATA> <COPYRIGHT_HEADER>";
-    exit 5;
+    COPYRIGHT_HEADER="${WORKING_DIR}/tzdata_copyright_header";
+    echo "Trying ${COPYRIGHT_HEADER}";
 fi
 
 echo "Copyright header: ${COPYRIGHT_HEADER}";
@@ -53,7 +56,8 @@ if [ -f ${COPYRIGHT_HEADER} ] ; then
     echo "Found copyright header ${COPYRIGHT_HEADER}";
 else
     echo "${COPYRIGHT_HEADER} is not a valid file";
-    exit 6;
+    echo "${0} <DIR_8U> <DIR_TZDATA> <COPYRIGHT_HEADER>";
+    exit 5;
 fi
 echo;
 
