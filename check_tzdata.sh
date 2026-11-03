@@ -4,7 +4,7 @@ DIR_8U=${1}
 DIR_TZDATA=${2}
 COPYRIGHT_HEADER=${3}
 
-WORKING_DIR=$(dirname "${0}")
+WORKING_DIR=$(dirname $(realpath "${0}"))
 
 LOC_8U="jdk/make/data/tzdata";
 
