@@ -291,9 +291,21 @@ elif test "x${OPENJDK_WITH_GCC_WERROR}" = "xno"; then
     WERROR="--disable-warnings-as-errors"
 fi
 
+if test "x${OPENJDK_FOR_GRAAL}" = "xyes"; then
+    NEW_BUILD_TARGET="graal-builder-image";
+else
+    NEW_BUILD_TARGET="images";
+fi
+
 # Docs?
 if test "x${OPENJDK_WITH_DOCS}" = "xno"; then
     DOCS='NO_DOCS=true'
+else
+    if [ ${openjdk_version} -ge 11 ] ; then
+	NEW_BUILD_TARGET="${NEW_BUILD_TARGET} docs-jdk-api"
+    else
+	NEW_BUILD_TARGET="${NEW_BUILD_TARGET} docs"
+    fi
 fi
 
 # System libraries
@@ -511,12 +523,6 @@ else
     elif test ${openjdk_version} -eq 8 ; then
 	JFR_OPT="--disable-jfr";
     fi
-fi
-
-if test "x${OPENJDK_FOR_GRAAL}" = "xyes"; then
-    NEW_BUILD_TARGET="graal-builder-image";
-else
-    NEW_BUILD_TARGET="images";
 fi
 
 if test "x${ICEDTEA}" = "xtrue"; then
