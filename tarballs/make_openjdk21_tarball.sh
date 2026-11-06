@@ -4,8 +4,8 @@
 
 VERSION=$1
 REPO_LOCATION=$2
-DEFAULT_LOCATION=${HOME}/projects/openjdk/upstream/jdk
-SCRIPT=${HOME}/projects/rhel/java-21-openjdk/scripts/generate_source_tarball.sh
+DEFAULT_LOCATION=${PWD}
+SCRIPT=${HOME}/projects/centos/java-21-openjdk/scripts/generate_source_tarball.sh
 USAGE_INFO="${0} <VERSION> <REPO_LOCATION>"
 BOOT_JDK=${SYSTEM_JDK20}
 

@@ -4,8 +4,8 @@
 
 VERSION=$1
 REPO_LOCATION=$2
-DEFAULT_LOCATION=${HOME}/projects/openjdk/upstream/jdk
-SCRIPT=${HOME}/projects/rhel/java-17-openjdk/scripts/generate_source_tarball.sh
+DEFAULT_LOCATION=${PWD}
+SCRIPT=${HOME}/projects/centos/java-17-openjdk/scripts/generate_source_tarball.sh
 USAGE_INFO="${0} <VERSION> <REPO_LOCATION>"
 OPENJDK_VERSION=jdk17u
 BOOT_JDK=${SYSTEM_JDK16}
